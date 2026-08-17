@@ -1,0 +1,1 @@
+ALTER TABLE `applications` ADD `decline_reason` text DEFAULT '' NOT NULL;

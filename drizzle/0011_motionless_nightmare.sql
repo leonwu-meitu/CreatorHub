@@ -1,0 +1,1 @@
+ALTER TABLE `applications` ADD `impressions` text DEFAULT '' NOT NULL;

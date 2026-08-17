@@ -1,0 +1,1 @@
+ALTER TABLE `rewards` ADD `failure_reason` text DEFAULT '' NOT NULL;

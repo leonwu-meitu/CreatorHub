@@ -1,0 +1,1 @@
+ALTER TABLE `tasks` ADD `brief` text DEFAULT '' NOT NULL;
