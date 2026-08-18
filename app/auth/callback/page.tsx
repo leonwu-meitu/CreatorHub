@@ -14,10 +14,13 @@ export default function AuthCallbackPage() {
 
     let active = true;
     const finish = async () => {
-      const { data, error } = await supabase.auth.getSession();
+      const code = new URL(window.location.href).searchParams.get("code");
+      const result = code
+        ? await supabase.auth.exchangeCodeForSession(code)
+        : await supabase.auth.getSession();
       if (!active) return;
-      if (error || !data.session) {
-        setMessage("We could not verify this sign-in link. Please request a new one.");
+      if (result.error || !result.data.session) {
+        setMessage("We could not complete this sign-in. Please return to CreatorHub and try again.");
         return;
       }
       window.location.replace("/");
@@ -29,4 +32,3 @@ export default function AuthCallbackPage() {
 
   return <main style={{ minHeight: "100vh", display: "grid", placeItems: "center", fontFamily: "Arial, sans-serif", color: "#171526" }}><p>{message}</p></main>;
 }
-
