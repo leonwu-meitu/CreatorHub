@@ -337,7 +337,6 @@
   .canva-public .canva-nav { padding-inline: 18px; }
   .canva-public .canva-nav nav { display: none; }
   .canva-public .canva-nav > div { margin-left: auto; }
-  .canva-public .canva-login { display: none; }
   .canva-hero { min-height: 650px; grid-template-columns: minmax(430px,1fr) 260px; padding-inline: 38px; }
   .hero-content { transform: none; }
   .hero-app-rotator { height: 310px; }
@@ -363,8 +362,15 @@
 }
 
 @media (max-width: 620px) {
+  .canva-public .canva-nav { height:auto; min-height:104px; padding:10px 14px; flex-wrap:wrap; align-content:center; row-gap:8px; }
   .canva-brand span { display: none; }
-  .canva-button { padding-inline: 14px; }
+  .canva-public .canva-nav > div { width:100%; display:flex; align-items:center; gap:6px; }
+  .canva-public .canva-nav .public-language-switcher { width:148px; min-width:148px; }
+  .canva-public .canva-nav .public-language-switcher > span { left:8px; }
+  .canva-public .canva-nav .public-language-switcher::after { right:8px; }
+  .canva-public .canva-nav .public-language-switcher select { padding-inline:23px; font-size:10.5px; }
+  .canva-public .canva-nav .canva-login { display:inline-flex; flex:0 0 auto; min-height:40px; align-items:center; justify-content:center; padding-inline:12px; font-size:10px; }
+  .canva-public .canva-nav .canva-button { flex:1 1 auto; min-height:40px; padding-inline:10px; font-size:10px; }
   .canva-hero { min-height: 760px; grid-template-columns: 1fr; gap: 30px; padding: 82px 22px 60px; text-align: center; }
   .canva-hero h1 { font-size: clamp(52px, 18vw, 76px); }
   .hero-content > p { margin-inline: auto; }

@@ -901,3 +901,27 @@
   .canva-public .dialog .form-help { font-size:10px; }
 }
 .profile-avatar-editor{display:grid;justify-items:center;gap:10px;min-width:170px}.profile-avatar-preview{width:112px;height:112px;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,#f11d48,#ff7de6);color:#fff;font-size:28px;font-weight:800;box-shadow:0 12px 28px rgba(241,29,72,.2)}.profile-avatar-preview img{width:100%;height:100%;object-fit:cover}.profile-avatar-editor label{position:relative;overflow:hidden;cursor:pointer}.profile-avatar-editor input{position:absolute;inset:0;opacity:0;cursor:pointer}.profile-avatar-editor small{color:#777;font-size:11px}.avatar img{width:100%;height:100%;object-fit:cover;border-radius:inherit}.analytics-screenshot-link[disabled]{opacity:.65;cursor:wait}
+
+/* Creator-only navigation has one full-width destination, with no dead slot. */
+.app-shell .space-switch-creator-only { grid-template-columns:1fr; }
+
+/* Profile editing no longer exposes an unused photo-upload workflow. */
+.app-shell .profile-identity-editor-no-avatar { grid-template-columns:minmax(190px,.75fr) minmax(0,1.5fr); }
+.app-shell .profile-identity-editor-no-avatar h2 { margin:6px 0; }
+.app-shell .profile-identity-editor-no-avatar p { margin:0; color:var(--muted); }
+
+/* Submission identity links and post-qualified VIP delivery. */
+.submission-creator-social { display:block; width:max-content; max-width:100%; margin:3px 0; overflow:hidden; color:#c71338; font-size:9px; font-weight:800; text-decoration:none; text-overflow:ellipsis; white-space:nowrap; }
+.submission-creator-social:hover { text-decoration:underline; }
+.manual-submission-card .vip-code-actions { display:grid; grid-template-columns:minmax(150px,1fr) auto; align-items:end; gap:7px; }
+.manual-submission-card .vip-code-actions label { display:grid; grid-template-columns:minmax(135px,1fr) auto; align-items:end; gap:6px; }
+.manual-submission-card .vip-code-actions label input { min-width:0; margin:4px 0 0; }
+.creator-vip-code { display:grid; gap:5px; margin-top:9px; }
+.creator-vip-code small { color:#8c1b38; font-weight:850; letter-spacing:.08em; }
+.creator-vip-code code { width:max-content; max-width:100%; padding:8px 12px; border:1px dashed #f11d48; border-radius:9px; background:#fff6f8; color:#9f0d30; font-size:14px; font-weight:900; letter-spacing:.08em; overflow-wrap:anywhere; }
+
+@media (max-width:805px) {
+  .app-shell .profile-identity-editor-no-avatar { grid-template-columns:1fr; }
+  .manual-submission-card .vip-code-actions,
+  .manual-submission-card .vip-code-actions label { grid-template-columns:1fr; }
+}
