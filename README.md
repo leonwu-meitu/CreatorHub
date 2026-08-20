@@ -2,6 +2,8 @@
 
 Production-oriented Creator Pool portal for Meitu, BeautyCam, and Wink. It includes a public application site, Creator workspace, Team review workspace, campaign management, submissions, rewards, payment forms, profiles, app-expansion requests, and VIP streak requests.
 
+Production: [creator-pool-hub.meitu-creatorhub.workers.dev](https://creator-pool-hub.meitu-creatorhub.workers.dev)
+
 ## Architecture
 
 - Next.js/Vinext frontend and Cloudflare Worker runtime
