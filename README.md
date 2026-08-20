@@ -45,6 +45,15 @@ where email = 'team@example.com';
 
 To give a Team member access to both portals, set `can_access_creator = true` after migration 006.
 
+Application decision emails:
+
+1. Enable Gmail API in a dedicated Google Cloud project and authorize only `gmail.send` for the sender mailbox.
+2. Add `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`, `GMAIL_REFRESH_TOKEN`, `GMAIL_SENDER_EMAIL`, `GMAIL_SENDER_NAME`, and `CREATORHUB_URL` as Supabase Edge Function secrets.
+3. Apply `supabase/migrations/20260820090000_application_decision_email.sql`.
+4. Deploy `supabase/functions/application-decision-email` with JWT verification enabled.
+
+The Team's final Accept or Decline action remains saved if Gmail is temporarily unavailable. Delivery attempts and errors are recorded on the application, and a successfully delivered decision is not sent twice.
+
 ## Data and privacy behavior
 
 - Creator applications remain pending until a Team member accepts or declines them.

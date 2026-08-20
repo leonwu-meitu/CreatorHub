@@ -274,7 +274,27 @@ function Applications({rows,expansionRequests,setApps,setExpansionRequests,notif
     const searchable=(request.creator+" "+(creator?.email||"")+" "+(creator?.handle||"")+" "+request.requestedApps).toLowerCase();
     return request.status===expansionFilter&&searchable.includes(expansionQuery.toLowerCase())&&(expansionAppFilter==="All"||request.requestedApps.split(",").includes(expansionAppFilter));
   }).sort((a,b)=>expansionSort==="Oldest first"?new Date(a.submitted).getTime()-new Date(b.submitted).getTime():new Date(b.submitted).getTime()-new Date(a.submitted).getTime());
-  const move=async(row:Application,status:ReviewStatus,reason="")=>{const updated={...row,status,declineReason:status==="Declined"?reason:""};if(supabase){const dbStatus=status==="Accepted"?"accepted":status==="Declined"?"declined":"in_review";const {data:{user}}=await supabase.auth.getUser();const {error}=await supabase.from("creator_applications").update({status:dbStatus,decline_reason:status==="Declined"?reason:null,reviewed_at:status==="In review"?null:new Date().toISOString(),reviewed_by:status==="In review"?null:user?.id||null}).eq("id",row.id);if(error){notify(error.message);return}}setApps(items=>items.map(item=>item.id===row.id?updated:item));setExpanded(null);notify(status==="Accepted"?row.name+" accepted and added to Creators.":status==="Declined"?row.name+" declined. The reason is ready for the creator notification.":row.name+" moved back to In review.")};
+  const move=async(row:Application,status:ReviewStatus,reason="")=>{
+    const updated={...row,status,declineReason:status==="Declined"?reason:""};
+    let emailSent=false;
+    let emailFailed=false;
+    if(supabase){
+      const dbStatus=status==="Accepted"?"accepted":status==="Declined"?"declined":"in_review";
+      const {data:{user}}=await supabase.auth.getUser();
+      const {error}=await supabase.from("creator_applications").update({status:dbStatus,decline_reason:status==="Declined"?reason:null,reviewed_at:status==="In review"?null:new Date().toISOString(),reviewed_by:status==="In review"?null:user?.id||null}).eq("id",row.id);
+      if(error){notify(error.message);return}
+      if(status!=="In review"){
+        const {error:emailError}=await supabase.functions.invoke("application-decision-email",{body:{applicationId:row.id}});
+        emailSent=!emailError;
+        emailFailed=Boolean(emailError);
+      }
+    }
+    setApps(items=>items.map(item=>item.id===row.id?updated:item));
+    setExpanded(null);
+    if(status==="Accepted")notify(emailFailed?row.name+" accepted and added to Creators, but the email could not be sent.":row.name+" accepted and added to Creators."+(emailSent?" Acceptance email sent.":""));
+    else if(status==="Declined")notify(emailFailed?row.name+" declined, but the email could not be sent.":row.name+" declined."+(emailSent?" Decision email sent.":""));
+    else notify(row.name+" moved back to In review.");
+  };
   const updateExpansion=(request:AppExpansionRequest,status:ReviewStatus,reason="")=>{const updated={...request,status,declineReason:status==="Declined"?reason:""};const nextRequests=expansionRequests.map(item=>item.id===request.id?updated:item);setExpansionRequests(nextRequests);persist("appExpansion",updated);const creator=rows.find(item=>item.name===request.creator);if(creator){const base=request.currentApps.split(",").filter(Boolean);const approved=nextRequests.filter(item=>item.creator===request.creator&&item.status==="Accepted").flatMap(item=>item.requestedApps.split(",").filter(Boolean));const creatorUpdate={...creator,interestedApps:[...new Set([...base,...approved])].join(",")};setApps(items=>items.map(item=>item.id===creator.id?creatorUpdate:item));persist("application",creatorUpdate)}setExpandedExpansion(null);notify(status==="Accepted"?request.requestedApps+" access approved for "+request.creator+".":status==="Declined"?"New app request from "+request.creator+" declined.":request.creator+"’s app request moved back to In review.")};
   const closeDecline=()=>{setDeclining(null);setDecliningExpansion(null);setDeclineReason("")};
   const openApplicationDecision=(application:Application)=>{setEditingApplication(application);setEditingExpansion(null);setDecisionStatus(applicationStatus(application.status) as ReviewStatus);setDeclineReason(application.declineReason||"")};
