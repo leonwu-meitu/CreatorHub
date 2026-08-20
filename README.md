@@ -1,54 +1,81 @@
-# Creator Pool Hub
+# CreatorHub
 
-A full-stack MVP for recruiting, briefing, reviewing, and rewarding creators across Meitu, BeautyCam, and Wink in Indonesia.
+Production-oriented Creator Pool portal for Meitu, BeautyCam, and Wink. It includes a public application site, Creator workspace, Team review workspace, campaign management, submissions, rewards, payment forms, profiles, app-expansion requests, and VIP streak requests.
 
-## Product surfaces
+## Architecture
 
-- Public Bahasa Indonesia recruitment site and two-step application form
-- Creator workspace for tasks, submissions, rewards, performance, and leaderboards
-- Internal workspace for applications, creator operations, campaign tasks, AI-assisted human review, reward approval, CSV export, and impact reporting
-- D1-backed application, task, submission, reward, and audit records
-- R2 evidence upload endpoint with image type and 8 MB validation
+- Next.js/Vinext frontend and Cloudflare Worker runtime
+- Supabase Auth with Google OAuth
+- Supabase Postgres with Row Level Security
+- Supabase Storage for public profile pictures and private analytics evidence
+- Supabase Realtime for cross-session portal updates
 
-All AI recommendations in the interface are advisory. Approval, revision, and reward decisions remain with a human reviewer.
+The browser only receives the Supabase publishable key. Never add a service-role key to this repository or to a `NEXT_PUBLIC_*` variable.
 
-## Local setup
+## Local development
 
 Requirements: Node.js 22.13 or newer.
 
-1. Run `npm install`.
-2. Run `npm run db:generate` after schema changes.
-3. Run `npm run dev` and open the printed local URL.
-4. Run `npm test` before deployment.
+1. Copy `.env.example` to `.env.local`.
+2. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+3. Run `npm install`.
+4. Run `npm run dev`.
+5. Open the local URL printed by Vinext.
 
-The local preview uses realistic demonstration records. Mutations are written to the local D1 database when available.
+Use `npm run check` before pushing. It runs TypeScript, ESLint, the production build, and the product contract test.
 
-## Demo walkthrough
+## Supabase setup
 
-1. Start in Team / Overview and open an item in the submission queue.
-2. Inspect the AI checklist and evidence comparison, then approve or request revision.
-3. Open Rewards, approve a calculated reward, and export approved rows to CSV.
-4. Create and publish a new campaign task.
-5. Switch to Creator to join a task, submit evidence, view rewards, and inspect the leaderboard.
-6. Open Public site and submit a creator application.
+Run the SQL files in `supabase/` in numeric order. Existing projects that already ran migrations 001, 003, 004, and 005 can run `006_production_completion.sql`; it safely restores the missing application table and adds the final production tables, policies, Storage buckets, guard trigger, and Realtime publication.
 
-## Manual QA checklist
+Authentication configuration:
 
-- Switch between Team, Creator, and Public surfaces.
-- Verify application, task, and submission forms validate required fields.
-- Approve a submission and confirm a pending reward is created.
-- Approve and export a reward; confirm the CSV contains approved rows only.
-- Confirm status badges include readable text and all controls have visible keyboard focus.
-- Check the layout at desktop, tablet, and mobile widths.
-- Confirm `/api/platform` returns JSON and creates an audit row for each write.
-- Confirm `/api/uploads` rejects unsupported types and files over 8 MB.
+1. Enable Google in **Authentication → Providers**.
+2. Add the local, staging, and production callback URLs to **Authentication → URL Configuration**.
+3. Keep new users as `creator` with `application_status = 'in_review'`.
+4. Promote Team members only in the backend:
 
-## Known MVP limitations
+```sql
+update public.profiles
+set role = 'marketing_admin', application_status = 'accepted'
+where email = 'team@example.com';
+```
 
-- External social network APIs, scraping, WhatsApp automation, and direct payments are intentionally excluded.
-- AI review content is represented with deterministic demonstration results until an OpenAI runtime key and production job runner are connected.
-- Hosted access is owner-only for this first deployment. Public recruitment should be moved to a separate public access policy before a real pilot.
+To give a Team member access to both portals, set `can_access_creator = true` after migration 006.
 
-## Future roadmap
+## Data and privacy behavior
 
-Production email delivery, scheduled measurement jobs, reviewer assignment, granular team roles, configurable AI prompts, payment reconciliation, and multi-language expansion.
+- Creator applications remain pending until a Team member accepts or declines them.
+- Accepted applications automatically grant Creator access; declined applications store the reason shown to the Creator.
+- Analytics screenshots are private and use signed URLs.
+- When Team makes the final Qualified or Not Qualified decision, the screenshot is deleted while verified views, total engagement, calculated engagement rate, and decision reason remain as structured records.
+- Creators cannot modify verified analytics or final decisions because a database trigger enforces the boundary.
+- Rewards are created only from Qualified submissions and payment-form status is managed by Team.
+
+## Deployment
+
+The generated Worker can be deployed independently of ChatGPT:
+
+```bash
+npm run deploy:cloudflare
+```
+
+This builds the application and deploys `dist/server/wrangler.json` with the static assets in `dist/client`. Authenticate Wrangler with the company Cloudflare account first, then attach the final subdomain in Cloudflare. Add the final origin and `/auth/callback` URL to both Supabase and Google OAuth before public launch.
+
+The `.openai/hosting.json` project remains available for staging previews, but production data and files are owned by the Supabase project rather than D1/R2.
+
+## Launch checklist
+
+- All migrations applied successfully
+- Google OAuth tested with a new Creator and a Team account
+- Creator application → Accepted/Declined flow tested
+- Campaign create/join/edit flow tested
+- Submission upload → review → screenshot deletion tested
+- Qualified submission → reward → payment-form status tested
+- Profile and avatar changes verified in both portals
+- App expansion and VIP streak review tested
+- Supabase redirect URLs point to the final subdomain
+- Cloudflare custom subdomain and HTTPS active
+- `npm run check` passes on the release commit
+
+Social-media APIs and an AI/OCR analytics extractor can be added later behind server-side jobs. The current production path intentionally keeps the Team as the final verifier and avoids paid AI token usage.

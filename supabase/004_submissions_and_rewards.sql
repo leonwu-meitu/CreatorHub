@@ -64,7 +64,7 @@ create policy "submissions: creator updates draft or team manages" on public.cam
   with check (creator_id = auth.uid() or public.is_team());
 drop policy if exists "submissions: creator deletes own draft or team manages" on public.campaign_submissions;
 create policy "submissions: creator deletes own draft or team manages" on public.campaign_submissions
-  for delete to authenticated using (creator_id = auth.uid() or public.is_team());
+  for delete to authenticated using ((creator_id = auth.uid() and status = 'draft') or public.is_team());
 
 drop policy if exists "rewards: read own or team" on public.submission_rewards;
 create policy "rewards: read own or team" on public.submission_rewards

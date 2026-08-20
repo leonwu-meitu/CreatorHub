@@ -4,20 +4,18 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../supabase-browser";
 
 export default function AuthCallbackPage() {
-  const [message, setMessage] = useState("Signing you in…");
+  const [message, setMessage] = useState(supabase ? "Signing you in…" : "Supabase has not been configured for this site yet.");
 
   useEffect(() => {
-    if (!supabase) {
-      setMessage("Supabase has not been configured for this site yet.");
-      return;
-    }
+    const client = supabase;
+    if (!client) return;
 
     let active = true;
     const finish = async () => {
       const code = new URL(window.location.href).searchParams.get("code");
       const result = code
-        ? await supabase.auth.exchangeCodeForSession(code)
-        : await supabase.auth.getSession();
+        ? await client.auth.exchangeCodeForSession(code)
+        : await client.auth.getSession();
       if (!active) return;
       if (result.error || !result.data.session) {
         setMessage("We could not complete this sign-in. Please return to CreatorHub and try again.");

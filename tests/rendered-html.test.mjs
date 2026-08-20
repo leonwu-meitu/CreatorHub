@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("ships the Creator Pool Hub product instead of the starter", async () => {
-  const [page, app, layout, css, enhancements, publicCss, dashboardTheme, language, hosting, platformApi] = await Promise.all([
+  const [page, app, layout, css, enhancements, publicCss, dashboardTheme, language, hosting, supabaseRecords, productionMigration] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/CreatorPoolApp.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
@@ -13,10 +13,11 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
     readFile(new URL("../app/dashboard-theme.css", import.meta.url), "utf8"),
     readFile(new URL("../app/portal-language.tsx", import.meta.url), "utf8"),
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
-    readFile(new URL("../app/api/platform/route.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/supabase-records.ts", import.meta.url), "utf8"),
+    readFile(new URL("../supabase/006_production_completion.sql", import.meta.url), "utf8"),
   ]);
   assert.match(page, /CreatorPoolApp/);
-  assert.match(app, /Good morning, Alya/);
+  assert.match(app, /Good morning, \$\{name\}/);
   assert.match(app, /Qualified submissions across products/);
   assert.match(app, /Gabung Creator Pool/);
   assert.match(layout, /Creator Pool Hub/);
@@ -141,7 +142,8 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(app, /creator-leaderboard-podium/);
   assert.match(app, /profile-social-options/);
   assert.match(app, /Contact email/);
-  assert.doesNotMatch(app, /Change profile photo|profile-photo-editor|upload-profile-button/);
+  assert.match(app, /profile-avatar-editor/);
+  assert.match(app, /creator-avatars/);
   assert.match(app, /selectedPlatforms\.includes\("TikTok"\)/);
   assert.doesNotMatch(app, /page==="Settings"/);
   assert.doesNotMatch(app, /<label>Bio/);
@@ -212,9 +214,13 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(app, /Payment form<select/);
   assert.match(app, /historyMonth/);
   assert.doesNotMatch(app, /paymentFormChecked:checked\?1:0,status:checked/);
-  assert.doesNotMatch(platformApi, /finalSubmissionStatuses/);
-  assert.doesNotMatch(platformApi.slice(platformApi.indexOf("export async function POST"),platformApi.indexOf("export async function DELETE")), /evidenceToDelete|MEDIA\.delete/);
-  assert.match(platformApi.slice(platformApi.indexOf("export async function DELETE")), /env\.MEDIA\.delete\(evidenceToDelete\)/);
+  assert.match(supabaseRecords, /loadPortalRecords/);
+  assert.match(supabaseRecords, /campaign_submissions/);
+  assert.match(supabaseRecords, /upsertRewardRecord/);
+  assert.match(productionMigration, /submission-evidence/);
+  assert.match(productionMigration, /creator-avatars/);
+  assert.match(productionMigration, /guard_creator_submission_update/);
+  assert.match(productionMigration, /supabase_realtime/);
   assert.match(app, /openSubmissionIds/);
   assert.match(app, /creator-submission-column-\$\{column===0\?"left":"right"\}/);
   assert.doesNotMatch(app.slice(app.indexOf("function ManualSubmissions"),app.indexOf("function ManualReviewDrawer")), /selectedSubmissionId/);
@@ -274,6 +280,7 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(app + language, /video yang diposting pada Agustus direkap 31 Agustus dan dibayar sekitar 30 September–15 Oktober/);
   assert.doesNotMatch(app + language, /video posted in June|video yang diposting pada Juni/);
   assert.match(publicCss, /pointer-events: none/);
-  assert.match(hosting, /"d1": "DB"/);
+  assert.match(hosting, /"d1": null/);
+  assert.match(hosting, /"r2": null/);
   assert.doesNotMatch(page + app + layout, /codex-preview|react-loading-skeleton/i);
 });

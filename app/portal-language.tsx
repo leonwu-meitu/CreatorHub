@@ -1182,12 +1182,11 @@ function translateTree(node: Node, language: PortalLanguage) {
 }
 
 export function PortalLanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<PortalLanguage>("id");
-
-  useEffect(() => {
+  const [language, setLanguageState] = useState<PortalLanguage>(() => {
+    if (typeof window === "undefined") return "id";
     const saved = window.localStorage.getItem(STORAGE_KEY);
-    if (saved === "id" || saved === "en") setLanguageState(saved);
-  }, []);
+    return saved === "id" || saved === "en" ? saved : "id";
+  });
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, language);
