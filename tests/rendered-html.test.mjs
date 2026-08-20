@@ -150,6 +150,9 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.doesNotMatch(app, /Change profile picture/);
   assert.match(app, /profile-identity-editor-no-avatar/);
   assert.match(app, /save_my_creator_profile/);
+  assert.match(app, /name:profile\?\.displayName\|\|application\.name/);
+  assert.match(app, /email:profile\?\.contactEmail\|\|application\.email/);
+  assert.match(app, /category:profile\?\.niches\|\|application\.category/);
   assert.match(app, /selectedPlatforms\.includes\("TikTok"\)/);
   assert.doesNotMatch(app, /page==="Settings"/);
   assert.doesNotMatch(app, /<label>Bio/);
@@ -166,6 +169,8 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.doesNotMatch(manualSubmissions, /Engagement rate analyzer|submission-ai-method/);
   assert.match(manualSubmissions, /Send VIP code/);
   assert.match(manualSubmissions, /submission-creator-social/);
+  assert.match(manualSubmissions, /socialUsernameFromUrl/);
+  assert.match(manualSubmissions, /Open profile/);
   assert.match(manualSubmissions, /Edit rate/);
   assert.match(manualSubmissions, /View analytics screenshot/);
   assert.match(manualSubmissions, /itemStatus==="In review"&&<button[^>]*manual-engagement-button/);

@@ -911,7 +911,10 @@
 .app-shell .profile-identity-editor-no-avatar p { margin:0; color:var(--muted); }
 
 /* Submission identity links and post-qualified VIP delivery. */
-.submission-creator-social { display:block; width:max-content; max-width:100%; margin:3px 0; overflow:hidden; color:#c71338; font-size:9px; font-weight:800; text-decoration:none; text-overflow:ellipsis; white-space:nowrap; }
+.submission-creator-social { display:flex; width:max-content; max-width:100%; margin:4px 0; align-items:center; gap:5px; overflow:hidden; color:#c71338; font-size:9px; text-decoration:none; white-space:nowrap; }
+.submission-creator-social span { color:#77717a; font-size:8px; font-weight:750; }
+.submission-creator-social strong { overflow:hidden; font-size:9px; text-overflow:ellipsis; }
+.submission-creator-social em { color:#c71338; font-size:8px; font-style:normal; font-weight:800; }
 .submission-creator-social:hover { text-decoration:underline; }
 .manual-submission-card .vip-code-actions { display:grid; grid-template-columns:minmax(150px,1fr) auto; align-items:end; gap:7px; }
 .manual-submission-card .vip-code-actions label { display:grid; grid-template-columns:minmax(135px,1fr) auto; align-items:end; gap:6px; }
