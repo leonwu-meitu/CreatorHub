@@ -33,6 +33,11 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.doesNotMatch(css, /\.table-wrap td:last-child button/);
   assert.match(app, /PortalLanguageProvider/);
   assert.match(app, /PortalLanguageSwitcher/);
+  assert.match(app, /const isMarketingAdmin=data\?\.role==="marketing_admin"/);
+  assert.match(app, /canAccessCreator:isMarketingAdmin\|\|Boolean\(data\?\.can_access_creator\)\|\|applicationStatusValue==="accepted"/);
+  assert.match(app, /account\?\.role==="team"&&<button className=\{space==="team"\?"active":""\}/);
+  assert.match(app, /space-switch-creator-only/);
+  assert.match(app, /next==="creator"&&account\.role!=="team"&&!account\.canAccessCreator/);
   assert.match(language, /creator-pool-language/);
   assert.match(language, /Bahasa Indonesia/);
   assert.match(language, /English/);
