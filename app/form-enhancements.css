@@ -294,13 +294,6 @@
 .settings-grid { display: grid; grid-template-columns: minmax(260px,.7fr) minmax(420px,1.3fr); gap: 14px; }
 .settings-grid > section { padding: 18px; }
 .settings-grid h2 { margin: 0 0 8px; font-size: 13px; }
-.avatar-preview { display: flex; align-items: center; gap: 14px; min-height: 110px; margin: 16px 0; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: #faf9fc; }
-.avatar-preview > img, .avatar-preview > .avatar { width: 76px; height: 76px; flex: 0 0 auto; border-radius: 50%; object-fit: cover; font-size: 20px; }
-.avatar-preview b, .avatar-preview p { display: block; }
-.avatar-preview b { font-size: 9px; }
-.avatar-preview p { margin: 5px 0 0; color: var(--muted); font-size: 8px; line-height: 1.5; }
-.upload-profile-button { display: inline-flex; width: fit-content; cursor: pointer; }
-.upload-profile-button input { display: none; }
 .niche-settings > p { margin: 0 0 14px; color: var(--muted); font-size: 8px; }
 .settings-niche-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; }
 .settings-niche-grid button { min-height: 36px; padding: 7px; border: 1px solid var(--line); border-radius: 8px; background: #fff; font-size: 8px; font-weight: 700; }
@@ -956,13 +949,6 @@
 .creator-profile-editor { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; }
 .creator-profile-editor > section { padding: 20px; }
 .profile-identity-editor { grid-column: 1 / -1; display: grid; grid-template-columns: 1.15fr .85fr; gap: 22px; align-items: center; }
-.profile-photo-editor { display: flex; align-items: center; gap: 16px; }
-.profile-photo-preview { width: 92px; height: 92px; flex: 0 0 auto; overflow: hidden; border: 5px solid #fff; border-radius: 26px; background: #f7ecee; box-shadow: 0 8px 25px rgba(18,10,11,.12); }
-.profile-photo-preview .avatar,.profile-photo-preview img { width: 100%; height: 100%; border-radius: 20px; object-fit: cover; }
-.profile-photo-editor > div:last-child { min-width: 0; }
-.profile-photo-editor span { color: #c61538; font-size: 7px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
-.profile-photo-editor h2 { margin: 5px 0; font-size: 19px; }
-.profile-photo-editor p { margin: 0 0 11px; color: var(--muted); font-size: 8px; }
 .profile-primary-fields { display: grid; gap: 12px; }
 .creator-profile-editor label,.profile-social-editor header,.profile-niche-editor header { display: grid; gap: 6px; }
 .creator-profile-editor label { color: #4e4846; font-size: 8px; font-weight: 820; }
@@ -1008,8 +994,6 @@
   .creator-leaderboard-podium article em { font-size: 7px; }
   .creator-profile-editor { grid-template-columns: minmax(0,1fr); }
   .profile-identity-editor,.profile-whatsapp-editor { grid-column: 1; }
-  .profile-photo-editor { align-items: flex-start; flex-direction: column; }
-  .profile-photo-preview { width: 82px; height: 82px; }
   .profile-editor-save { width: 100%; justify-self: stretch; }
   .whatsapp-input { grid-template-columns: minmax(130px,.85fr) 1fr; }
 }
@@ -1596,10 +1580,8 @@
 .creator-profile-editor > section:nth-of-type(3) { animation-delay:.12s; }
 .creator-profile-editor > section:nth-of-type(4) { animation-delay:.18s; }
 .creator-profile-editor button,
-.creator-profile-editor .upload-profile-button,
 .profile-platform-check { transition:transform .16s ease,box-shadow .2s ease,background-color .2s ease,border-color .2s ease; }
 .creator-profile-editor button:active,
-.creator-profile-editor .upload-profile-button:active,
 .profile-platform-check:active { transform:scale(.96); }
 .profile-social-options > div.selected,
 .settings-niche-grid button.selected { animation:profile-choice-pop .34s cubic-bezier(.2,.85,.25,1.25); }

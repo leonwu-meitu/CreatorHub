@@ -148,6 +148,8 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(app, /profile-social-options/);
   assert.match(app, /Contact email/);
   assert.doesNotMatch(app, /Change profile picture/);
+  assert.doesNotMatch(app, /profile-photo-editor|upload-profile-button/);
+  assert.doesNotMatch(language, /Profile photo|profile picture|Change profile photo|JPG, PNG, or WEBP image/);
   assert.match(app, /profile-identity-editor-no-avatar/);
   assert.match(app, /save_my_creator_profile/);
   assert.match(app, /name:profile\?\.displayName\|\|application\.name/);

@@ -9,7 +9,7 @@ Production: [creator-pool-hub.meitu-creatorhub.workers.dev](https://creator-pool
 - Next.js/Vinext frontend and Cloudflare Worker runtime
 - Supabase Auth with Google OAuth
 - Supabase Postgres with Row Level Security
-- Supabase Storage for public profile pictures and private analytics evidence
+- Supabase Storage for private analytics evidence
 - Supabase Realtime for cross-session portal updates
 
 The browser only receives the Supabase publishable key. Never add a service-role key to this repository or to a `NEXT_PUBLIC_*` variable.
