@@ -14,13 +14,32 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
   const protocol = h.get("x-forwarded-proto") ?? (host.includes("localhost") ? "http" : "https");
   const base = new URL(`${protocol}://${host}`);
+  const socialTitle = "Join Meitu Indonesia's official CreatorHub.";
+  const socialDescription =
+    "Apply to join Meitu Indonesia's official CreatorHub for Meitu, BeautyCam, and Wink.";
   return {
     metadataBase: base,
-    title: "Creator Pool Hub",
-    description: "Recruit, brief, review, and reward Indonesia's strongest creators.",
+    title: socialTitle,
+    description: socialDescription,
     icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
-    openGraph: { title: "Creator Pool Hub", description: "Create. Grow. Get rewarded.", images: [{ url: new URL("/og.png", base).toString(), width: 1672, height: 941, alt: "Creator Pool Hub platform preview" }] },
-    twitter: { card: "summary_large_image", title: "Creator Pool Hub", description: "Create. Grow. Get rewarded.", images: [new URL("/og.png", base).toString()] },
+    openGraph: {
+      title: socialTitle,
+      description: socialDescription,
+      images: [
+        {
+          url: new URL("/og.png", base).toString(),
+          width: 1200,
+          height: 630,
+          alt: "Ready to Become a Meitu Creator?",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: socialTitle,
+      description: socialDescription,
+      images: [new URL("/og.png", base).toString()],
+    },
   };
 }
 
