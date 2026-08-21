@@ -191,7 +191,7 @@ function CreatorPoolWorkspace(){
         {space==="creator"&&<button onClick={()=>setModal("new-apps")}><span>＋</span>Apply New Apps</button>}
         <button onClick={()=>switchSpace("public")}><span>↗</span>Public site</button>
         {space==="team"&&<button onClick={()=>notify("Team settings tetap menggunakan konfigurasi workspace saat ini.")}><span>⚙</span>Settings</button>}
-        <div className="user-chip"><div><b>{space==="team"?(account?.fullName||account?.email||"Team member"):currentCreator}</b><small>{space==="team"?"Admin · Indonesia":"Creator account"}</small></div><span>···</span></div>
+        <div className="user-chip"><div><b>{space==="team"?(account?.fullName||account?.email||"Team member"):currentCreator}</b><small>{space==="team"?"Admin · Indonesia":"Creator account"}</small></div></div>
       </div>
     </aside>
     {mobileNav&&<button className="nav-scrim" aria-label="Close menu" onClick={()=>setMobileNav(false)}/>} 
@@ -234,9 +234,25 @@ function Overview({onNavigate,submissions,applications,rewards,tasks}:{onNavigat
   const applicationsToReview=applications.filter(item=>applicationStatus(item.status)==="In review").length;
   const totalCreators=applications.filter(item=>applicationStatus(item.status)==="Accepted").length;
   const submissionsInQueue=submissions.filter(item=>normalizeSubmissionStatus(item.status)==="In review").length;
-  const activity=[{month:"Feb",values:[50,32,22]},{month:"Mar",values:[72,43,31]},{month:"Apr",values:[82,58,43]},{month:"May",values:[91,67,52]},{month:"Jun",values:[103,78,59]},{month:"Jul",values:[121,97,70]},{month:"Aug",values:[134,114,84]}];
   const activityApps=["Meitu","BeautyCam","Wink"];
-  const activityMax=140;
+  const activityMonths=Array.from({length:7},(_,index)=>{
+    const date=new Date();
+    date.setDate(1);
+    date.setHours(0,0,0,0);
+    date.setMonth(date.getMonth()-6+index);
+    const key=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`;
+    return {key,month:new Intl.DateTimeFormat("en",{month:"short"}).format(date)};
+  });
+  const activity=activityMonths.map(({key,month})=>({
+    month,
+    values:activityApps.map(product=>submissions.filter(item=>{
+      const submissionMonth=(item.submittedAt||item.submitted||"").slice(0,7);
+      return normalizeSubmissionStatus(item.status)!=="Draft"&&item.product===product&&submissionMonth===key;
+    }).length),
+  }));
+  const largestActivity=Math.max(0,...activity.flatMap(item=>item.values));
+  const activityMax=Math.max(4,Math.ceil(largestActivity/4)*4);
+  const activityTicks=[activityMax,Math.round(activityMax*.75),Math.round(activityMax*.5),Math.round(activityMax*.25),0];
   return <>
     <PageHead title={`Good morning, ${name}`} copy="Here’s your Creator Pool performance overview."/>
     <section className="overview-tab-cards" aria-label="Team overview shortcuts">
@@ -244,7 +260,7 @@ function Overview({onNavigate,submissions,applications,rewards,tasks}:{onNavigat
       <button className="overview-tab-card" onClick={()=>onNavigate("Creators")}><span><small>Total creators</small><strong>{totalCreators}</strong><em>Open creators</em></span><b aria-hidden="true">↗</b></button>
       <button className="overview-tab-card overview-tab-dark" onClick={()=>onNavigate("Submissions")}><span><small>Submissions in queue</small><strong>{submissionsInQueue}</strong><em>Open submissions</em></span><b aria-hidden="true">↗</b></button>
     </section>
-    <section className="panel chart-panel overview-activity"><div className="panel-head"><div><h2>Creator activity</h2><p>Qualified submissions across products</p></div><div className="legend"><span><i className="meitu-dot"/>Meitu</span><span><i className="beauty-dot"/>BeautyCam</span><span><i className="wink-dot"/>Wink</span></div></div><div className="chart"><div className="y-axis"><span>140</span><span>105</span><span>70</span><span>35</span><span>0</span></div><div className="bars">{activity.map(({month,values})=><div className="bar-group" key={month}><div>{values.map((value,index)=><i tabIndex={0} role="img" aria-label={`${activityApps[index]}: ${value} qualified submissions in ${month}`} style={{height:`${value/activityMax*100}%`}} className={["bar-meitu","bar-beauty","bar-wink"][index]} key={activityApps[index]}><span className="chart-bar-tooltip">{activityApps[index]} · {value}</span></i>)}</div><span>{month}</span></div>)}</div></div></section>
+    <section className="panel chart-panel overview-activity"><div className="panel-head"><div><h2>Creator activity</h2><p>Real-time submissions across products</p></div><div className="legend"><span><i className="meitu-dot"/>Meitu</span><span><i className="beauty-dot"/>BeautyCam</span><span><i className="wink-dot"/>Wink</span></div></div><div className="chart"><div className="y-axis">{activityTicks.map((tick,index)=><span key={`${tick}-${index}`}>{tick}</span>)}</div><div className="bars">{activity.map(({month,values})=><div className="bar-group" key={month}><div>{values.map((value,index)=><i tabIndex={0} role="img" aria-label={`${activityApps[index]}: ${value} submissions in ${month}`} style={{height:`${value/activityMax*100}%`}} className={["bar-meitu","bar-beauty","bar-wink"][index]} key={activityApps[index]}><span className="chart-bar-tooltip">{activityApps[index]} · {value}</span></i>)}</div><span>{month}</span></div>)}</div></div></section>
     <div className="overview-reports"><ManualReports submissions={submissions} rewards={rewards} tasks={tasks}/></div>
   </>;
 }
@@ -457,7 +473,7 @@ function Tasks({creator,rows,creatorCategories,creatorProducts,joinedCampaignIds
   ];
   return <>
     <PageHead title={creator?"Campaigns for you":"Campaigns"} copy={creator?"View and submit campaigns from the apps you are registered in.":"Search, preview, and manage creator campaigns."}>{!creator&&<button className="primary" onClick={onCreate}>＋ Create campaign</button>}</PageHead>
-    <form className="panel task-search-bar" onSubmit={event=>{event.preventDefault();setQuery(searchDraft.trim())}}><label><span>⌕</span><input value={searchDraft} onChange={event=>setSearchDraft(event.target.value)} placeholder="Search campaign name or app…" aria-label="Search campaigns"/></label><button className="primary" type="submit">Search</button></form>
+    <form className="panel task-search-bar" onSubmit={event=>{event.preventDefault();setQuery(searchDraft.trim())}}><label><span className="campaign-search-icon" aria-hidden="true">⌕</span><input value={searchDraft} onChange={event=>setSearchDraft(event.target.value)} placeholder="Search campaign name or app…" aria-label="Search campaigns"/></label><button className="primary" type="submit">Search</button></form>
     <div className="task-filter-groups">
       <div><span>App</span><div className="segmented task-product-filters">{(["All",...availableProducts] as ("All"|Product)[]).map(product=><button type="button" key={product} className={`${productFilter===product?"active":""} task-filter-${product.toLowerCase()}`} onClick={()=>setProductFilter(product)}>{product==="All"?"All apps":product}<small>{product==="All"?ranked.length:ranked.filter(({task})=>task.product===product).length}</small></button>)}</div></div>
       {!creator&&<div><span>Status</span><div className="segmented task-status-filters">{(["All","Ongoing","Expired"] as const).map(status=><button type="button" key={status} className={statusFilter===status?"active":""} onClick={()=>setStatusFilter(status)}>{status}<small>{status==="All"?ranked.length:ranked.filter(({task})=>taskStatusFor(task)===status).length}</small></button>)}</div></div>}
@@ -725,14 +741,10 @@ function SubmissionModal({close,tasks,initialTaskId,save}:{close:()=>void;tasks:
 }
 
 function EmailSignInModal({close}:{close:()=>void}){
-  const [email,setEmail]=useState("");
-  const [password,setPassword]=useState("");
-  const [showTeamLogin,setShowTeamLogin]=useState(false);
   const [sending,setSending]=useState(false);
   const [error,setError]=useState("");
   async function googleSignIn(){if(!supabase){setError("Supabase configuration is missing. Please contact the Creator Pool team.");return}setSending(true);setError("");const {error:signInError}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:`${window.location.origin}/auth/callback`}});if(signInError){setSending(false);setError(signInError.message)}}
-  async function passwordSignIn(event:React.FormEvent){event.preventDefault();if(!supabase){setError("Supabase configuration is missing. Please contact the Creator Pool team.");return}setSending(true);setError("");const {error:signInError}=await supabase.auth.signInWithPassword({email,password});setSending(false);if(signInError){setError("Email or password is incorrect. Ask a CreatorHub administrator to check your Team account.");return}close()}
-  return <div className="modal-layer"><button className="modal-scrim" onClick={close} aria-label="Close sign in"/><section className="dialog email-auth-dialog google-auth-dialog"><header><div><span className="eyebrow">CREATORHUB ACCOUNT</span><h2>Continue to CreatorHub</h2><p>Google verifies your identity. The Creator Pool Team still reviews and approves every Creator application.</p></div><button type="button" className="close" onClick={close}>×</button></header><div className="form-body"><button type="button" className="google-signin-button" onClick={googleSignIn} disabled={sending}><span aria-hidden="true">G</span><b>{sending&&!showTeamLogin?"Connecting to Google…":"Continue with Google"}</b></button><div className="google-approval-note"><span>✓</span><p>Signing in does not automatically grant Creator access. New accounts remain <b>In review</b> until approved by the Team.</p></div>{showTeamLogin&&<form className="team-password-form" onSubmit={passwordSignIn}><label>Team email<input required autoFocus type="email" value={email} onChange={event=>setEmail(event.target.value)} placeholder="team@company.com"/></label><label>Password<input required type="password" minLength={6} value={password} onChange={event=>setPassword(event.target.value)} placeholder="Your password"/></label><button className="primary" disabled={sending}>{sending?"Signing in…":"Team sign in"}</button></form>}{error&&<p className="form-error">{error}</p>}<button type="button" className="team-login-toggle" onClick={()=>{setShowTeamLogin(value=>!value);setError("")}}>{showTeamLogin?"Hide Team email sign in":"Team email sign in"}</button></div><footer><button type="button" className="secondary" onClick={close}>Cancel</button></footer></section></div>
+  return <div className="modal-layer"><button className="modal-scrim" onClick={close} aria-label="Close sign in"/><section className="dialog email-auth-dialog google-auth-dialog"><header><div><span className="eyebrow">CREATORHUB ACCOUNT</span><h2>Continue to CreatorHub</h2><p>Google verifies your identity. The Creator Pool Team still reviews and approves every Creator application.</p></div><button type="button" className="close" onClick={close}>×</button></header><div className="form-body"><button type="button" className="google-signin-button" onClick={googleSignIn} disabled={sending}><span aria-hidden="true">G</span><b>{sending?"Connecting to Google…":"Continue with Google"}</b></button><div className="google-approval-note"><span>✓</span><p>Signing in does not automatically grant Creator access. New accounts remain <b>In review</b> until approved by the Team.</p></div>{error&&<p className="form-error">{error}</p>}</div><footer><button type="button" className="secondary" onClick={close}>Cancel</button></footer></section></div>
 }
 
 function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist,setApps,saveApplication,toast,account,onSignOut}:{onSignIn:()=>void;onApply:()=>void;onOpenPortal:()=>void;modal:Modal;setModal:(m:Modal)=>void;notify:(s:string)=>void;persist:(e:string,i:unknown)=>void;setApps:React.Dispatch<React.SetStateAction<Application[]>>;saveApplication:(application:Application)=>Promise<void>;toast:string;account:Account|null;onSignOut:()=>void}){

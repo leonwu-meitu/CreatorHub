@@ -123,6 +123,7 @@ const copyPairs: ReadonlyArray<readonly [english: string, indonesian: string]> =
   ["↑ 21% vs last month", "↑ 21% dibanding bulan lalu"],
   ["Creator activity", "Aktivitas kreator"],
   ["Qualified submissions across products", "Kiriman yang memenuhi syarat di semua produk"],
+  ["Real-time submissions across products", "Kiriman real-time di semua produk"],
   ["Needs attention", "Perlu perhatian"],
   ["Prioritized by urgency", "Diurutkan berdasarkan urgensi"],
   ["View all", "Lihat semua"],

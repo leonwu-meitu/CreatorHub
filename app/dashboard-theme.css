@@ -915,13 +915,37 @@
 .submission-creator-social:hover { text-decoration:underline; }
 .manual-submission-card .vip-code-actions { display:grid; grid-template-columns:minmax(150px,1fr) auto; align-items:end; gap:7px; }
 .manual-submission-card .vip-code-actions label { display:grid; grid-template-columns:minmax(135px,1fr) auto; align-items:end; gap:6px; }
-.manual-submission-card .vip-code-actions label input { min-width:0; margin:4px 0 0; }
+.manual-submission-card .vip-code-actions label input { grid-column:1; grid-row:2; min-width:0; margin:0; }
+.manual-submission-card .vip-code-actions label button { grid-column:2; grid-row:2; align-self:stretch; min-height:38px; }
+.app-shell .campaign-search-icon { width:26px; display:inline-grid; place-items:center; flex:0 0 26px; color:#241a1d; font-size:24px; font-weight:800; line-height:1; transform:translateY(-1px); }
 .creator-vip-code { display:grid; gap:5px; margin-top:9px; }
 .creator-vip-code small { color:#8c1b38; font-weight:850; letter-spacing:.08em; }
 .creator-vip-code code { width:max-content; max-width:100%; padding:8px 12px; border:1px dashed #f11d48; border-radius:9px; background:#fff6f8; color:#9f0d30; font-size:14px; font-weight:900; letter-spacing:.08em; overflow-wrap:anywhere; }
 
 @media (max-width:805px) {
   .app-shell .profile-identity-editor-no-avatar { grid-template-columns:1fr; }
-  .manual-submission-card .vip-code-actions,
+  .manual-submission-card .vip-code-actions { grid-template-columns:1fr; }
+  .manual-submission-card .vip-code-actions label { grid-template-columns:minmax(0,1fr) auto; }
+}
+
+@media (max-width:760px) {
+  .app-shell .campaign-collaboration-flow { padding:22px 18px; border-radius:18px; }
+  .app-shell .campaign-collaboration-flow header > span { font-size:10px; }
+  .app-shell .campaign-collaboration-flow header h2 { margin-top:7px; font-size:22px; line-height:1.15; }
+  .app-shell .campaign-collaboration-flow header p { font-size:12px; line-height:1.55; }
+  .app-shell .campaign-collaboration-flow > div { gap:15px; margin-top:24px; padding-left:48px; }
+  .app-shell .campaign-collaboration-flow > div::before { left:27px; }
+  .app-shell .campaign-collaboration-flow article { min-height:96px; align-content:center; padding:18px 16px 18px 38px; border-radius:16px; }
+  .app-shell .campaign-collaboration-flow article > i { left:-21px; width:52px; height:52px; font-size:18px; }
+  .app-shell .campaign-collaboration-flow article small { font-size:9px; }
+  .app-shell .campaign-collaboration-flow article b { font-size:14px; line-height:1.3; }
+  .app-shell .campaign-collaboration-flow article em { font-size:11px; line-height:1.5; }
+}
+
+@media (max-width:520px) {
   .manual-submission-card .vip-code-actions label { grid-template-columns:1fr; }
+  .manual-submission-card .vip-code-actions label input,
+  .manual-submission-card .vip-code-actions label button { grid-column:1; }
+  .manual-submission-card .vip-code-actions label input { grid-row:2; }
+  .manual-submission-card .vip-code-actions label button { grid-row:3; }
 }

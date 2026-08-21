@@ -18,9 +18,11 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   ]);
   assert.match(page, /CreatorPoolApp/);
   assert.match(app, /Good morning, \$\{name\}/);
-  assert.match(app, /Qualified submissions across products/);
+  assert.match(app, /Real-time submissions across products/);
+  assert.match(app, /activityMonths=Array\.from/);
+  assert.doesNotMatch(app, /\[50,32,22\]/);
   assert.match(app, /Gabung Creator Pool/);
-  assert.match(layout, /Creator Pool Hub/);
+  assert.match(layout, /Join Meitu Indonesia's official CreatorHub/);
   assert.match(layout, /og\.png/);
   assert.match(css, /@media\(max-width:800px\)/);
   assert.match(app, /expansion-social-column/);
@@ -29,6 +31,7 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(app, /primary table-action-button/);
   assert.match(app, /danger table-action-button/);
   assert.doesNotMatch(app, /Search creators, tasks, submissions/);
+  assert.doesNotMatch(app, /Team email sign in/);
   assert.match(enhancements, /\.table-action-button/);
   assert.doesNotMatch(css, /\.table-wrap td:last-child button/);
   assert.match(app, /PortalLanguageProvider/);
