@@ -909,14 +909,24 @@
 
 /* Submission identity links and post-qualified VIP delivery. */
 .submission-creator-social { display:flex; width:max-content; max-width:100%; margin:4px 0; align-items:center; gap:5px; overflow:hidden; color:#c71338; font-size:9px; text-decoration:none; white-space:nowrap; }
-.submission-creator-social span { color:#77717a; font-size:8px; font-weight:750; }
+.submission-creator-social span { display:none; }
 .submission-creator-social strong { overflow:hidden; font-size:9px; text-overflow:ellipsis; }
-.submission-creator-social em { color:#c71338; font-size:8px; font-style:normal; font-weight:800; }
+.submission-creator-social em { display:none; }
 .submission-creator-social:hover { text-decoration:underline; }
-.manual-submission-card .vip-code-actions { display:grid; grid-template-columns:minmax(150px,1fr) auto; align-items:end; gap:7px; }
-.manual-submission-card .vip-code-actions label { display:grid; grid-template-columns:minmax(135px,1fr) auto; align-items:end; gap:6px; }
+.manual-submission-card:has(.vip-code-actions) { grid-template-columns:minmax(150px,1fr) minmax(135px,.85fr) minmax(135px,.85fr) 82px minmax(100px,.65fr) minmax(360px,1.8fr); }
+.manual-submission-card .vip-code-actions { min-width:340px; display:grid; grid-template-columns:minmax(260px,1fr) 62px; align-items:end; gap:8px; }
+.manual-submission-card .vip-code-actions label { min-width:0; display:grid; grid-template-columns:minmax(130px,1fr) minmax(108px,auto); grid-template-rows:auto 40px; align-items:stretch; gap:6px 8px; }
 .manual-submission-card .vip-code-actions label input { grid-column:1; grid-row:2; min-width:0; margin:0; }
-.manual-submission-card .vip-code-actions label button { grid-column:2; grid-row:2; align-self:stretch; min-height:38px; }
+.manual-submission-card .vip-code-actions label button { grid-column:2; grid-row:2; min-width:108px; height:40px; white-space:nowrap; }
+.manual-submission-card .vip-code-actions > .secondary { grid-column:2; height:40px; align-self:end; }
+
+@media (min-width:1000px) {
+  .canva-public .canva-footer :is(span,p,a,button) { font-size:11px; line-height:1.4; }
+}
+
+@media (max-width:980px) {
+  .manual-submission-card:has(.vip-code-actions) { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
 .app-shell .campaign-search-icon { width:26px; display:inline-grid; place-items:center; flex:0 0 26px; color:#241a1d; font-size:24px; font-weight:800; line-height:1; transform:translateY(-1px); }
 .creator-vip-code { display:grid; gap:5px; margin-top:9px; }
 .creator-vip-code small { color:#8c1b38; font-weight:850; letter-spacing:.08em; }
@@ -924,8 +934,9 @@
 
 @media (max-width:805px) {
   .app-shell .profile-identity-editor-no-avatar { grid-template-columns:1fr; }
-  .manual-submission-card .vip-code-actions { grid-template-columns:1fr; }
+  .manual-submission-card .vip-code-actions { min-width:0; grid-template-columns:1fr; }
   .manual-submission-card .vip-code-actions label { grid-template-columns:minmax(0,1fr) auto; }
+  .manual-submission-card .vip-code-actions > .secondary { grid-column:1; }
 }
 
 @media (max-width:760px) {
@@ -943,6 +954,7 @@
 }
 
 @media (max-width:520px) {
+  .manual-submission-card:has(.vip-code-actions) { grid-template-columns:1fr 1fr; }
   .manual-submission-card .vip-code-actions label { grid-template-columns:1fr; }
   .manual-submission-card .vip-code-actions label input,
   .manual-submission-card .vip-code-actions label button { grid-column:1; }

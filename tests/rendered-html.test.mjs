@@ -148,6 +148,11 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(app, /creator-submission-details/);
   assert.match(app, /creator-reward-summary/);
   assert.match(app, /creator-leaderboard-podium/);
+  const leaderboardSection = app.slice(app.indexOf("function Leaderboard"), app.indexOf("function Profile"));
+  assert.doesNotMatch(leaderboardSection, /<Avatar/);
+  assert.doesNotMatch(leaderboardSection, /Winning posts|leaderboard-winner-posts/);
+  assert.match(leaderboardSection, /Top Monthly Viewers/);
+  assert.match(leaderboardSection, /Top Gainers/);
   assert.match(app, /profile-social-options/);
   assert.match(app, /Contact email/);
   assert.doesNotMatch(app, /Change profile picture/);
@@ -175,6 +180,9 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(manualSubmissions, /Send VIP code/);
   assert.match(manualSubmissions, /submission-creator-social/);
   assert.match(manualSubmissions, /socialUsernameFromUrl/);
+  assert.match(manualSubmissions, /postAddress\.includes\("instagram\.com\//);
+  assert.match(manualSubmissions, /postAddress\.includes\("threads\.net\//);
+  assert.match(manualSubmissions, /postAddress\.includes\("tiktok\.com\//);
   assert.match(manualSubmissions, /Open profile/);
   assert.match(manualSubmissions, /Edit rate/);
   assert.match(manualSubmissions, /View analytics screenshot/);
@@ -288,7 +296,7 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(creatorHome, /startTaskCount:lifetimeQualifiedPosts/);
   const creatorManualSubmissions = app.slice(app.indexOf("function ManualSubmissions"),app.indexOf("function ManualSubmissionModal"));
   assert.match(creatorManualSubmissions, /<dt>Posting date<\/dt><dd>\{displayDate\(item\.publishedAt\)\}<\/dd>/);
-  assert.match(enhancements, /grid-template-columns:56px minmax\(190px,1fr\) minmax\(180px,\.72fr\) minmax\(260px,1\.25fr\)/);
+  assert.match(enhancements, /grid-template-columns:56px minmax\(190px,1fr\) minmax\(180px,\.72fr\)/);
   assert.match(enhancements, /leaderboard-top-five-head span:first-child \{ grid-column:1 \/ 3/);
   assert.match(dashboardTheme, /reward-history-summary \.product-meitu/);
   assert.equal((app.match(/placeholder="81234567890"/g) || []).length, 3);

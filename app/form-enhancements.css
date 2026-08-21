@@ -807,9 +807,9 @@
 .leaderboard-selection-summary > span { display: grid; gap: 3px; }
 .leaderboard-selection-summary b { font-size: 8px; }.leaderboard-selection-summary small { color: var(--muted); font-size: 7px; }
 .leaderboard-top-five { overflow: hidden; }
-.leaderboard-top-five-head,.leaderboard-top-five > article { display:grid; grid-template-columns:56px minmax(190px,1fr) minmax(180px,.72fr) minmax(260px,1.25fr); gap:14px; align-items:center; }
+.leaderboard-top-five-head,.leaderboard-top-five > article { display:grid; grid-template-columns:56px minmax(190px,1fr) minmax(180px,.72fr); gap:14px; align-items:center; }
 .leaderboard-top-five-head { padding: 10px 16px; border-bottom: 1px solid var(--line); background: #faf9fc; color: #918a9b; font-size: 7px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
-.leaderboard-top-five-head span:first-child { grid-column:1 / 3; }.leaderboard-top-five-head span:nth-child(2) { grid-column:3; }.leaderboard-top-five-head span:last-child { grid-column:4; }
+.leaderboard-top-five-head span:first-child { grid-column:1 / 3; }.leaderboard-top-five-head span:last-child { grid-column:3; }
 .leaderboard-top-five > article { min-height: 82px; padding: 13px 16px; border-bottom: 1px solid #efedf2; }
 .leaderboard-top-five > article:last-child { border-bottom: 0; }
 .leaderboard-top-five > article.current-creator { background: linear-gradient(90deg,#f7f3ff,#fff 75%); box-shadow: inset 3px 0 #7758dc; }
@@ -817,17 +817,12 @@
 .leaderboard-creator,.leaderboard-result { display: grid; gap: 4px; }
 .leaderboard-creator strong { font-size: 10px; }.leaderboard-creator small,.leaderboard-result small { color: var(--muted); font-size: 7px; }
 .leaderboard-result strong { font-size: 12px; }
-.leaderboard-winner-posts { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
-.leaderboard-winner-posts a,.leaderboard-winner-posts span,.leaderboard-post-unavailable { max-width: 100%; overflow: hidden; padding: 6px 8px; border-radius: 7px; background: #f2effa; color: #5e44b8; font-size: 6.5px; font-weight: 800; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
-.leaderboard-winner-posts a:hover { background: #e9e3fa; text-decoration: underline; }
-.leaderboard-post-unavailable { background: #f5f4f6; color: #98939d; }
 .leaderboard-top-five > .leaderboard-empty { border: 0; border-radius: 0; }
 
 @media (max-width: 900px) {
   .monthly-leaderboard-filter { grid-template-columns: 1fr 1fr; }
   .leaderboard-top-five-head { display: none; }
   .leaderboard-top-five > article { grid-template-columns:48px minmax(0,1fr) minmax(140px,.7fr); }
-  .leaderboard-winner-posts,.leaderboard-post-unavailable { grid-column:2 / -1; }
 }
 
 @media (max-width: 620px) {
@@ -835,7 +830,7 @@
   .leaderboard-view-tabs button { min-width: 130px; }
   .monthly-leaderboard-filter { grid-template-columns: 1fr; }
   .leaderboard-top-five > article { grid-template-columns:44px minmax(0,1fr); }
-  .leaderboard-result,.leaderboard-winner-posts,.leaderboard-post-unavailable { grid-column:2; }
+  .leaderboard-result { grid-column:2; }
   .payment-history-actions { align-items: stretch; flex-direction: column; }
 }
 
@@ -938,13 +933,11 @@
 .creator-leaderboard-podium article { width: min(190px,29%); min-height: 164px; display: flex; align-items: center; flex-direction: column; gap: 5px; padding: 15px 10px; border: 1px solid rgba(255,255,255,.16); border-radius: 18px 18px 0 0; background: linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.06)); text-align: center; }
 .creator-leaderboard-podium article.podium-rank-1 { min-height: 218px; background: linear-gradient(180deg,#f11d48 0%,#8e1029 100%); box-shadow: 0 -14px 35px rgba(241,29,72,.3); }
 .creator-leaderboard-podium article > b { width: 28px; height: 28px; display: grid; place-items: center; margin-bottom: 2px; border-radius: 50%; background: #fff; color: #141111; font-size: 9px; }
-.creator-leaderboard-podium article .avatar { width: 46px; height: 46px; border: 3px solid rgba(255,255,255,.84); }
 .creator-leaderboard-podium article strong { max-width: 100%; overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .creator-leaderboard-podium article small { color: rgba(255,255,255,.68); font-size: 7px; }
 .creator-leaderboard-podium article em { margin-top: 4px; font-size: 9px; font-style: normal; font-weight: 900; }
 .leaderboard-top-five > article.current-creator { background: linear-gradient(90deg,#fff0f3,#fff 75%); box-shadow: inset 3px 0 #f11d48; }
 .leaderboard-rank { color: #d6153d; }
-.leaderboard-winner-posts a,.leaderboard-winner-posts span { background: #fff0f3; color: #b61032; }
 
 .creator-profile-editor { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px; }
 .creator-profile-editor > section { padding: 20px; }
@@ -988,7 +981,6 @@
   .creator-leaderboard-podium > div { min-width: 0; min-height: 215px; gap: 5px; padding-inline: 8px; }
   .creator-leaderboard-podium article { width: 32%; min-height: 138px; padding: 12px 5px; }
   .creator-leaderboard-podium article.podium-rank-1 { min-height: 180px; }
-  .creator-leaderboard-podium article .avatar { width: 38px; height: 38px; }
   .creator-leaderboard-podium article strong { font-size: 8px; }
   .creator-leaderboard-podium article small { display: none; }
   .creator-leaderboard-podium article em { font-size: 7px; }
