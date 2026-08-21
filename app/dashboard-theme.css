@@ -913,7 +913,9 @@
 .submission-creator-social strong { overflow:hidden; font-size:9px; text-overflow:ellipsis; }
 .submission-creator-social em { display:none; }
 .submission-creator-social:hover { text-decoration:underline; }
-.manual-submission-card:has(.vip-code-actions) { grid-template-columns:minmax(150px,1fr) minmax(135px,.85fr) minmax(135px,.85fr) 82px minmax(100px,.65fr) minmax(290px,1.35fr); }
+.manual-submission-card,
+.manual-submission-card:has(.vip-code-actions) { grid-template-columns:minmax(210px,1.1fr) minmax(155px,.78fr) minmax(185px,.9fr) minmax(112px,.55fr) minmax(120px,.58fr) 282px; column-gap:18px; }
+.manual-submission-card .decision-buttons { width:282px; min-width:282px; justify-self:end; }
 .manual-submission-card .vip-code-actions { min-width:282px; display:grid; grid-template-columns:220px 54px; align-items:end; gap:8px; }
 .manual-submission-card .vip-code-actions label { min-width:0; display:grid; grid-template-columns:112px 100px; grid-template-rows:auto 40px; align-items:stretch; gap:6px 8px; }
 .manual-submission-card .vip-code-actions label input { width:112px; min-width:0; grid-column:1; grid-row:2; margin:0; padding-inline:10px; }
@@ -925,12 +927,33 @@
 .submission-dialog:not(.manual-submission-dialog) > header .eyebrow,
 .submission-dialog:not(.manual-submission-dialog) .selected-submission-task span { display:none; }
 
+/* A clear, repeatable hierarchy for every information block in Submit your post. */
+.submission-dialog .task-reward-callout small,
+.submission-dialog .reward-tier-preview small { font-size:9px; font-weight:700; line-height:1.35; }
+.submission-dialog .task-reward-callout b,
+.submission-dialog .reward-tier-preview b { margin-top:4px; font-size:14px; line-height:1.25; }
+.submission-dialog .task-reward-callout p,
+.submission-dialog .reward-tier-preview p { margin-top:5px; font-size:10px; line-height:1.5; }
+.submission-dialog .ai-calculation-note b,
+.submission-dialog .boost-not-required b,
+.submission-dialog .submission-deadline-warning b { font-size:11px; line-height:1.35; }
+.submission-dialog .ai-calculation-note p,
+.submission-dialog .boost-not-required p,
+.submission-dialog .submission-deadline-warning p { margin-top:5px; font-size:9px; line-height:1.55; }
+.submission-dialog .boost-not-required a { margin-top:7px; font-size:9px; line-height:1.4; }
+.submission-dialog .upload { font-size:11px; font-weight:800; line-height:1.4; }
+.submission-dialog .upload span { margin-top:7px; font-size:22px; line-height:1; }
+.submission-dialog .upload b { margin:8px 0 0; font-size:12px; line-height:1.35; }
+.submission-dialog .upload small { margin-top:6px; font-size:9px; line-height:1.45; }
+
 @media (min-width:1000px) {
   .canva-public .canva-footer :is(span,p,a,button) { font-size:11px; line-height:1.4; }
 }
 
 @media (max-width:980px) {
+  .manual-submission-card,
   .manual-submission-card:has(.vip-code-actions) { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .manual-submission-card .decision-buttons { width:auto; min-width:0; }
 }
 .app-shell .campaign-search-icon { width:26px; display:inline-grid; place-items:center; flex:0 0 26px; color:#241a1d; font-size:24px; font-weight:800; line-height:1; transform:translateY(-1px); }
 .creator-vip-code { display:grid; gap:5px; margin-top:9px; }
@@ -958,7 +981,13 @@
   .app-shell .campaign-collaboration-flow article em { font-size:11px; line-height:1.5; }
 }
 
+@media (max-width:620px) {
+  .manual-submission-card,
+  .manual-submission-card:has(.vip-code-actions) { grid-template-columns:1fr 1fr; }
+}
+
 @media (max-width:520px) {
+  .manual-submission-card,
   .manual-submission-card:has(.vip-code-actions) { grid-template-columns:1fr 1fr; }
   .manual-submission-card .vip-code-actions label { grid-template-columns:1fr; }
   .manual-submission-card .vip-code-actions label input,

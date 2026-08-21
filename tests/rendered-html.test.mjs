@@ -182,6 +182,7 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(manualSubmissions, /Send VIP code/);
   assert.match(dashboardTheme, /\.manual-submission-creator > \.avatar\s*\{\s*display:none/);
   assert.match(dashboardTheme, /grid-template-columns:112px 100px/);
+  assert.match(dashboardTheme, /grid-template-columns:minmax\(210px,1\.1fr\)[\s\S]*282px/);
   assert.match(manualSubmissions, /submission-creator-social/);
   assert.match(manualSubmissions, /socialUsernameFromUrl/);
   assert.match(manualSubmissions, /postAddress\.includes\("instagram\.com\//);
@@ -231,6 +232,9 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(dashboardTheme, /\.app-shell \.sidebar nav button,[\s\S]*font-size:\s*14\.5px/);
   assert.match(dashboardTheme, /\.task-preview-links a:visited\s*\{[^}]*color:\s*#fff !important/);
   assert.match(dashboardTheme, /submission-dialog:not\(\.manual-submission-dialog\)[\s\S]*selected-submission-task span\s*\{\s*display:none/);
+  assert.match(dashboardTheme, /submission-dialog \.task-reward-callout b,[\s\S]*font-size:14px/);
+  assert.match(dashboardTheme, /submission-dialog \.ai-calculation-note b,[\s\S]*font-size:11px/);
+  assert.match(dashboardTheme, /submission-dialog \.upload b\s*\{[^}]*font-size:12px/);
   assert.match(dashboardTheme, /Creator identity columns stay left-aligned/);
   assert.match(dashboardTheme, /\.app-shell-team \.product-meitu[\s\S]*linear-gradient\(120deg,#ff7894,#f11d48,#c90d35\)/);
   assert.match(dashboardTheme, /\.app-shell-creator \.monthly-leaderboard-filter/);
