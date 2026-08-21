@@ -7,10 +7,10 @@
 @media(max-width:480px){.metrics{grid-template-columns:1fr}.top-actions .primary{font-size:0;padding:9px}.top-actions .primary:after{content:"＋";font-size:15px}.how>div{grid-template-columns:1fr}.how article{border-right:0}.public-hero h1{font-size:42px}.float-card.reward{left:-5px}.float-card.task{right:-3px}.search{width:55vw}.review-drawer footer{display:grid;grid-template-columns:1fr 1fr}.checklist,.analytics{grid-template-columns:1fr}.analytics div{border-right:0;border-bottom:1px solid var(--line)}}
 /* Google OAuth sign-in */
 .google-auth-dialog .form-body{display:grid;gap:16px}
-.google-signin-button{width:100%;min-height:54px;border:1px solid #d9d5df;border-radius:14px;background:#fff;color:#211d2b;display:flex;align-items:center;justify-content:center;gap:12px;font:inherit;cursor:pointer;box-shadow:0 5px 18px rgba(26,18,44,.07)}
-.google-signin-button:hover{border-color:#b9afc8;transform:translateY(-1px)}
-.google-signin-button:disabled{cursor:wait;opacity:.7}
-.google-signin-button span{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;font-weight:800;color:#4285f4;background:conic-gradient(from -45deg,#4285f4 0 25%,#34a853 0 50%,#fbbc05 0 75%,#ea4335 0);-webkit-background-clip:text;background-clip:text}
+.google-identity-button{width:100%;min-height:44px;display:grid;place-items:center;position:relative}
+.google-identity-button>div{margin-inline:auto}
+.google-identity-button.is-loading{pointer-events:none;opacity:.7}
+.google-identity-button>span{position:absolute;inset:0;display:grid;place-items:center;background:#fff;border:1px solid #d9d5df;border-radius:4px;color:#3c4043;font-size:14px;font-weight:600}
 .google-approval-note{display:flex;gap:10px;align-items:flex-start;padding:13px 14px;border-radius:12px;background:#f7f4fb;color:#625b70;font-size:13px;line-height:1.5}
 .google-approval-note>span{color:#198b69;font-weight:800}
 .google-approval-note p{margin:0}

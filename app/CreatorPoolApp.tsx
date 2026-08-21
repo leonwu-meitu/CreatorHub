@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { fmtIdr, fmtNum, type Product, type Application, type Task, type Submission, type Reward, type AppExpansionRequest, type StreakRequest, type PaymentForm, type CreatorProfile } from "./platform-data";
 import { citiesForProvince, indonesiaProvinces } from "./indonesia-locations";
 import { countryCallingCodes } from "./country-codes";
@@ -11,6 +11,34 @@ import { avatarPublicUrl, creatorName, loadPortalRecords, saveSubmissionRecord, 
 type Space = "team" | "creator" | "public";
 type Modal = "application" | "auth" | "task" | "submission" | "review" | "new-apps" | "task-preview" | "edit-task" | "team-profile" | null;
 type Account = PortalAccount;
+
+type GoogleCredentialResponse={credential?:string};
+type GoogleIdentityApi={accounts:{id:{initialize:(options:{client_id:string;callback:(response:GoogleCredentialResponse)=>void;nonce:string;ux_mode:"popup"})=>void;renderButton:(element:HTMLElement,options:{type:"standard";theme:"outline";size:"large";shape:"rectangular";text:"continue_with";logo_alignment:"left";width:number})=>void}}};
+declare global{interface Window{google?:GoogleIdentityApi}}
+
+const googleClientId=process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim()||"";
+let googleIdentityScript:Promise<void>|null=null;
+const loadGoogleIdentity=()=>{
+  if(typeof window==="undefined")return Promise.reject(new Error("Google sign-in is only available in the browser."));
+  if(window.google?.accounts.id)return Promise.resolve();
+  if(googleIdentityScript)return googleIdentityScript;
+  googleIdentityScript=new Promise<void>((resolve,reject)=>{
+    const existing=document.querySelector<HTMLScriptElement>('script[src="https://accounts.google.com/gsi/client"]');
+    const script=existing||document.createElement("script");
+    const ready=()=>window.google?.accounts.id?resolve():reject(new Error("Google sign-in could not be loaded."));
+    script.addEventListener("load",ready,{once:true});
+    script.addEventListener("error",()=>reject(new Error("Google sign-in could not be loaded.")),{once:true});
+    if(!existing){script.src="https://accounts.google.com/gsi/client";script.async=true;script.defer=true;document.head.appendChild(script)}
+  });
+  return googleIdentityScript;
+};
+const googleNoncePair=async()=>{
+  const bytes=crypto.getRandomValues(new Uint8Array(32));
+  const raw=Array.from(bytes,byte=>byte.toString(16).padStart(2,"0")).join("");
+  const digest=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw));
+  const hashed=Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,"0")).join("");
+  return {raw,hashed};
+};
 
 const teamNav = [["Overview","⌂"],["Applications","◎"],["Creators","♙"],["Campaigns","□"],["Submissions","↗"],["Rewards","◇"],["Payment Forms","$"]];
 const creatorNav = [["Home","⌂"],["Campaigns","□"],["Submissions","↗"],["Rewards","◇"],["Leaderboard","♜"],["Profile","○"]];
@@ -752,8 +780,34 @@ function SubmissionModal({close,tasks,initialTaskId,save}:{close:()=>void;tasks:
 function EmailSignInModal({close}:{close:()=>void}){
   const [sending,setSending]=useState(false);
   const [error,setError]=useState("");
-  async function googleSignIn(){if(!supabase){setError("Supabase configuration is missing. Please contact the Creator Pool team.");return}setSending(true);setError("");const {error:signInError}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:`${window.location.origin}/auth/callback`}});if(signInError){setSending(false);setError(signInError.message)}}
-  return <div className="modal-layer"><button className="modal-scrim" onClick={close} aria-label="Close sign in"/><section className="dialog email-auth-dialog google-auth-dialog"><header><div><span className="eyebrow">CREATORHUB ACCOUNT</span><h2>Continue to CreatorHub</h2><p>Google verifies your identity. The Creator Pool Team still reviews and approves every Creator application.</p></div><button type="button" className="close" onClick={close}>×</button></header><div className="form-body"><button type="button" className="google-signin-button" onClick={googleSignIn} disabled={sending}><span aria-hidden="true">G</span><b>{sending?"Connecting to Google…":"Continue with Google"}</b></button><div className="google-approval-note"><span>✓</span><p>Signing in does not automatically grant Creator access. New accounts remain <b>In review</b> until approved by the Team.</p></div>{error&&<p className="form-error">{error}</p>}</div><footer><button type="button" className="secondary" onClick={close}>Cancel</button></footer></section></div>
+  const buttonRef=useRef<HTMLDivElement>(null);
+  useEffect(()=>{
+    let active=true;
+    const render=async()=>{
+      const client=supabase;
+      if(!client){setError("Supabase configuration is missing. Please contact the Creator Pool team.");return}
+      if(!googleClientId){setError("Google sign-in needs its public Client ID before it can be used.");return}
+      try{
+        const {raw,hashed}=await googleNoncePair();
+        await loadGoogleIdentity();
+        if(!active||!buttonRef.current||!window.google)return;
+        window.google.accounts.id.initialize({client_id:googleClientId,nonce:hashed,ux_mode:"popup",callback:response=>{
+          if(!response.credential){setError("Google did not return a sign-in credential. Please try again.");return}
+          setSending(true);setError("");
+          void client.auth.signInWithIdToken({provider:"google",token:response.credential,nonce:raw}).then(({error:signInError})=>{
+            if(!active)return;
+            if(signInError){setSending(false);setError(signInError.message);return}
+            close();
+          });
+        }});
+        buttonRef.current.replaceChildren();
+        window.google.accounts.id.renderButton(buttonRef.current,{type:"standard",theme:"outline",size:"large",shape:"rectangular",text:"continue_with",logo_alignment:"left",width:Math.min(400,Math.max(240,buttonRef.current.clientWidth))});
+      }catch(reason){if(active)setError(reason instanceof Error?reason.message:"Google sign-in could not be loaded.")}
+    };
+    void render();
+    return()=>{active=false};
+  },[close]);
+  return <div className="modal-layer"><button className="modal-scrim" onClick={close} aria-label="Close sign in"/><section className="dialog email-auth-dialog google-auth-dialog"><header><div><span className="eyebrow">CREATORHUB ACCOUNT</span><h2>Continue to CreatorHub</h2><p>Google verifies your identity. The Creator Pool Team still reviews and approves every Creator application.</p></div><button type="button" className="close" onClick={close}>×</button></header><div className="form-body"><div className={`google-identity-button${sending?" is-loading":""}`} ref={buttonRef} aria-label="Continue with Google">{sending&&<span>Connecting to Google…</span>}</div><div className="google-approval-note"><span>✓</span><p>Signing in does not automatically grant Creator access. New accounts remain <b>In review</b> until approved by the Team.</p></div>{error&&<p className="form-error">{error}</p>}</div><footer><button type="button" className="secondary" onClick={close}>Cancel</button></footer></section></div>
 }
 
 function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist,setApps,saveApplication,toast,account,onSignOut}:{onSignIn:()=>void;onApply:()=>void;onOpenPortal:()=>void;modal:Modal;setModal:(m:Modal)=>void;notify:(s:string)=>void;persist:(e:string,i:unknown)=>void;setApps:React.Dispatch<React.SetStateAction<Application[]>>;saveApplication:(application:Application)=>Promise<void>;toast:string;account:Account|null;onSignOut:()=>void}){
