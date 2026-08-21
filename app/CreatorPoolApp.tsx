@@ -176,7 +176,7 @@ function CreatorPoolWorkspace(){
     if(!task)throw new Error("The selected campaign is no longer available.");
     try{const saved=await saveSubmissionRecord(supabase,account.id,task,submission);setSubs(rows=>[saved,...rows]);setModal(null);notify(saved.status==="Draft"?"Draft saved securely.":"Submission sent to the Team for verification.")}catch(error){if(submission.evidenceKey)await supabase.storage.from("submission-evidence").remove([submission.evidenceKey]);throw error}
   }
-  function updateReward(reward:Reward){setRewards(rows=>rows.map(row=>row.id===reward.id?reward:row));persist("reward",reward)}
+  async function updateReward(reward:Reward){setRewards(rows=>rows.map(row=>row.id===reward.id?reward:row));const saved=await persist("reward",reward);if(saved)notify(reward.vipCode?"VIP code saved and sent to the Creator Rewards portal.":"Reward updated.")}
   function exportCsv(){ const ready=rewardRows.filter(r=>r.amount>0&&r.paymentFormChecked); const csv=["Reward ID,Submission ID,Creator,Campaign,Product,Qualified views,Amount,Currency,Status",...ready.map(r=>[r.id,r.submissionId,r.creator,r.task,r.product,r.views,r.amount,"IDR",r.status].join(","))].join("\n"); const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="creator-pool-payment-tracker.csv";a.click();notify(`${ready.length} payment-ready rewards exported to CSV.`); }
 
   if(space==="public") return <CreatorIdentityContext.Provider value={{id:account?.id||"",name:currentCreator}}><PublicSite onSignIn={()=>setModal("auth")} onApply={()=>{if(account){setModal("application");return}window.sessionStorage.setItem("creatorhub-open-application","true");setModal("auth")}} onOpenPortal={()=>switchSpace(account?.role==="team"?"team":"creator")} modal={modal} setModal={setModal} notify={notify} persist={persist} setApps={setApps} saveApplication={saveRealApplication} toast={toast} account={account} onSignOut={async()=>{if(supabase)await supabase.auth.signOut();setAccount(null);notify("You have signed out.")}}/></CreatorIdentityContext.Provider>;
@@ -438,7 +438,7 @@ function Creators({applications,submissions,profiles}:{applications:Application[
       <div className="table-wrap"><table>
         <thead><tr><th>Creator</th><th>Social Media</th><th>Apps</th><th>Niche</th><th>Contact</th><th>Campaigns completed</th></tr></thead>
         <tbody>{pageRows.map(({creator,apps,tasks,whatsapp})=><tr key={creator.id}>
-          <td><div className="creator-cell"><Avatar text={creator.avatar} imageKey={profiles.find(profile=>profile.creator===creator.name)?.avatarKey}/><span><b>{creator.name}</b><small>{[creator.city,creator.province].filter(Boolean).join(", ")}</small></span></div></td>
+          <td><div className="creator-cell creator-cell-without-avatar"><span><b>{creator.name}</b><small>{[creator.city,creator.province].filter(Boolean).join(", ")}</small></span></div></td>
           <td><SocialAccounts application={creator}/></td>
           <td><div className="product-stack creator-app-stack">{apps.map(product=><ProductBadge key={product} product={product}/>)}</div></td>
           <td><div className="creator-niche-stack">{categoryList(creator.category).map(category=><span className={`creator-niche-pill niche-tone-${kolCategories.indexOf(category)%5}`} key={category}><i>{categoryIcon(category)}</i>{category}</span>)}</div></td>
@@ -998,7 +998,7 @@ function EnhancedRewards(props:{creator:boolean;rows:Reward[];tasks:Task[];submi
       <div className="panel-head"><div><h2>{t("Reward & payment details","Detail hadiah & pembayaran")}</h2><p>{t("Every qualified campaign and its current payment status.","Semua kampanye yang memenuhi syarat beserta status pembayarannya saat ini.")}</p></div></div>
       <div className="reward-history-list reward-history-list-expanded">{visible.length?visible.map(item=>{
         const form=item.amount>0?paymentFormFor(item):undefined;
-        const rewardLabel=item.amount>0?fmtIdr(item.amount):item.type;
+        const rewardLabel=item.amount>0?fmtIdr(item.amount):item.vipCode?`VIP Code: ${item.vipCode}`:item.type;
         const needsForm=item.status==="Please Fill In Payment Form";
         return <article className="reward-history-card-expanded" key={item.id}>
           <div className="reward-history-summary">

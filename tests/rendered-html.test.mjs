@@ -94,6 +94,8 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(creatorsSection, /creator-pool-creators\.csv/);
   assert.match(creatorsSection, /URL\.createObjectURL/);
   assert.match(creatorsSection, /creator-pagination/);
+  assert.doesNotMatch(creatorsSection, /<Avatar/);
+  assert.match(creatorsSection, /creator-cell-without-avatar/);
   assert.match(creatorsSection, /10 \/ page/);
   assert.match(creatorsSection, /100 \/ page/);
   assert.match(app, /team-campaign-cards/);
@@ -178,6 +180,8 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   const manualSubmissions = app.slice(app.indexOf("function ManualSubmissions"), app.indexOf("function EnhancedRewards"));
   assert.doesNotMatch(manualSubmissions, /Engagement rate analyzer|submission-ai-method/);
   assert.match(manualSubmissions, /Send VIP code/);
+  assert.match(dashboardTheme, /\.manual-submission-creator > \.avatar\s*\{\s*display:none/);
+  assert.match(dashboardTheme, /grid-template-columns:112px 100px/);
   assert.match(manualSubmissions, /submission-creator-social/);
   assert.match(manualSubmissions, /socialUsernameFromUrl/);
   assert.match(manualSubmissions, /postAddress\.includes\("instagram\.com\//);
@@ -195,6 +199,8 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(manualSubmissions, /qualified-submission-reward/);
   assert.match(manualSubmissions, /Fill payment form/);
   assert.match(app, /function EnhancedRewards/);
+  assert.match(app, /VIP Code: \$\{item\.vipCode\}/);
+  assert.match(app, /VIP code saved and sent to the Creator Rewards portal/);
   assert.doesNotMatch(app.slice(app.indexOf("function EnhancedRewards"),app.indexOf("function ManualReports")), /reward-history-trigger|selectedRewardId/);
   assert.match(app, /reward-history-card-expanded/);
   assert.match(app, /reward-history-summary/);
@@ -224,6 +230,7 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(dashboardTheme, /\.app-shell table th\s*\{\s*font-size:\s*10\.5px/);
   assert.match(dashboardTheme, /\.app-shell \.sidebar nav button,[\s\S]*font-size:\s*14\.5px/);
   assert.match(dashboardTheme, /\.task-preview-links a:visited\s*\{[^}]*color:\s*#fff !important/);
+  assert.match(dashboardTheme, /submission-dialog:not\(\.manual-submission-dialog\)[\s\S]*selected-submission-task span\s*\{\s*display:none/);
   assert.match(dashboardTheme, /Creator identity columns stay left-aligned/);
   assert.match(dashboardTheme, /\.app-shell-team \.product-meitu[\s\S]*linear-gradient\(120deg,#ff7894,#f11d48,#c90d35\)/);
   assert.match(dashboardTheme, /\.app-shell-creator \.monthly-leaderboard-filter/);

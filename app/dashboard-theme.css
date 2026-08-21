@@ -913,12 +913,17 @@
 .submission-creator-social strong { overflow:hidden; font-size:9px; text-overflow:ellipsis; }
 .submission-creator-social em { display:none; }
 .submission-creator-social:hover { text-decoration:underline; }
-.manual-submission-card:has(.vip-code-actions) { grid-template-columns:minmax(150px,1fr) minmax(135px,.85fr) minmax(135px,.85fr) 82px minmax(100px,.65fr) minmax(360px,1.8fr); }
-.manual-submission-card .vip-code-actions { min-width:340px; display:grid; grid-template-columns:minmax(260px,1fr) 62px; align-items:end; gap:8px; }
-.manual-submission-card .vip-code-actions label { min-width:0; display:grid; grid-template-columns:minmax(130px,1fr) minmax(108px,auto); grid-template-rows:auto 40px; align-items:stretch; gap:6px 8px; }
-.manual-submission-card .vip-code-actions label input { grid-column:1; grid-row:2; min-width:0; margin:0; }
-.manual-submission-card .vip-code-actions label button { grid-column:2; grid-row:2; min-width:108px; height:40px; white-space:nowrap; }
-.manual-submission-card .vip-code-actions > .secondary { grid-column:2; height:40px; align-self:end; }
+.manual-submission-card:has(.vip-code-actions) { grid-template-columns:minmax(150px,1fr) minmax(135px,.85fr) minmax(135px,.85fr) 82px minmax(100px,.65fr) minmax(290px,1.35fr); }
+.manual-submission-card .vip-code-actions { min-width:282px; display:grid; grid-template-columns:220px 54px; align-items:end; gap:8px; }
+.manual-submission-card .vip-code-actions label { min-width:0; display:grid; grid-template-columns:112px 100px; grid-template-rows:auto 40px; align-items:stretch; gap:6px 8px; }
+.manual-submission-card .vip-code-actions label input { width:112px; min-width:0; grid-column:1; grid-row:2; margin:0; padding-inline:10px; }
+.manual-submission-card .vip-code-actions label button { width:100px; min-width:0; grid-column:2; grid-row:2; height:40px; padding-inline:8px; white-space:nowrap; }
+.manual-submission-card .vip-code-actions > .secondary { width:54px; min-width:0; grid-column:2; height:40px; align-self:end; padding-inline:6px; }
+.manual-submission-creator > .avatar { display:none; }
+.manual-submission-creator { gap:0; }
+.creator-directory-table .creator-cell-without-avatar { min-width:0; }
+.submission-dialog:not(.manual-submission-dialog) > header .eyebrow,
+.submission-dialog:not(.manual-submission-dialog) .selected-submission-task span { display:none; }
 
 @media (min-width:1000px) {
   .canva-public .canva-footer :is(span,p,a,button) { font-size:11px; line-height:1.4; }
