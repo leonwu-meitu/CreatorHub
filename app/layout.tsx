@@ -17,6 +17,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const socialTitle = "Join Meitu Indonesia's official CreatorHub.";
   const socialDescription =
     "Apply to join Meitu Indonesia's official CreatorHub for Meitu, BeautyCam, and Wink.";
+  // Messaging apps cache preview images independently from page metadata.
+  // Change this version whenever the social card changes so they fetch it again.
+  const socialImage = new URL("/og.png?v=20260821", base).toString();
   return {
     metadataBase: base,
     title: socialTitle,
@@ -27,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: socialDescription,
       images: [
         {
-          url: new URL("/og.png", base).toString(),
+          url: socialImage,
           width: 1200,
           height: 630,
           alt: "Ready to Become a Meitu Creator?",
@@ -38,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
       title: socialTitle,
       description: socialDescription,
-      images: [new URL("/og.png", base).toString()],
+      images: [socialImage],
     },
   };
 }
