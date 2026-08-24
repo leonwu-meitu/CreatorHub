@@ -371,6 +371,8 @@
 .application-table { min-width: 1250px; }
 .application-table td { padding-top: 13px; padding-bottom: 13px; }
 .application-table .creator-cell { min-width: 155px; }
+.applications-hub-inner .application-table .creator-cell > .avatar { display: none; }
+.applications-hub-inner .application-table .creator-cell { gap: 0; }
 .application-table .creator-cell small + small { margin-top: 2px; color: #9b94a4; }
 
 /* Manual application review workspace */
