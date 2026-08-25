@@ -596,6 +596,12 @@ function CreatorHome({navigate,profile,tasks,submissions,rewards,requests,saveRe
   const totalEarnings=rewards.filter(item=>item.creator===currentCreator&&item.amount>0).reduce((sum,item)=>sum+item.amount,0);
   const creatorTotals=[...new Set(submissions.map(item=>item.creator))].map(creator=>({creator,views:submissions.filter(item=>item.creator===creator&&normalizeSubmissionStatus(item.status)==="Qualified").reduce((sum,item)=>sum+(item.aiViews||item.views),0)})).sort((a,b)=>b.views-a.views);
   const position=Math.max(1,creatorTotals.findIndex(item=>item.creator===currentCreator)+1);
+  const activeCampaignCount=tasks.filter(task=>taskStatusFor(task)==="Ongoing").length;
+  const pendingSubmissionCount=submissions.filter(item=>normalizeSubmissionStatus(item.status)==="In review").length;
+  const creatorOverviewCopy=t(
+    `You have ${activeCampaignCount} active campaign${activeCampaignCount===1?"":"s"} and ${pendingSubmissionCount} submission${pendingSubmissionCount===1?"":"s"} awaiting review.`,
+    `Kamu punya ${activeCampaignCount} kampanye aktif dan ${pendingSubmissionCount} kiriman menunggu pemeriksaan.`
+  );
   const summaryCards=[
     {icon:"▤",tone:"campaigns",label:t("Campaigns submitted","Kampanye yang dikirim"),value:String(campaignsSubmitted),copy:t("Open your submitted campaigns","Buka kampanye yang telah dikirim"),page:"Submissions"},
     {icon:"#",tone:"position",label:t("Position","Posisi"),value:`#${position}`,copy:t("View the creator leaderboard","Lihat papan peringkat kreator"),page:"Leaderboard"},
@@ -623,7 +629,7 @@ function CreatorHome({navigate,profile,tasks,submissions,rewards,requests,saveRe
   const changeSuggestion=(direction:number)=>setSuggestionIndex(current=>(current+direction+suggestions.length)%suggestions.length);
   const finishSuggestionSwipe=(clientY:number)=>{if(swipeStartY===null)return;const distance=clientY-swipeStartY;if(distance<-36)changeSuggestion(1);else if(distance>36)changeSuggestion(-1);setSwipeStartY(null)};
   return <>
-    <PageHead eyebrow="Ruang kreator" title={`Hai, ${currentCreator}! 👋`} copy={`Kamu punya ${tasks.filter(task=>taskStatusFor(task)==="Ongoing").length} campaign aktif dan ${submissions.filter(item=>normalizeSubmissionStatus(item.status)==="In review").length} kiriman menunggu pemeriksaan.`}><button className="primary" onClick={()=>navigate("Campaigns")}>Cari campaign baru</button></PageHead>
+    <PageHead eyebrow={t("Creator space","Ruang kreator")} title={t(`Hi, ${currentCreator}! 👋`,`Hai, ${currentCreator}! 👋`)} copy={creatorOverviewCopy}><button className="primary" onClick={()=>navigate("Campaigns")}>{t("Find a new campaign","Cari kampanye baru")}</button></PageHead>
 
     <section className="creator-home-stats panel" aria-label={t("Creator performance summary","Ringkasan performa kreator")}>{summaryCards.map(card=><button type="button" key={card.label} onClick={()=>navigate(card.page)}><i className={`home-stat-icon home-stat-icon-${card.tone}`} aria-hidden="true"><span>{card.icon}</span></i><span><small>{card.label}</small><strong>{card.value}</strong><em>{card.copy}</em></span><b aria-hidden="true">↗</b></button>)}</section>
 
