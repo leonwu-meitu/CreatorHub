@@ -766,6 +766,10 @@
 .payment-failure-reason { display:block; max-width:270px; color:#b30c2e; line-height:1.45; }
 .manual-engagement-button { width:fit-content; margin-top:5px; padding:5px 8px; border:1px solid #d7cec6; border-radius:8px; background:#fff; color:#171315; font-weight:800; }
 .manual-engagement-button:hover { border-color:#f11d48; color:#c30f34; }
+.manual-ai-button { width:fit-content; margin-top:5px; padding:6px 9px; border:1px solid #bcded1; border-radius:8px; background:#eaf8f2; color:#10734f; font-size:9px; font-weight:850; }
+.manual-ai-button:hover:not(:disabled) { border-color:#159469; background:#ddf5eb; }
+.manual-ai-button:disabled { cursor:wait; opacity:.66; }
+.analytics-review-message { max-width:145px; color:#a34417!important; font-size:8px!important; line-height:1.35; }
 
 /* Creator reward cards stay fully expanded and use the shared app identities. */
 .reward-history-list-expanded > .reward-history-card-expanded { border-color:#ddd6d2; box-shadow:0 8px 22px rgba(35,23,25,.06); }

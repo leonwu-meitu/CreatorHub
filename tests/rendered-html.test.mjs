@@ -2,6 +2,30 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
+test("keeps AI analytics extraction server-side and Team-reviewed", async () => {
+  const [app, records, edgeFunction, migration] = await Promise.all([
+    readFile(new URL("../app/CreatorPoolApp.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/supabase-records.ts", import.meta.url), "utf8"),
+    readFile(new URL("../supabase/functions/analyze-submission-analytics/index.ts", import.meta.url), "utf8"),
+    readFile(new URL("../supabase/migrations/20260826153000_ai_submission_analytics.sql", import.meta.url), "utf8"),
+  ]);
+  assert.match(app, /onAnalyze=\{analyzeSubmission\}/);
+  assert.match(app, /Run AI analysis/);
+  assert.match(app, /AI analyzing…/);
+  assert.match(records, /functions\.invoke\("analyze-submission-analytics"/);
+  assert.match(edgeFunction, /requiredSecret\("OPENAI_API_KEY"\)/);
+  assert.match(edgeFunction, /\.from\("submission-evidence"\)/);
+  assert.match(edgeFunction, /submission\.creator_id !== userResult\.user\.id/);
+  assert.match(edgeFunction, /callerProfile\?\.role === "marketing_admin"/);
+  assert.match(edgeFunction, /store: false/);
+  assert.match(edgeFunction, /type: "input_image"/);
+  assert.match(edgeFunction, /type: "json_schema"/);
+  assert.match(edgeFunction, /A human Team member will make the final reward decision/);
+  assert.match(migration, /calculate_submission_engagement_rate/);
+  assert.match(migration, /total_engagement::numeric \/ new\.verified_views::numeric/);
+  assert.match(migration, /auth\.role\(\) = 'service_role'/);
+});
+
 test("ships the Creator Pool Hub product instead of the starter", async () => {
   const [page, app, layout, css, enhancements, publicCss, dashboardTheme, language, hosting, supabaseRecords, productionMigration, uniqueCreatorEmailMigration, campaignLimitMigration, userFacingErrors] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),

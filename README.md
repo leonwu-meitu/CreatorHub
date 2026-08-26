@@ -11,6 +11,7 @@ Production: [creator-pool-hub.meitu-creatorhub.workers.dev](https://creator-pool
 - Supabase Postgres with Row Level Security
 - Supabase Storage for private analytics evidence
 - Supabase Realtime for cross-session portal updates
+- Supabase Edge Function for server-side AI analytics extraction
 
 The browser only receives the Supabase publishable key. Never add a service-role key to this repository or to a `NEXT_PUBLIC_*` variable.
 
@@ -54,11 +55,21 @@ Application decision emails:
 
 The Team's final Accept or Decline action remains saved if Gmail is temporarily unavailable. Delivery attempts and errors are recorded on the application, and a successfully delivered decision is not sent twice.
 
+AI analytics extraction:
+
+1. Apply `supabase/migrations/20260826153000_ai_submission_analytics.sql`.
+2. Store `OPENAI_API_KEY` as a Supabase Edge Function secret. Never put it in `.env.local`, GitHub, or a `NEXT_PUBLIC_*` variable.
+3. Optionally set `OPENAI_ANALYTICS_MODEL`; the default is the pinned `gpt-4.1-mini-2025-04-14` snapshot.
+4. Deploy `supabase/functions/analyze-submission-analytics` with JWT verification enabled.
+
+The function checks the signed-in user, confirms ownership or Team access, downloads evidence from the private bucket, extracts views and engagement components with a strict schema, and lets Postgres calculate the final rate. AI results only prepare the Team review; they never qualify a post or create a reward automatically. OpenAI API usage is billed separately and should be monitored with project spend limits.
+
 ## Data and privacy behavior
 
 - Creator applications remain pending until a Team member accepts or declines them.
 - Accepted applications automatically grant Creator access; declined applications store the reason shown to the Creator.
 - Analytics screenshots are private and use signed URLs.
+- AI requests use `store: false`; the API key and private Storage access remain server-side.
 - When Team makes the final Qualified or Not Qualified decision, the screenshot is deleted while verified views, total engagement, calculated engagement rate, and decision reason remain as structured records.
 - Creators cannot modify verified analytics or final decisions because a database trigger enforces the boundary.
 - Rewards are created only from Qualified submissions and payment-form status is managed by Team.
@@ -84,9 +95,10 @@ The `.openai/hosting.json` project remains available for staging previews, but p
 - Submission upload → review → screenshot deletion tested
 - Qualified submission → reward → payment-form status tested
 - Profile and avatar changes verified in both portals
-- App expansion and VIP streak review tested
+- App expansion review and three-post campaign limit tested
+- AI extraction tested with TikTok, Instagram, Threads, unreadable, and incorrect-platform screenshots
 - Supabase redirect URLs point to the final subdomain
 - Cloudflare custom subdomain and HTTPS active
 - `npm run check` passes on the release commit
 
-Social-media APIs and an AI/OCR analytics extractor can be added later behind server-side jobs. The current production path intentionally keeps the Team as the final verifier and avoids paid AI token usage.
+Social-media APIs can be added later. The current AI extractor is an assistive, server-side step and the Team remains the final verifier.

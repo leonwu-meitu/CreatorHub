@@ -69,7 +69,7 @@ export async function loadPortalRecords(client:SupabaseClient, account:PortalAcc
 
   const applications:Application[]=(applicationResult.data||[]).map((row:any)=>{const raw=(row.application_data||{}) as Application;const name=raw.name||nameFor(row.creator_id);return {...raw,id:row.id,creatorId:row.creator_id,name,avatar:raw.avatar||initials(name),email:raw.email||profileMap.get(row.creator_id)?.email||"",status:statusLabel(row.status),declineReason:row.decline_reason||"",submitted:row.submitted_at};});
 
-  const submissions:Submission[]=(submissionResult.data||[]).map((row:any)=>{const campaign=campaignMap.get(row.campaign_id);const name=nameFor(row.creator_id);return {id:row.id,creatorId:row.creator_id,campaignId:row.campaign_id,creator:name,task:campaign?.title||"Campaign",product:campaign?.product||"Meitu",platform:row.platform,views:Number(row.declared_views||0),aiViews:Number(row.verified_views??row.declared_views??0),totalEngagement:row.total_engagement==null?0:Number(row.total_engagement),analyticsStatus:row.analytics_status||"Pending verification",recommendation:row.recommendation||"Manual review",confidence:Number(row.confidence||0),status:submissionStatus(row.status),submitted:row.created_at,submittedAt:row.created_at,avatar:initials(name),postUrl:row.post_url||"",publishedAt:row.published_at||"",boostCode:row.boost_code||"",evidenceKey:row.evidence_key||"",evidenceName:row.evidence_name||"",engagementRate:row.engagement_rate==null?0:Number(row.engagement_rate),whatsapp:settingsMap.get(row.creator_id)?.whatsapp||"",qualificationReason:row.qualification_reason||""};});
+  const submissions:Submission[]=(submissionResult.data||[]).map((row:any)=>{const campaign=campaignMap.get(row.campaign_id);const name=nameFor(row.creator_id);return {id:row.id,creatorId:row.creator_id,campaignId:row.campaign_id,creator:name,task:campaign?.title||"Campaign",product:campaign?.product||"Meitu",platform:row.platform,views:Number(row.declared_views||0),aiViews:Number(row.verified_views??row.declared_views??0),totalEngagement:row.total_engagement==null?0:Number(row.total_engagement),analyticsStatus:row.analytics_status||"pending",analyticsError:row.analytics_error||"",analyticsModel:row.analytics_model||"",analyticsProcessedAt:row.analytics_processed_at||"",analyticsAttemptCount:Number(row.analytics_attempt_count||0),recommendation:row.recommendation||"Manual review",confidence:Number(row.confidence||0),status:submissionStatus(row.status),submitted:row.created_at,submittedAt:row.created_at,avatar:initials(name),postUrl:row.post_url||"",publishedAt:row.published_at||"",boostCode:row.boost_code||"",evidenceKey:row.evidence_key||"",evidenceName:row.evidence_name||"",engagementRate:row.engagement_rate==null?0:Number(row.engagement_rate),whatsapp:settingsMap.get(row.creator_id)?.whatsapp||"",qualificationReason:row.qualification_reason||""};});
   const submissionMap=new Map((submissionResult.data||[]).map((row:any)=>[row.id,row]));
   const rewards:Reward[]=(rewardResult.data||[]).map((row:any)=>{const submission:any=submissionMap.get(row.submission_id);const campaign=campaignMap.get(row.campaign_id);return {id:row.id,submissionId:row.submission_id,creatorId:row.creator_id,campaignId:row.campaign_id,creator:nameFor(row.creator_id),task:campaign?.title||"Campaign",product:campaign?.product||"Meitu",views:Number(submission?.verified_views??submission?.declared_views??0),type:row.reward_type,amount:Number(row.amount_idr||0),status:rewardStatus(row.payment_status),paymentFormChecked:row.payment_form_checked?1:0,paidAt:row.paid_at||"",failureReason:row.failure_reason||"",vipCode:row.vip_code||""};});
 
@@ -84,6 +84,26 @@ export async function saveSubmissionRecord(client:SupabaseClient, accountId:stri
   const {data,error}=await client.from("campaign_submissions").insert(record).select("id,created_at").single();
   if(error)throw error;
   return {...submission,id:data.id,submitted:data.created_at,submittedAt:data.created_at,analyticsStatus:"Pending verification",recommendation:"Manual review",confidence:0};
+}
+
+export async function analyzeSubmissionRecord(client:SupabaseClient, submissionId:string, force=false) {
+  const {data,error}=await client.functions.invoke("analyze-submission-analytics",{body:{submissionId,force}});
+  if(error)throw error;
+  if(data?.error)throw new Error(data.error);
+  const row=data?.submission;
+  if(!row)return null;
+  return {
+    aiViews:Number(row.verified_views||0),
+    totalEngagement:Number(row.total_engagement||0),
+    engagementRate:Number(row.engagement_rate||0),
+    analyticsStatus:String(row.analytics_status||"ai_needs_review"),
+    analyticsError:String(row.analytics_error||""),
+    analyticsModel:String(row.analytics_model||""),
+    analyticsProcessedAt:String(row.analytics_processed_at||""),
+    analyticsAttemptCount:Number(row.analytics_attempt_count||0),
+    recommendation:String(row.recommendation||"Manual review required"),
+    confidence:Number(row.confidence||0),
+  } satisfies Partial<Submission>;
 }
 
 export async function updateSubmissionRecord(client:SupabaseClient, submission:Submission) {
