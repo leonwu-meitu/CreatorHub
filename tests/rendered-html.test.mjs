@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("ships the Creator Pool Hub product instead of the starter", async () => {
-  const [page, app, layout, css, enhancements, publicCss, dashboardTheme, language, hosting, supabaseRecords, productionMigration] = await Promise.all([
+  const [page, app, layout, css, enhancements, publicCss, dashboardTheme, language, hosting, supabaseRecords, productionMigration, uniqueCreatorEmailMigration, userFacingErrors] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/CreatorPoolApp.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
@@ -15,6 +15,8 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../app/supabase-records.ts", import.meta.url), "utf8"),
     readFile(new URL("../supabase/006_production_completion.sql", import.meta.url), "utf8"),
+    readFile(new URL("../supabase/migrations/20260826090000_unique_creator_contact_email.sql", import.meta.url), "utf8"),
+    readFile(new URL("../app/user-facing-errors.ts", import.meta.url), "utf8"),
   ]);
   assert.match(page, /CreatorPoolApp/);
   assert.match(app, /Good morning, \$\{name\}/);
@@ -167,6 +169,11 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.doesNotMatch(language, /Profile photo|profile picture|Change profile photo|JPG, PNG, or WEBP image/);
   assert.match(app, /profile-identity-editor-no-avatar/);
   assert.match(app, /save_my_creator_profile/);
+  assert.match(uniqueCreatorEmailMigration, /guard_creator_contact_email/);
+  assert.match(uniqueCreatorEmailMigration, /profile\.id <> new\.creator_id/);
+  assert.match(uniqueCreatorEmailMigration, /settings\.creator_id <> new\.creator_id/);
+  assert.match(uniqueCreatorEmailMigration, /errcode = '23505'/);
+  assert.match(userFacingErrors, /This email has already been registered\. Please try using a different email\./);
   assert.match(app, /name:profile\?\.displayName\|\|application\.name/);
   assert.match(app, /email:profile\?\.contactEmail\|\|application\.email/);
   assert.match(app, /category:profile\?\.niches\|\|application\.category/);

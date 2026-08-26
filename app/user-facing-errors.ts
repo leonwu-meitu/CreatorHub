@@ -21,7 +21,7 @@ const duplicateMessages: Record<ErrorContext, string> = {
   "app-expansion": "You already have an application for this app under review.",
   campaign: "A campaign with this information already exists.",
   "campaign-join": "You have already joined this campaign.",
-  profile: "These profile details are already in use.",
+  profile: "This email has already been registered. Please try using a different email.",
   submission: "This post has already been submitted for this campaign.",
   reward: "A reward has already been created for this submission.",
   generic: "This information has already been submitted.",
