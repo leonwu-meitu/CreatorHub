@@ -525,7 +525,12 @@
 .social-brand-card a:hover { transform: translateY(-1px); background: #f1edfa; }
 .social-meitu { border-top: 3px solid #F11D48; }.social-beautycam { border-top: 3px solid #FF7DE6; }.social-wink { border-top: 3px solid #A24EFF; }
 .social-brand-heading { display: flex !important; grid-template-columns: none !important; align-items: center; gap: 9px !important; }
-.social-brand-heading img { width: 37px; height: 37px; flex: 0 0 auto; border-radius: 10px; object-fit: cover; box-shadow: 0 7px 18px rgba(44,32,66,.12); }
+.social-brand-logo { --brand-a:#f11d48; --brand-b:#ff9f7c; position:relative; width:43px; height:43px; display:grid; place-items:center; flex:0 0 auto; padding:3px; border-radius:14px; background:linear-gradient(135deg,var(--brand-a),var(--brand-b)); box-shadow:0 8px 20px color-mix(in srgb,var(--brand-a) 24%,transparent); isolation:isolate; }
+.social-brand-logo::before { content:""; position:absolute; inset:-5px; z-index:-1; border-radius:18px; background:linear-gradient(135deg,var(--brand-a),var(--brand-b)); opacity:.2; filter:blur(7px); }
+.social-brand-heading img { width:37px; height:37px; flex:0 0 auto; border:2px solid rgba(255,255,255,.88); border-radius:11px; object-fit:cover; box-shadow:0 4px 12px rgba(44,32,66,.12); }
+.social-meitu .social-brand-logo { --brand-a:#F11D48; --brand-b:#ff9d72; }
+.social-beautycam .social-brand-logo { --brand-a:#FF7DE6; --brand-b:#a66bff; }
+.social-wink .social-brand-logo { --brand-a:#A24EFF; --brand-b:#5d7dff; }
 .social-brand-heading > div { display: grid; gap: 1px; }
 .social-brand-heading small { color: var(--muted); font-size: 5.5px; font-weight: 900; letter-spacing: .12em; }
 
@@ -1062,7 +1067,8 @@
 .creator-social-cta .social-brand-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
 .creator-social-cta .social-brand-card { min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px; }
 .creator-social-cta .social-brand-heading > div { display: none; }
-.creator-social-cta .social-brand-heading img { width: 34px; height: 34px; }
+.creator-social-cta .social-brand-logo { width:40px; height:40px; padding:3px; border-radius:13px; }
+.creator-social-cta .social-brand-heading img { width:34px; height:34px; }
 .creator-social-cta .social-icon-row { flex-wrap: nowrap; }
 .creator-social-cta .social-icon-row a { width: 31px; height: 31px; }
 .creator-social-cta .social-icon-row a img { width: 20px; height: 20px; }

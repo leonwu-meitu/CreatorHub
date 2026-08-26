@@ -648,7 +648,7 @@ function CreatorHome({navigate,profile,tasks,submissions,rewards,joinedCampaignI
 
     <section className="creator-social-cta">
       <div className="social-cta-intro"><span>STAY INSPIRED</span><h2>Follow us on social media</h2><p>Ikuti akun resmi Meitu, BeautyCam, dan Wink untuk tren terbaru, tutorial, dan inspirasi konten berikutnya.</p></div>
-      <div className="social-brand-grid">{socialBrands.map(brand=><article className={`social-brand-card social-${brand.product.toLowerCase()}`} key={brand.product}><div className="social-brand-heading"><img src={brand.icon} alt=""/><div><small>OFFICIAL ACCOUNT</small><h3>{brand.product}</h3></div></div><div className="social-icon-row">{brand.links.map(([label,url])=><a key={label} href={url} target="_blank" rel="noreferrer" aria-label={`Open ${brand.product} ${label} profile`} title={label}><img src={"/social/"+label.toLowerCase()+".png"} alt=""/></a>)}</div></article>)}</div>
+      <div className="social-brand-grid">{socialBrands.map(brand=><article className={`social-brand-card social-${brand.product.toLowerCase()}`} key={brand.product}><div className="social-brand-heading"><span className="social-brand-logo"><img src={brand.icon} alt={`${brand.product} app logo`}/></span><div><small>OFFICIAL ACCOUNT</small><h3>{brand.product}</h3></div></div><div className="social-icon-row">{brand.links.map(([label,url])=><a key={label} href={url} target="_blank" rel="noreferrer" aria-label={`Open ${brand.product} ${label} profile`} title={label}><img src={"/social/"+label.toLowerCase()+".png"} alt=""/></a>)}</div></article>)}</div>
     </section>
 
   </>}
