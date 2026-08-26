@@ -52,6 +52,9 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(app, /activityMonths=Array\.from/);
   assert.doesNotMatch(app, /\[50,32,22\]/);
   assert.match(app, /Gabung Creator Pool/);
+  assert.match(app, /const hasCreatorAccess=Boolean\(account&&\(account\.role==="team"\|\|account\.canAccessCreator\|\|account\.applicationStatus==="accepted"\)\)/);
+  assert.match(app, /!hasCreatorAccess&&<button className="canva-button" onClick=\{onApply\}>/);
+  assert.match(app, /!hasCreatorAccess&&<button className="canva-button canva-button-big" onClick=\{onApply\}>/);
   assert.match(layout, /Join Meitu Indonesia's official CreatorHub/);
   assert.match(layout, /og\.png/);
   assert.match(css, /@media\(max-width:800px\)/);
