@@ -58,18 +58,19 @@ The Team's final Accept or Decline action remains saved if Gmail is temporarily 
 AI analytics extraction:
 
 1. Apply `supabase/migrations/20260826153000_ai_submission_analytics.sql`.
-2. Store `OPENAI_API_KEY` as a Supabase Edge Function secret. Never put it in `.env.local`, GitHub, or a `NEXT_PUBLIC_*` variable.
-3. Optionally set `OPENAI_ANALYTICS_MODEL`; the default is the pinned `gpt-4.1-mini-2025-04-14` snapshot.
-4. Deploy `supabase/functions/analyze-submission-analytics` with JWT verification enabled.
+2. In Cloudflare Workers AI, create a REST API token with Workers AI access and copy the Cloudflare Account ID.
+3. Store `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_AI_API_TOKEN` as Supabase Edge Function secrets. Never put them in `.env.local`, GitHub, or a `NEXT_PUBLIC_*` variable.
+4. Optionally set `CLOUDFLARE_ANALYTICS_MODEL`; the default is the Cloudflare-hosted vision model `@cf/moondream/moondream3.1-9B-A2B`.
+5. Deploy `supabase/functions/analyze-submission-analytics` with JWT verification enabled.
 
-The function checks the signed-in user, confirms ownership or Team access, downloads evidence from the private bucket, extracts views and engagement components with a strict schema, and lets Postgres calculate the final rate. AI results only prepare the Team review; they never qualify a post or create a reward automatically. OpenAI API usage is billed separately and should be monitored with project spend limits.
+The function checks the signed-in user, confirms ownership or Team access, downloads evidence from the private bucket, asks Cloudflare Workers AI to extract views and engagement components as structured JSON, validates the result, and lets Postgres calculate the final rate. AI results only prepare the Team review; they never qualify a post or create a reward automatically. The configured model is restricted to Cloudflare-hosted `@cf/*` models so the integration does not silently route to a paid third-party model.
 
 ## Data and privacy behavior
 
 - Creator applications remain pending until a Team member accepts or declines them.
 - Accepted applications automatically grant Creator access; declined applications store the reason shown to the Creator.
 - Analytics screenshots are private and use signed URLs.
-- AI requests use `store: false`; the API key and private Storage access remain server-side.
+- The Cloudflare AI token and private Storage access remain server-side; screenshots are sent only for the requested analytics extraction.
 - When Team makes the final Qualified or Not Qualified decision, the screenshot is deleted while verified views, total engagement, calculated engagement rate, and decision reason remain as structured records.
 - Creators cannot modify verified analytics or final decisions because a database trigger enforces the boundary.
 - Rewards are created only from Qualified submissions and payment-form status is managed by Team.

@@ -39,42 +39,27 @@ const imageMimeType = (blob: Blob, key: string) => {
   return null;
 };
 
-const outputText = (payload: any) => {
-  if (typeof payload?.output_text === "string") return payload.output_text;
-  for (const item of payload?.output || []) {
-    for (const content of item?.content || []) {
-      if (content?.type === "output_text" && typeof content.text === "string") return content.text;
-    }
-  }
+const cloudflareAnswer = (payload: any) => {
+  if (typeof payload?.result?.answer === "string") return payload.result.answer;
+  if (typeof payload?.answer === "string") return payload.answer;
   return "";
+};
+
+const parseStructuredAnswer = (answer: string) => {
+  const trimmed = answer.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    const firstBrace = trimmed.indexOf("{");
+    const lastBrace = trimmed.lastIndexOf("}");
+    if (firstBrace < 0 || lastBrace <= firstBrace) throw new Error("AI analysis returned no structured result");
+    return JSON.parse(trimmed.slice(firstBrace, lastBrace + 1));
+  }
 };
 
 const nonNegativeInteger = (value: unknown) => {
   const number = Number(value);
   return Number.isFinite(number) && number >= 0 ? Math.round(number) : 0;
-};
-
-const analyticsSchema = {
-  type: "object",
-  properties: {
-    valid_analytics_screenshot: { type: "boolean" },
-    detected_platform: { type: "string", enum: ["TikTok", "Instagram", "Threads", "Unknown"] },
-    views: { type: "integer", minimum: 0 },
-    displayed_total_engagement: { type: "integer", minimum: 0 },
-    likes: { type: "integer", minimum: 0 },
-    comments: { type: "integer", minimum: 0 },
-    shares: { type: "integer", minimum: 0 },
-    saves: { type: "integer", minimum: 0 },
-    reposts: { type: "integer", minimum: 0 },
-    quotes: { type: "integer", minimum: 0 },
-    confidence: { type: "integer", minimum: 0, maximum: 100 },
-    explanation: { type: "string", maxLength: 300 },
-  },
-  required: [
-    "valid_analytics_screenshot", "detected_platform", "views", "displayed_total_engagement",
-    "likes", "comments", "shares", "saves", "reposts", "quotes", "confidence", "explanation",
-  ],
-  additionalProperties: false,
 };
 
 const extractionPrompt = (platform: string) => `
@@ -90,7 +75,10 @@ Read only numbers visibly present in the screenshot. Never infer, estimate, or i
 - Set valid_analytics_screenshot=false when the image is not post analytics, the views are unreadable, or it clearly belongs to a different platform.
 - Confidence reflects OCR readability and whether the platform and required metrics are clearly visible.
 
-Return the structured fields only. A human Team member will make the final reward decision.`;
+Return only one valid JSON object, with no Markdown and no additional commentary, using exactly these fields:
+{"valid_analytics_screenshot":boolean,"detected_platform":"TikTok"|"Instagram"|"Threads"|"Unknown","views":integer,"displayed_total_engagement":integer,"likes":integer,"comments":integer,"shares":integer,"saves":integer,"reposts":integer,"quotes":integer,"confidence":integer,"explanation":string}
+
+Use 0 for a metric that is not visibly shown. Keep explanation under 300 characters. A human Team member will make the final reward decision.`;
 
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -158,42 +146,35 @@ Deno.serve(async (request) => {
     if (!mimeType) throw new Error("Only JPG, PNG, and WEBP analytics screenshots can be analyzed");
     const imageBytes = new Uint8Array(await evidence.arrayBuffer());
     const imageDataUrl = `data:${mimeType};base64,${bytesToBase64(imageBytes)}`;
-    const model = Deno.env.get("OPENAI_ANALYTICS_MODEL")?.trim() || "gpt-4.1-mini-2025-04-14";
-    const openAIResponse = await fetch("https://api.openai.com/v1/responses", {
+    const accountId = requiredSecret("CLOUDFLARE_ACCOUNT_ID");
+    const model = Deno.env.get("CLOUDFLARE_ANALYTICS_MODEL")?.trim() || "@cf/moondream/moondream3.1-9B-A2B";
+    if (!model.startsWith("@cf/")) throw new Error("Analytics must use a Cloudflare-hosted Workers AI model");
+    const cloudflareResponse = await fetch(`https://api.cloudflare.com/client/v4/accounts/${encodeURIComponent(accountId)}/ai/run/${model}`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${requiredSecret("OPENAI_API_KEY")}`,
+        Authorization: `Bearer ${requiredSecret("CLOUDFLARE_AI_API_TOKEN")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model,
-        store: false,
-        max_output_tokens: 700,
-        input: [{
-          role: "user",
-          content: [
-            { type: "input_text", text: extractionPrompt(submission.platform) },
-            { type: "input_image", image_url: imageDataUrl, detail: "high" },
-          ],
-        }],
-        text: {
-          format: {
-            type: "json_schema",
-            name: "creatorhub_analytics_extraction",
-            strict: true,
-            schema: analyticsSchema,
-          },
-        },
+        task: "query",
+        image: imageDataUrl,
+        question: extractionPrompt(submission.platform),
+        reasoning: false,
+        stream: false,
+        temperature: 0,
+        max_tokens: 700,
       }),
     });
-    const openAIPayload = await openAIResponse.json();
-    if (!openAIResponse.ok) {
-      throw new Error(`AI analysis failed (${openAIPayload?.error?.message || openAIResponse.status})`);
+    const cloudflarePayload = await cloudflareResponse.json();
+    if (!cloudflareResponse.ok || cloudflarePayload?.success === false) {
+      const cloudflareError = cloudflarePayload?.errors?.[0]?.message || cloudflarePayload?.error?.message || cloudflareResponse.status;
+      if (cloudflareResponse.status === 429) throw new Error("Cloudflare Workers AI daily quota or rate limit was reached");
+      throw new Error(`Cloudflare AI analysis failed (${cloudflareError})`);
     }
 
-    const rawResult = outputText(openAIPayload);
+    const rawResult = cloudflareAnswer(cloudflarePayload);
     if (!rawResult) throw new Error("AI analysis returned no structured result");
-    const extracted = JSON.parse(rawResult);
+    const extracted = parseStructuredAnswer(rawResult);
     const views = nonNegativeInteger(extracted.views);
     const displayedTotal = nonNegativeInteger(extracted.displayed_total_engagement);
     const componentTotal = ["likes", "comments", "shares", "saves", "reposts", "quotes"]
