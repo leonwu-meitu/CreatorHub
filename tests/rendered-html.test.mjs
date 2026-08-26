@@ -22,7 +22,10 @@ test("keeps AI analytics extraction server-side and Team-reviewed", async () => 
   assert.match(edgeFunction, /@cf\/moondream\/moondream3\.1-9B-A2B/);
   assert.match(edgeFunction, /task: "query"/);
   assert.match(edgeFunction, /image: imageDataUrl/);
-  assert.match(edgeFunction, /payload\?\.result\?\.response/);
+  assert.match(edgeFunction, /cloudflareModelResult/);
+  assert.match(edgeFunction, /payload\?\.result \?\? payload/);
+  assert.match(edgeFunction, /"usage" in result/);
+  assert.match(edgeFunction, /result\?\.answer/);
   assert.match(edgeFunction, /isStructuredAnalytics/);
   assert.match(edgeFunction, /When the same views metric appears as both an exact number/);
   assert.match(edgeFunction, /parseStructuredAnswer/);

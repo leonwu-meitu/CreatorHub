@@ -39,13 +39,26 @@ const imageMimeType = (blob: Blob, key: string) => {
   return null;
 };
 
+const cloudflareModelResult = (payload: any) => {
+  let result = payload?.result ?? payload;
+  for (let depth = 0; depth < 3; depth += 1) {
+    if (!result || typeof result !== "object" || Array.isArray(result) || !("result" in result)) break;
+    const fields = Object.keys(result);
+    if (!("usage" in result) && fields.length > 1) break;
+    result = result.result;
+  }
+  return result;
+};
+
 const cloudflareAnswer = (payload: any) => {
+  const result = cloudflareModelResult(payload);
   const candidates = [
-    payload?.result?.answer,
-    payload?.result?.response,
-    payload?.result?.text,
-    payload?.result?.output_text,
-    payload?.result?.choices?.[0]?.message?.content,
+    typeof result === "string" ? result : "",
+    result?.answer,
+    result?.response,
+    result?.text,
+    result?.output_text,
+    result?.choices?.[0]?.message?.content,
     payload?.answer,
     payload?.response,
     payload?.text,
@@ -189,7 +202,7 @@ Deno.serve(async (request) => {
       throw new Error(`Cloudflare AI analysis failed (${cloudflareError})`);
     }
 
-    const directResult = cloudflarePayload?.result;
+    const directResult = cloudflareModelResult(cloudflarePayload);
     const rawResult = cloudflareAnswer(cloudflarePayload);
     if (!rawResult && !isStructuredAnalytics(directResult)) {
       const responseFields = directResult && typeof directResult === "object"
