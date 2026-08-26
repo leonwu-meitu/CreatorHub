@@ -86,10 +86,24 @@ const parseStructuredAnswer = (answer: string) => {
   }
 };
 
+const numericValue = (value: unknown) => {
+  if (typeof value === "number") return Number.isFinite(value) ? value : Number.NaN;
+  if (typeof value !== "string") return Number.NaN;
+  const normalized = value.trim().toLowerCase().replaceAll(",", "").replaceAll(" ", "");
+  const match = normalized.match(/^(-?\d+(?:\.\d+)?)([kmb])?%?$/);
+  if (!match) return Number.NaN;
+  const multiplier = match[2] === "k" ? 1_000 : match[2] === "m" ? 1_000_000 : match[2] === "b" ? 1_000_000_000 : 1;
+  return Number(match[1]) * multiplier;
+};
+
 const nonNegativeInteger = (value: unknown) => {
-  const number = Number(value);
+  const number = numericValue(value);
   return Number.isFinite(number) && number >= 0 ? Math.round(number) : 0;
 };
+
+const booleanValue = (value: unknown) => value === true || (typeof value === "string" && value.trim().toLowerCase() === "true");
+
+const normalizedPlatform = (value: unknown) => String(value || "").trim().toLowerCase().replace(/[^a-z]/g, "");
 
 const extractionPrompt = (platform: string) => `
 You verify social-media analytics screenshots for CreatorHub. The creator says this post is on ${platform}.
@@ -217,18 +231,23 @@ Deno.serve(async (request) => {
       .reduce((sum, key) => sum + nonNegativeInteger(extracted[key]), 0);
     const totalEngagement = displayedTotal > 0 ? displayedTotal : componentTotal;
     const detectedPlatform = String(extracted.detected_platform || "Unknown");
-    const platformMatches = detectedPlatform === submission.platform;
+    const platformMatches = normalizedPlatform(detectedPlatform) === normalizedPlatform(submission.platform);
     const confidence = Math.min(100, nonNegativeInteger(extracted.confidence));
-    const valid = extracted.valid_analytics_screenshot === true && platformMatches && views > 0;
+    const valid = booleanValue(extracted.valid_analytics_screenshot) && platformMatches && views > 0;
     const analyticsStatus = valid && confidence >= 75 ? "ai_verified" : "ai_needs_review";
     const recommendation = analyticsStatus === "ai_verified" ? "Ready for Team review" : "Manual review required";
+    const reviewReason = !valid
+      ? String(extracted.explanation || "The screenshot needs manual verification").slice(0, 500)
+      : confidence < 75
+        ? `AI confidence was ${confidence}%. Team verification is required.`
+        : null;
     const processedAt = new Date().toISOString();
 
     const { data: updated, error: updateError } = await admin.from("campaign_submissions").update({
       verified_views: views || null,
       total_engagement: totalEngagement,
       analytics_status: analyticsStatus,
-      analytics_error: valid ? null : String(extracted.explanation || "The screenshot needs manual verification").slice(0, 500),
+      analytics_error: reviewReason,
       analytics_model: model,
       analytics_processed_at: processedAt,
       recommendation,

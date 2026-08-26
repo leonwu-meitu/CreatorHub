@@ -27,6 +27,11 @@ test("keeps AI analytics extraction server-side and Team-reviewed", async () => 
   assert.match(edgeFunction, /"usage" in result/);
   assert.match(edgeFunction, /result\?\.answer/);
   assert.match(edgeFunction, /isStructuredAnalytics/);
+  assert.match(edgeFunction, /replaceAll\(",", ""\)/);
+  assert.match(edgeFunction, /match\(\/\^\(-\?\\d\+/);
+  assert.match(edgeFunction, /normalizedPlatform\(detectedPlatform\) === normalizedPlatform\(submission\.platform\)/);
+  assert.match(edgeFunction, /booleanValue\(extracted\.valid_analytics_screenshot\)/);
+  assert.match(edgeFunction, /AI confidence was \$\{confidence\}%/);
   assert.match(edgeFunction, /When the same views metric appears as both an exact number/);
   assert.match(edgeFunction, /parseStructuredAnswer/);
   assert.match(edgeFunction, /A human Team member will make the final reward decision/);
