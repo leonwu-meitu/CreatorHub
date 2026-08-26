@@ -46,6 +46,7 @@ export function userFacingError(
   const { raw, code, status } = readableError(error);
   const normalized = raw.toLowerCase();
 
+  if (normalized.includes("campaign_submission_limit_reached")) return "Submission limit reached. You can submit a maximum of 3 posts per campaign.";
   if (code === "23505" || normalized.includes("duplicate key") || normalized.includes("already exists")) return duplicateMessages[context];
   if (status === 429 || normalized.includes("rate limit") || normalized.includes("too many requests")) return "Too many attempts were made. Please wait a moment and try again.";
   if (normalized.includes("token_key") || normalized.includes("refresh_token") || normalized.includes("jwt") || normalized.includes("token has expired") || normalized.includes("invalid token")) return "Your sign-in session has expired. Please sign in again and retry this action.";

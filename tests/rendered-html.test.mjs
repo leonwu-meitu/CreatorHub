@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("ships the Creator Pool Hub product instead of the starter", async () => {
-  const [page, app, layout, css, enhancements, publicCss, dashboardTheme, language, hosting, supabaseRecords, productionMigration, uniqueCreatorEmailMigration, userFacingErrors] = await Promise.all([
+  const [page, app, layout, css, enhancements, publicCss, dashboardTheme, language, hosting, supabaseRecords, productionMigration, uniqueCreatorEmailMigration, campaignLimitMigration, userFacingErrors] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/CreatorPoolApp.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
@@ -16,6 +16,7 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
     readFile(new URL("../app/supabase-records.ts", import.meta.url), "utf8"),
     readFile(new URL("../supabase/006_production_completion.sql", import.meta.url), "utf8"),
     readFile(new URL("../supabase/migrations/20260826090000_unique_creator_contact_email.sql", import.meta.url), "utf8"),
+    readFile(new URL("../supabase/migrations/20260826100000_campaign_submission_limit.sql", import.meta.url), "utf8"),
     readFile(new URL("../app/user-facing-errors.ts", import.meta.url), "utf8"),
   ]);
   assert.match(page, /CreatorPoolApp/);
@@ -67,7 +68,8 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(app, /creator-home-stats/);
   assert.match(app, /suggestion-stack/);
   assert.match(app, /onPointerUp=\{event=>finishSuggestionSwipe/);
-  assert.match(app, /streak-journey/);
+  assert.match(app, /campaign-progress-card/);
+  assert.match(app, /Campaign Progress/);
   assert.match(app, /social-icon-row/);
   assert.match(app, /overview-tab-cards/);
   assert.match(app, /overview-reports/);
@@ -120,27 +122,14 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(app, /creator-campaign-submit/);
   assert.doesNotMatch(app.slice(app.indexOf("const teamNav"),app.indexOf("const creatorNav")), /Campaign Completion Streak/);
   assert.match(app, /function ApplicationsHub/);
-  assert.match(app, /Creator applications","Apply New Apps","Streak VIP Code/);
+  assert.match(app, /Creator applications","Apply New Apps/);
   const applicationsHub = app.slice(app.indexOf("function ApplicationsHub"),app.indexOf("function StreakVipReview"));
   assert.ok(applicationsHub.indexOf("application-hub-metrics") < applicationsHub.indexOf("application-hub-tabs"));
   assert.match(applicationsHub, /activeStatuses/);
-  assert.match(applicationsHub, /request\.status!=="Active"/);
-  const streakHub = app.slice(app.indexOf("function StreakVipReview"),app.indexOf("function Creators"));
-  assert.match(streakHub, />Accept</);
-  assert.match(streakHub, />Decline</);
-  assert.match(streakHub, /Edit VIP code/);
-  assert.match(streakHub, /Search by creator or request ID/);
-  assert.match(streakHub, /streak-vip-filter-bar/);
-  assert.match(streakHub, /streak-vip-table/);
-  assert.match(streakHub, /application-undo-button/);
-  assert.doesNotMatch(streakHub, /application-manual-intro/);
-  assert.match(streakHub, /persist\("streakRequest",updated\)/);
-  assert.match(streakHub, /status:"Approved"\|"Declined"/);
+  assert.doesNotMatch(applicationsHub, /Streak VIP Code|streakRequests|StreakVipReview/);
   assert.match(enhancements, /\.application-hub-tabs/);
   assert.match(applicationsSection, /"Close":"View"/);
   assert.match(applicationsSection, />Edit<\/button>/);
-  assert.match(streakHub, /"Close":"View"/);
-  assert.match(streakHub, />Edit<\/button>/);
   assert.match(enhancements, /Text labels replace the icon-only Applications actions/);
   assert.match(enhancements, /\.application-actions \.table-action-button[\s\S]*min-width:\s*64px[\s\S]*font-size:\s*8\.5px/);
   assert.match(enhancements, /\.table-action-button::before,[\s\S]*content:\s*none !important/);
@@ -152,6 +141,8 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(campaignsSection, /The Meitu system checks the qualification of your post/);
   assert.doesNotMatch(campaignsSection, /Only campaigns for your registered apps/);
   assert.match(campaignsSection, /creator-campaign-description/);
+  assert.match(campaignsSection, /Submission Limit Reached/);
+  assert.match(campaignsSection, /campaignSubmissionCount\(submissions,task\)/);
   assert.match(app, /creator-submission-cards/);
   assert.match(app, /creator-submission-app-date/);
   assert.match(app, /creator-submission-details/);
@@ -305,7 +296,7 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(publicCss, /animation-timeline:view\(\)/);
   assert.match(language, /Social & Channel Links/);
   const creatorHome = app.slice(app.indexOf("function CreatorHome"),app.indexOf("function Leaderboard"));
-  assert.match(creatorHome, /const lifetimeQualifiedPosts=qualifiedSubmissions\.length/);
+  assert.match(creatorHome, /const progressTasks=/);
   assert.match(creatorHome, /Campaigns submitted/);
   assert.match(creatorHome, /Total views/);
   assert.match(creatorHome, /Total earnings/);
@@ -316,7 +307,12 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(creatorHome, /const unsubmittedTasks=/);
   assert.match(creatorHome, /const paymentNeeded=/);
   assert.match(creatorHome, /const suggestionSignature=/);
-  assert.match(creatorHome, /startTaskCount:lifetimeQualifiedPosts/);
+  assert.match(creatorHome, /MAX_POSTS_PER_CAMPAIGN/);
+  assert.doesNotMatch(creatorHome, /Completion Streak|VIP Code History|saveRequest/);
+  assert.match(campaignLimitMigration, /existing_post_count >= 3/);
+  assert.match(campaignLimitMigration, /pg_advisory_xact_lock/);
+  assert.match(campaignLimitMigration, /enforce_campaign_submission_limit/);
+  assert.match(userFacingErrors, /CAMPAIGN_SUBMISSION_LIMIT_REACHED/i);
   const creatorManualSubmissions = app.slice(app.indexOf("function ManualSubmissions"),app.indexOf("function ManualSubmissionModal"));
   assert.match(creatorManualSubmissions, /<dt>Posting date<\/dt><dd>\{displayDate\(item\.publishedAt\)\}<\/dd>/);
   assert.match(enhancements, /grid-template-columns:56px minmax\(190px,1fr\) minmax\(180px,\.72fr\)/);

@@ -621,6 +621,26 @@
 .task-completion-streak .streak-track > b { position: absolute; z-index: 2; top: 50%; width: 20px; height: 20px; border: 2px solid #f11d48; border-radius: 50%; background: #fff; box-shadow: 0 3px 10px rgba(72,22,30,.18); transform: translate(-50%,-50%); }
 .task-completion-streak .streak-track > span { position: absolute; right: -27px; top: -31px; width: auto; height: auto; display: block; background: none; color: #f11d48; font-size: 25px; filter: drop-shadow(0 4px 5px rgba(241,29,72,.16)); }
 .task-completion-streak .streak-labels { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
+
+.campaign-progress-card { min-height: 402px; display: flex; flex-direction: column; gap: 13px; padding: 20px; }
+.campaign-progress-card > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.campaign-progress-card > header span { display: block; margin-bottom: 5px; color: #f11d48; font-size: 9px; font-weight: 800; letter-spacing: .16em; }
+.campaign-progress-card > header h2 { margin: 0; font-size: 20px; }
+.campaign-progress-card > header button { min-height: 34px; padding: 0 12px; white-space: nowrap; }
+.campaign-progress-card > p { margin: 0; color: var(--muted); line-height: 1.55; }
+.campaign-progress-list { display: grid; gap: 10px; overflow: auto; }
+.campaign-progress-list > article { display: grid; gap: 10px; padding: 13px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+.campaign-progress-list > article > div:first-child { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 10px; }
+.campaign-progress-list > article span b,.campaign-progress-list > article span small { display: block; }
+.campaign-progress-list > article span b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.campaign-progress-list > article span small { margin-top: 3px; color: var(--muted); font-size: 9px; }
+.campaign-progress-list > article strong { font-size: 16px; }
+.campaign-progress-slots { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
+.campaign-progress-slots i { display: block; height: 7px; border-radius: 999px; background: #eee8e2; }
+.campaign-progress-slots i.filled { background: linear-gradient(90deg,#f11d48,#ff708e); box-shadow: 0 4px 10px rgba(241,29,72,.18); }
+.campaign-progress-empty { display: grid; place-items: center; gap: 6px; min-height: 220px; padding: 20px; border: 1px dashed var(--line); border-radius: 14px; text-align: center; }
+.campaign-progress-empty > span { color: #f11d48; font-size: 26px; }
+.campaign-progress-empty p { max-width: 270px; margin: 0; color: var(--muted); line-height: 1.5; }
 .streak-labels small { color: var(--muted); font-size: 7px; }
 .streak-labels small:last-child { color: #c80f35; font-weight: 850; }
 
@@ -703,7 +723,8 @@
   .whatsapp-input { grid-template-columns: minmax(140px,.9fr) 1fr; }
   .creator-overview-tiles { grid-template-columns: repeat(3,minmax(190px,78vw)); overflow-x: auto; padding-bottom: 5px; scroll-snap-type: x mandatory; }
   .creator-overview-tile { scroll-snap-align: start; }
-  .suggestion-deck,.task-completion-streak { min-height: auto; }
+  .suggestion-deck,.task-completion-streak,.campaign-progress-card { min-height: auto; }
+  .campaign-progress-card > header { align-items: stretch; flex-direction: column; }
   .suggestion-stack { height: 230px; }
   .suggestion-card { min-height: 205px; padding: 17px; }
   .suggestion-card h3 { font-size: 25px; }
