@@ -233,14 +233,19 @@ Deno.serve(async (request) => {
     const detectedPlatform = String(extracted.detected_platform || "Unknown");
     const platformMatches = normalizedPlatform(detectedPlatform) === normalizedPlatform(submission.platform);
     const confidence = Math.min(100, nonNegativeInteger(extracted.confidence));
-    const valid = booleanValue(extracted.valid_analytics_screenshot) && platformMatches && views > 0;
-    const analyticsStatus = valid && confidence >= 75 ? "ai_verified" : "ai_needs_review";
+    const screenshotIsValid = booleanValue(extracted.valid_analytics_screenshot);
+    const valid = screenshotIsValid && platformMatches && views > 0 && totalEngagement > 0;
+    const analyticsStatus = valid ? "ai_verified" : "ai_needs_review";
     const recommendation = analyticsStatus === "ai_verified" ? "Ready for Team review" : "Manual review required";
-    const reviewReason = !valid
-      ? String(extracted.explanation || "The screenshot needs manual verification").slice(0, 500)
-      : confidence < 75
-        ? `AI confidence was ${confidence}%. Team verification is required.`
-        : null;
+    const reviewReason = !screenshotIsValid
+      ? String(extracted.explanation || "The screenshot could not be verified as post analytics.").slice(0, 500)
+      : !platformMatches
+        ? `The detected platform (${detectedPlatform}) does not match the submitted platform (${submission.platform}).`
+        : views <= 0
+          ? "The screenshot did not contain a readable views total."
+          : totalEngagement <= 0
+            ? "The screenshot did not contain readable engagement metrics."
+            : null;
     const processedAt = new Date().toISOString();
 
     const { data: updated, error: updateError } = await admin.from("campaign_submissions").update({

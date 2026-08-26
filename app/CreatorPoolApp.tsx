@@ -138,9 +138,11 @@ function CreatorPoolWorkspace(){
     if(!supabase)throw new Error("Sign in is required before sending an application.");
     const {data:{user}}=await supabase.auth.getUser();
     if(!user)throw new Error("Please sign in before sending an application.");
-    const {data,error}=await supabase.from("creator_applications").insert({creator_id:user.id,application_data:application}).select("id,creator_id,status,decline_reason,submitted_at,application_data").single();
+    const {data,error}=await supabase.rpc("submit_my_creator_application",{new_application_data:application});
     if(error)throw new Error(userFacingError(error,"The creator application could not be sent.","application"));
-    setApps(items=>[storedApplication(data),...items.filter(item=>item.id!==data.id)]);
+    const saved=Array.isArray(data)?data[0]:data;
+    if(!saved)throw new Error("The creator application could not be saved. Please try again.");
+    setApps(items=>[storedApplication(saved),...items.filter(item=>item.id!==saved.id&&item.creatorId!==user.id)]);
   }
   const navigate=(label:string)=>{setPage(label);setMobileNav(false);setTeamProfileMenu(false)};
   const nav=space==="creator"?creatorNav:teamNav;

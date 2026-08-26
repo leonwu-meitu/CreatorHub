@@ -46,6 +46,7 @@ export function userFacingError(
   const { raw, code, status } = readableError(error);
   const normalized = raw.toLowerCase();
 
+  if (normalized.includes("creator_application_already_accepted")) return "Your Creator Pool application has already been accepted. You do not need to apply again.";
   if (normalized.includes("campaign_submission_limit_reached")) return "Submission limit reached. You can submit a maximum of 3 posts per campaign.";
   if (code === "23505" || normalized.includes("duplicate key") || normalized.includes("already exists")) return duplicateMessages[context];
   if (status === 429 || normalized.includes("rate limit") || normalized.includes("too many requests")) return "Too many attempts were made. Please wait a moment and try again.";

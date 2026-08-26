@@ -31,13 +31,29 @@ test("keeps AI analytics extraction server-side and Team-reviewed", async () => 
   assert.match(edgeFunction, /match\(\/\^\(-\?\\d\+/);
   assert.match(edgeFunction, /normalizedPlatform\(detectedPlatform\) === normalizedPlatform\(submission\.platform\)/);
   assert.match(edgeFunction, /booleanValue\(extracted\.valid_analytics_screenshot\)/);
-  assert.match(edgeFunction, /AI confidence was \$\{confidence\}%/);
+  assert.match(edgeFunction, /const analyticsStatus = valid \? "ai_verified" : "ai_needs_review"/);
+  assert.match(edgeFunction, /totalEngagement > 0/);
+  assert.doesNotMatch(edgeFunction, /confidence >= 75/);
   assert.match(edgeFunction, /When the same views metric appears as both an exact number/);
   assert.match(edgeFunction, /parseStructuredAnswer/);
   assert.match(edgeFunction, /A human Team member will make the final reward decision/);
   assert.match(migration, /calculate_submission_engagement_rate/);
   assert.match(migration, /total_engagement::numeric \/ new\.verified_views::numeric/);
   assert.match(migration, /auth\.role\(\) = 'service_role'/);
+});
+
+test("resumes a Creator's own pending application instead of reporting a false duplicate", async () => {
+  const [app, migration, errors] = await Promise.all([
+    readFile(new URL("../app/CreatorPoolApp.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../supabase/migrations/20260826213000_resumable_creator_application.sql", import.meta.url), "utf8"),
+    readFile(new URL("../app/user-facing-errors.ts", import.meta.url), "utf8"),
+  ]);
+  assert.match(app, /rpc\("submit_my_creator_application"/);
+  assert.match(migration, /pg_advisory_xact_lock/);
+  assert.match(migration, /where creator_id = auth\.uid\(\)/);
+  assert.match(migration, /creator_application_already_accepted/i);
+  assert.match(migration, /status = 'in_review'/);
+  assert.match(errors, /Your Creator Pool application has already been accepted/);
 });
 
 test("ships the Creator Pool Hub product instead of the starter", async () => {
