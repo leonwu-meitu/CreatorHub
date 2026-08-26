@@ -40,10 +40,26 @@ const imageMimeType = (blob: Blob, key: string) => {
 };
 
 const cloudflareAnswer = (payload: any) => {
-  if (typeof payload?.result?.answer === "string") return payload.result.answer;
-  if (typeof payload?.answer === "string") return payload.answer;
+  const candidates = [
+    payload?.result?.answer,
+    payload?.result?.response,
+    payload?.result?.text,
+    payload?.result?.output_text,
+    payload?.result?.choices?.[0]?.message?.content,
+    payload?.answer,
+    payload?.response,
+    payload?.text,
+    payload?.output_text,
+  ];
+  for (const candidate of candidates) {
+    if (typeof candidate === "string" && candidate.trim()) return candidate;
+  }
   return "";
 };
+
+const isStructuredAnalytics = (value: unknown): value is Record<string, unknown> =>
+  Boolean(value && typeof value === "object" && !Array.isArray(value) &&
+    ("valid_analytics_screenshot" in value || "views" in value || "detected_platform" in value));
 
 const parseStructuredAnswer = (answer: string) => {
   const trimmed = answer.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
@@ -72,6 +88,7 @@ Read only numbers visibly present in the screenshot. Never infer, estimate, or i
 - Instagram components: likes + comments + shares + saves. Include reposts only when visibly shown as a separate post metric.
 - Threads components: likes + replies (comments) + reposts + quotes/shares. If Insights shows Total interactions, place it in displayed_total_engagement.
 - A compact number such as 11.9K means 11900 and 2.8M means 2800000.
+- When the same views metric appears as both an exact number and a rounded compact number, return the exact number.
 - Set valid_analytics_screenshot=false when the image is not post analytics, the views are unreadable, or it clearly belongs to a different platform.
 - Confidence reflects OCR readability and whether the platform and required metrics are clearly visible.
 
@@ -172,9 +189,15 @@ Deno.serve(async (request) => {
       throw new Error(`Cloudflare AI analysis failed (${cloudflareError})`);
     }
 
+    const directResult = cloudflarePayload?.result;
     const rawResult = cloudflareAnswer(cloudflarePayload);
-    if (!rawResult) throw new Error("AI analysis returned no structured result");
-    const extracted = parseStructuredAnswer(rawResult);
+    if (!rawResult && !isStructuredAnalytics(directResult)) {
+      const responseFields = directResult && typeof directResult === "object"
+        ? Object.keys(directResult).slice(0, 12).join(", ")
+        : typeof directResult;
+      throw new Error(`AI analysis returned no structured result (response fields: ${responseFields || "none"})`);
+    }
+    const extracted = isStructuredAnalytics(directResult) ? directResult : parseStructuredAnswer(rawResult);
     const views = nonNegativeInteger(extracted.views);
     const displayedTotal = nonNegativeInteger(extracted.displayed_total_engagement);
     const componentTotal = ["likes", "comments", "shares", "saves", "reposts", "quotes"]
