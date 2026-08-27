@@ -386,6 +386,11 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(language, /Social & Channel Links/);
   const creatorHome = app.slice(app.indexOf("function CreatorHome"),app.indexOf("function Leaderboard"));
   assert.match(creatorHome, /const progressTasks=/);
+  assert.match(app, /const isCampaignOpen=\(task:Task\)=>task\.status==="Active"/);
+  assert.match(app, /T23:59:59\+07:00/);
+  assert.match(app, /creatorProducts\.includes\(task\.product\)&&isCampaignOpen\(task\)/);
+  assert.match(campaignsSection, /availableProducts\.includes\(task\.product\)&&isCampaignOpen\(task\)/);
+  assert.match(creatorHome, /tasks\.filter\(task=>isCampaignOpen\(task\)&&\(joinedCampaignIds\.includes\(task\.id\)/);
   assert.match(creatorHome, /Campaigns submitted/);
   assert.match(creatorHome, /Total views/);
   assert.match(creatorHome, /Total earnings/);
