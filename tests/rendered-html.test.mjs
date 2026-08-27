@@ -34,6 +34,11 @@ test("keeps AI analytics extraction server-side and Team-reviewed", async () => 
   assert.match(edgeFunction, /const analyticsStatus = valid \? "ai_verified" : "ai_needs_review"/);
   assert.match(edgeFunction, /totalEngagement > 0/);
   assert.doesNotMatch(edgeFunction, /confidence >= 75/);
+  assert.match(edgeFunction, /engagementExtractionPrompt/);
+  assert.match(edgeFunction, /The play-triangle count is views and must not be counted as engagement/);
+  assert.match(edgeFunction, /if \(totalEngagement <= 0\)/);
+  assert.match(edgeFunction, /await runCloudflare\(engagementExtractionPrompt\(submission\.platform\), 300\)/);
+  assert.match(edgeFunction, /focusedComponentTotal/);
   assert.match(edgeFunction, /When the same views metric appears as both an exact number/);
   assert.match(edgeFunction, /parseStructuredAnswer/);
   assert.match(edgeFunction, /A human Team member will make the final reward decision/);

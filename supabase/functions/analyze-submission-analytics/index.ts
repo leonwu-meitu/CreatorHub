@@ -86,6 +86,22 @@ const parseStructuredAnswer = (answer: string) => {
   }
 };
 
+const isEngagementBreakdown = (value: unknown): value is Record<string, unknown> =>
+  Boolean(value && typeof value === "object" && !Array.isArray(value) &&
+    ["displayed_total_engagement", "likes", "comments", "shares", "saves", "reposts", "quotes"]
+      .some(key => key in value));
+
+const structuredCloudflareResult = (payload: any) => {
+  const directResult = cloudflareModelResult(payload);
+  if (isStructuredAnalytics(directResult) || isEngagementBreakdown(directResult)) return directResult;
+  const rawResult = cloudflareAnswer(payload);
+  if (rawResult) return parseStructuredAnswer(rawResult);
+  const responseFields = directResult && typeof directResult === "object"
+    ? Object.keys(directResult).slice(0, 12).join(", ")
+    : typeof directResult;
+  throw new Error(`AI analysis returned no structured result (response fields: ${responseFields || "none"})`);
+};
+
 const numericValue = (value: unknown) => {
   if (typeof value === "number") return Number.isFinite(value) ? value : Number.NaN;
   if (typeof value !== "string") return Number.NaN;
@@ -123,6 +139,19 @@ Return only one valid JSON object, with no Markdown and no additional commentary
 {"valid_analytics_screenshot":boolean,"detected_platform":"TikTok"|"Instagram"|"Threads"|"Unknown","views":integer,"displayed_total_engagement":integer,"likes":integer,"comments":integer,"shares":integer,"saves":integer,"reposts":integer,"quotes":integer,"confidence":integer,"explanation":string}
 
 Use 0 for a metric that is not visibly shown. Keep explanation under 300 characters. A human Team member will make the final reward decision.`;
+
+const engagementExtractionPrompt = (platform: string) => `
+Read only the visible post-interaction counts in this ${platform} analytics screenshot. Focus on the interaction icon row near the post preview; ignore watch time, followers, and audience metrics.
+
+Icon mapping:
+- TikTok: heart = likes, speech bubble = comments, curved share arrow = shares, bookmark = saves/favorites. The play-triangle count is views and must not be counted as engagement.
+- Instagram: heart = likes, speech bubble = comments, paper-plane or share arrow = shares, bookmark = saves.
+- Threads: heart = likes, speech bubble = replies/comments, repost arrows = reposts, paper-plane/share = quotes or shares.
+
+Return only one valid JSON object with numeric values and no Markdown:
+{"displayed_total_engagement":integer,"likes":integer,"comments":integer,"shares":integer,"saves":integer,"reposts":integer,"quotes":integer,"confidence":integer}
+
+Use 0 only when a specific metric is genuinely not visible. Do not include the views/play count in any engagement field.`;
 
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -193,46 +222,54 @@ Deno.serve(async (request) => {
     const accountId = requiredSecret("CLOUDFLARE_ACCOUNT_ID");
     const model = Deno.env.get("CLOUDFLARE_ANALYTICS_MODEL")?.trim() || "@cf/moondream/moondream3.1-9B-A2B";
     if (!model.startsWith("@cf/")) throw new Error("Analytics must use a Cloudflare-hosted Workers AI model");
-    const cloudflareResponse = await fetch(`https://api.cloudflare.com/client/v4/accounts/${encodeURIComponent(accountId)}/ai/run/${model}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${requiredSecret("CLOUDFLARE_AI_API_TOKEN")}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        task: "query",
-        image: imageDataUrl,
-        question: extractionPrompt(submission.platform),
-        reasoning: false,
-        stream: false,
-        temperature: 0,
-        max_tokens: 700,
-      }),
-    });
-    const cloudflarePayload = await cloudflareResponse.json();
-    if (!cloudflareResponse.ok || cloudflarePayload?.success === false) {
-      const cloudflareError = cloudflarePayload?.errors?.[0]?.message || cloudflarePayload?.error?.message || cloudflareResponse.status;
-      if (cloudflareResponse.status === 429) throw new Error("Cloudflare Workers AI daily quota or rate limit was reached");
-      throw new Error(`Cloudflare AI analysis failed (${cloudflareError})`);
-    }
+    const cloudflareToken = requiredSecret("CLOUDFLARE_AI_API_TOKEN");
+    const runCloudflare = async (question: string, maxTokens: number) => {
+      const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${encodeURIComponent(accountId)}/ai/run/${model}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${cloudflareToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          task: "query",
+          image: imageDataUrl,
+          question,
+          reasoning: false,
+          stream: false,
+          temperature: 0,
+          max_tokens: maxTokens,
+        }),
+      });
+      const payload = await response.json();
+      if (!response.ok || payload?.success === false) {
+        const cloudflareError = payload?.errors?.[0]?.message || payload?.error?.message || response.status;
+        if (response.status === 429) throw new Error("Cloudflare Workers AI daily quota or rate limit was reached");
+        throw new Error(`Cloudflare AI analysis failed (${cloudflareError})`);
+      }
+      return structuredCloudflareResult(payload);
+    };
 
-    const directResult = cloudflareModelResult(cloudflarePayload);
-    const rawResult = cloudflareAnswer(cloudflarePayload);
-    if (!rawResult && !isStructuredAnalytics(directResult)) {
-      const responseFields = directResult && typeof directResult === "object"
-        ? Object.keys(directResult).slice(0, 12).join(", ")
-        : typeof directResult;
-      throw new Error(`AI analysis returned no structured result (response fields: ${responseFields || "none"})`);
-    }
-    const extracted = isStructuredAnalytics(directResult) ? directResult : parseStructuredAnswer(rawResult);
+    const extracted = await runCloudflare(extractionPrompt(submission.platform), 700);
     const views = nonNegativeInteger(extracted.views);
     const displayedTotal = nonNegativeInteger(extracted.displayed_total_engagement);
     const componentTotal = ["likes", "comments", "shares", "saves", "reposts", "quotes"]
       .reduce((sum, key) => sum + nonNegativeInteger(extracted[key]), 0);
-    const totalEngagement = displayedTotal > 0 ? displayedTotal : componentTotal;
+    let totalEngagement = displayedTotal > 0 ? displayedTotal : componentTotal;
     const detectedPlatform = String(extracted.detected_platform || "Unknown");
     const platformMatches = normalizedPlatform(detectedPlatform) === normalizedPlatform(submission.platform);
-    const confidence = Math.min(100, nonNegativeInteger(extracted.confidence));
+    let confidence = Math.min(100, nonNegativeInteger(extracted.confidence));
+    if (totalEngagement <= 0) {
+      try {
+        const focused = await runCloudflare(engagementExtractionPrompt(submission.platform), 300);
+        const focusedDisplayedTotal = nonNegativeInteger(focused.displayed_total_engagement);
+        const focusedComponentTotal = ["likes", "comments", "shares", "saves", "reposts", "quotes"]
+          .reduce((sum, key) => sum + nonNegativeInteger(focused[key]), 0);
+        totalEngagement = focusedDisplayedTotal > 0 ? focusedDisplayedTotal : focusedComponentTotal;
+        confidence = Math.max(confidence, Math.min(100, nonNegativeInteger(focused.confidence)));
+      } catch {
+        // Preserve the successful first-pass result and send it to manual review.
+      }
+    }
     const screenshotIsValid = booleanValue(extracted.valid_analytics_screenshot);
     const valid = screenshotIsValid && platformMatches && views > 0 && totalEngagement > 0;
     const analyticsStatus = valid ? "ai_verified" : "ai_needs_review";
