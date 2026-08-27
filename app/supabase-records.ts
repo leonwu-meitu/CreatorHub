@@ -106,6 +106,14 @@ export async function analyzeSubmissionRecord(client:SupabaseClient, submissionI
   } satisfies Partial<Submission>;
 }
 
+export async function deleteCreatorAccount(client:SupabaseClient, creatorId:string) {
+  const {data,error}=await client.functions.invoke("delete-creator",{body:{creatorId}});
+  if(error)throw error;
+  if(data?.error)throw new Error(String(data.error));
+  if(!data?.deleted)throw new Error("The Creator account could not be deleted.");
+  return true;
+}
+
 export async function updateSubmissionRecord(client:SupabaseClient, submission:Submission) {
   const {error}=await client.from("campaign_submissions").update({status:dbSubmissionStatus(submission.status),verified_views:submission.aiViews||submission.views,total_engagement:submission.totalEngagement||null,engagement_rate:submission.engagementRate||null,analytics_status:submission.analyticsStatus||"manual_review",recommendation:submission.recommendation||"Manual review",confidence:submission.confidence||0,qualification_reason:submission.qualificationReason||null,evidence_key:submission.evidenceKey||null,evidence_name:submission.evidenceName||null,updated_at:new Date().toISOString()}).eq("id",submission.id);
   if(error)throw error;

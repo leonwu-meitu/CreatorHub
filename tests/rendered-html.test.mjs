@@ -62,7 +62,7 @@ test("resumes a Creator's own pending application instead of reporting a false d
 });
 
 test("ships the Creator Pool Hub product instead of the starter", async () => {
-  const [page, app, layout, css, enhancements, publicCss, dashboardTheme, language, hosting, supabaseRecords, productionMigration, uniqueCreatorEmailMigration, campaignLimitMigration, userFacingErrors] = await Promise.all([
+  const [page, app, layout, css, enhancements, publicCss, dashboardTheme, language, hosting, supabaseRecords, productionMigration, uniqueCreatorEmailMigration, campaignLimitMigration, userFacingErrors, deleteCreatorFunction] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/CreatorPoolApp.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
@@ -77,6 +77,7 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
     readFile(new URL("../supabase/migrations/20260826090000_unique_creator_contact_email.sql", import.meta.url), "utf8"),
     readFile(new URL("../supabase/migrations/20260826100000_campaign_submission_limit.sql", import.meta.url), "utf8"),
     readFile(new URL("../app/user-facing-errors.ts", import.meta.url), "utf8"),
+    readFile(new URL("../supabase/functions/delete-creator/index.ts", import.meta.url), "utf8"),
   ]);
   assert.match(page, /CreatorPoolApp/);
   assert.match(app, /Good morning, \$\{name\}/);
@@ -167,8 +168,17 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(creatorsSection, /creator-pagination/);
   assert.doesNotMatch(creatorsSection, /<Avatar/);
   assert.match(creatorsSection, /creator-cell-without-avatar/);
+  assert.match(creatorsSection, /Campaigns submitted record/);
+  assert.match(creatorsSection, /creator-submitted-record/);
+  assert.match(creatorsSection, /Permanently delete Creator/);
+  assert.match(creatorsSection, /deleteConfirmation!=="DELETE"/);
   assert.match(creatorsSection, /10 \/ page/);
   assert.match(creatorsSection, /100 \/ page/);
+  assert.match(supabaseRecords, /functions\.invoke\("delete-creator"/);
+  assert.match(deleteCreatorFunction, /caller\?\.role !== "marketing_admin"/);
+  assert.match(deleteCreatorFunction, /target\.role === "marketing_admin"/);
+  assert.match(deleteCreatorFunction, /admin\.auth\.admin\.deleteUser\(creatorId\)/);
+  assert.match(deleteCreatorFunction, /\.from\("submission-evidence"\)\.remove\(evidenceKeys\)/);
   assert.match(app, /team-campaign-cards/);
   assert.match(app, /team-profile-trigger/);
   assert.match(app, /team-profile-dropdown/);
@@ -249,6 +259,8 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(dashboardTheme, /grid-template-columns:112px 100px/);
   assert.match(dashboardTheme, /grid-template-columns:minmax\(210px,1\.1fr\)[\s\S]*282px/);
   assert.match(manualSubmissions, /submission-creator-social/);
+  assert.match(manualSubmissions, /submission-creator-name/);
+  assert.match(manualSubmissions, /onOpenCreator\(item\)/);
   assert.match(manualSubmissions, /socialUsernameFromUrl/);
   assert.match(manualSubmissions, /postAddress\.includes\("instagram\.com\//);
   assert.match(manualSubmissions, /postAddress\.includes\("threads\.net\//);
@@ -363,8 +375,9 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(creatorHome, /Total views/);
   assert.match(creatorHome, /Total earnings/);
   assert.match(creatorHome, /home-stat-icon-/);
-  assert.doesNotMatch(dashboardTheme, /perspective\(90px\) rotateX\(5deg\) rotateY\(-5deg\)/);
-  assert.match(dashboardTheme, /home-stat-icon-position\s*\{[^}]*background:#111/);
+  assert.match(dashboardTheme, /--icon-bottom/);
+  assert.match(dashboardTheme, /box-shadow:inset 2px 2px 3px/);
+  assert.match(dashboardTheme, /home-stat-icon-position\s*\{[^}]*--icon-top:#4b4547/);
   assert.match(creatorHome, /const profileComplete=/);
   assert.match(creatorHome, /const unsubmittedTasks=/);
   assert.match(creatorHome, /const paymentNeeded=/);

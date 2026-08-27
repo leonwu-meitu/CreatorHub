@@ -904,6 +904,52 @@
 .creator-pagination > div span { min-width: 28px; color: #928b87; font-size: 7px; text-align: center; }
 .creator-pagination label { margin-left: 5px; }
 .creator-pagination select { min-height: 31px; padding: 0 28px 0 10px; border: 1px solid #ded8d4; border-radius: 7px; background: #fff; color: #282322; font-size: 8px; font-weight: 750; }
+.creator-record-link,.campaign-record-count,.submission-creator-name { padding:0; border:0; background:none; color:#171313; text-align:left; font-weight:850; }
+.creator-record-link:hover,.submission-creator-name:hover { color:#c61035; text-decoration:underline; text-underline-offset:3px; }
+.campaign-record-count { display:grid; gap:3px; }
+.campaign-record-count b { font-size:13px; }
+.campaign-record-count span { color:#c61035; font-size:7px; font-weight:800; }
+.creator-record-layer { justify-content:flex-end; }
+.creator-record-drawer { position:relative; width:min(720px,96vw); height:100%; display:flex; flex-direction:column; background:#f7f1ed; box-shadow:-24px 0 70px rgba(26,12,15,.32); }
+.creator-record-drawer > header { min-height:103px; display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:24px 27px; border-bottom:1px solid #e1d7d2; background:radial-gradient(circle at 86% 0,rgba(241,29,72,.16),transparent 34%),#fff; }
+.creator-record-drawer h2 { margin:6px 0 4px; font-size:23px; letter-spacing:-.04em; }
+.creator-record-drawer header p { margin:0; color:#837b78; font-size:9px; }
+.creator-record-scroll { overflow:auto; display:grid; gap:13px; padding:18px 20px 28px; }
+.creator-record-overview { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+.creator-record-overview > div { min-height:92px; display:grid; align-content:center; gap:7px; padding:16px; border:1px solid #dfd6d1; border-radius:15px; background:linear-gradient(145deg,#fff,#fff9f7); box-shadow:0 8px 20px rgba(32,18,20,.05); }
+.creator-record-overview > div:first-child { border-color:rgba(241,29,72,.28); background:linear-gradient(145deg,#fff,#fff0f3); }
+.creator-record-overview small,.creator-record-contact small { color:#8a817d; font-size:7px; font-weight:850; letter-spacing:.08em; }
+.creator-record-overview strong { font-size:24px; letter-spacing:-.04em; }
+.creator-record-contact { display:grid; grid-template-columns:1fr 1fr; gap:15px; padding:16px; }
+.creator-record-contact > div { min-width:0; display:grid; align-content:start; gap:6px; }
+.creator-record-contact a { width:fit-content; max-width:100%; overflow:hidden; color:#bd1235; font-size:8px; font-weight:750; text-overflow:ellipsis; white-space:nowrap; }
+.creator-record-contact .product-stack { flex-wrap:wrap; gap:6px; }
+.creator-submitted-record { overflow:hidden; border:1px solid #ded5d0; border-radius:17px; background:#fff; }
+.creator-submitted-record > header { display:flex; align-items:end; justify-content:space-between; gap:15px; padding:17px 18px 12px; border-bottom:1px solid #ece4df; }
+.creator-submitted-record > header span { color:#c61035; font-size:7px; font-weight:900; letter-spacing:.1em; }
+.creator-submitted-record h3 { margin:5px 0 0; font-size:15px; }
+.creator-submitted-record > header small { color:#89817d; font-size:7px; }
+.creator-submitted-record > div { display:grid; }
+.creator-submitted-record article { display:grid; grid-template-columns:minmax(160px,1.4fr) minmax(220px,1fr) auto; align-items:center; gap:14px; padding:14px 17px; border-bottom:1px solid #eee7e3; }
+.creator-submitted-record article:last-child { border-bottom:0; }
+.creator-submitted-record article > div:first-child { min-width:0; display:flex; align-items:center; gap:9px; }
+.creator-submitted-record article > div:first-child span { min-width:0; }
+.creator-submitted-record article b,.creator-submitted-record article small { display:block; }
+.creator-submitted-record article b { overflow:hidden; font-size:9px; text-overflow:ellipsis; white-space:nowrap; }
+.creator-submitted-record article small { margin-top:4px; color:#8a817d; font-size:7px; }
+.creator-submitted-record dl { display:grid; grid-template-columns:repeat(3,minmax(58px,1fr)); gap:8px; margin:0; }
+.creator-submitted-record dl div { min-width:0; }
+.creator-submitted-record dt { color:#918985; font-size:6px; text-transform:uppercase; }
+.creator-submitted-record dd { margin:4px 0 0; font-size:8px; font-weight:850; }
+.creator-submitted-record article > a { color:#bd1235; font-size:8px; font-weight:850; text-decoration:none; }
+.creator-record-empty { justify-items:center; padding:34px 18px; text-align:center; }
+.creator-record-empty span { font-size:24px; }.creator-record-empty b { font-size:10px; }.creator-record-empty p { margin:6px 0 0; color:#89817d; font-size:8px; }
+.creator-delete-zone { display:grid; grid-template-columns:minmax(0,1fr) 150px auto; align-items:end; gap:12px; padding:16px; border:1px solid #efb8c3; border-radius:16px; background:linear-gradient(135deg,#fff,#fff0f3); }
+.creator-delete-zone span { color:#c61035; font-size:7px; font-weight:900; letter-spacing:.1em; }
+.creator-delete-zone h3 { margin:5px 0; font-size:13px; }.creator-delete-zone p { margin:0; color:#766d6a; font-size:7px; line-height:1.5; }
+.creator-delete-zone label { font-size:7px; }.creator-delete-zone input { min-height:38px; margin-top:5px; }.creator-delete-zone .danger { min-height:38px; }
+.creator-delete-zone .form-error { grid-column:2 / -1; margin:0; }
+.submission-creator-name { display:block; overflow:hidden; max-width:100%; font-size:9px; text-overflow:ellipsis; white-space:nowrap; }
 
 @media (max-width: 700px) {
   .team-profile-dropdown { position: fixed; top: 67px; right: 12px; width: min(300px,calc(100vw - 24px)); }
@@ -913,6 +959,11 @@
   .creator-pagination { justify-content: center; flex-wrap: wrap; }
   .creator-pagination label { width: 100%; margin: 5px 0 0; }
   .creator-pagination select { width: 100%; }
+  .creator-record-overview,.creator-record-contact { grid-template-columns:1fr; }
+  .creator-submitted-record article { grid-template-columns:1fr; }
+  .creator-submitted-record dl { grid-template-columns:repeat(3,1fr); }
+  .creator-delete-zone { grid-template-columns:1fr; }
+  .creator-delete-zone .form-error { grid-column:1; }
 }
 
 /* Creator portal card experience */
