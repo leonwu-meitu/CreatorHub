@@ -76,6 +76,34 @@ test("emails a declined Creator at the application email with the Team reason", 
   assert.match(edgeFunction, /decision_email_status: application\.status/);
 });
 
+test("supports Team bulk reward status updates and secure campaign deletion", async () => {
+  const [app, records, enhancements, edgeFunction] = await Promise.all([
+    readFile(new URL("../app/CreatorPoolApp.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/supabase-records.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/form-enhancements.css", import.meta.url), "utf8"),
+    readFile(new URL("../supabase/functions/delete-campaign/index.ts", import.meta.url), "utf8"),
+  ]);
+  const campaignsSection = app.slice(app.indexOf("function Tasks"), app.indexOf("function Submissions"));
+  const rewardsSection = app.slice(app.indexOf("function Rewards"), app.indexOf("function PaymentForms"));
+  assert.match(campaignsSection, /campaign-delete-button/);
+  assert.match(campaignsSection, /onDelete\(task\)/);
+  assert.match(app, /function CampaignDeleteModal/);
+  assert.match(app, /confirmation!=="DELETE"/);
+  assert.match(records, /functions\.invoke\("delete-campaign"/);
+  assert.match(edgeFunction, /caller\?\.role !== "marketing_admin"/);
+  assert.match(edgeFunction, /\.from\("submission-evidence"\)\.remove\(evidenceKeys\)/);
+  assert.match(edgeFunction, /admin\.from\("campaigns"\)\.delete\(\)\.eq\("id", campaignId\)/);
+  assert.match(rewardsSection, /reward-bulk-editor/);
+  assert.match(rewardsSection, /Select all visible/);
+  assert.match(rewardsSection, /Apply status/);
+  assert.match(rewardsSection, /bulkStatus==="Pay Fail"/);
+  assert.match(records, /bulkUpdateRewardStatuses/);
+  assert.match(records, /\.from\("submission_rewards"\)\.update/);
+  assert.match(records, /\.in\("id",ids\)/);
+  assert.match(enhancements, /\.reward-bulk-editor/);
+  assert.match(enhancements, /\.team-campaign-card \.campaign-delete-button/);
+});
+
 test("ships the Creator Pool Hub product instead of the starter", async () => {
   const [page, app, layout, css, enhancements, publicCss, dashboardTheme, language, hosting, supabaseRecords, productionMigration, uniqueCreatorEmailMigration, campaignLimitMigration, userFacingErrors, deleteCreatorFunction] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),

@@ -114,6 +114,24 @@ export async function deleteCreatorAccount(client:SupabaseClient, creatorId:stri
   return true;
 }
 
+export async function deleteCampaignRecord(client:SupabaseClient, campaignId:string) {
+  const {data,error}=await client.functions.invoke("delete-campaign",{body:{campaignId}});
+  if(error)throw error;
+  if(data?.error)throw new Error(String(data.error));
+  if(!data?.deleted)throw new Error("The campaign could not be deleted.");
+  return true;
+}
+
+export async function bulkUpdateRewardStatuses(client:SupabaseClient, rewards:Reward[], status:string, failureReason="") {
+  const ids=rewards.map(reward=>reward.id).filter(id=>/^[0-9a-f-]{36}$/i.test(id));
+  if(!ids.length)throw new Error("Select at least one saved reward.");
+  const now=new Date().toISOString();
+  if(status==="Pay Fail"&&!failureReason.trim())throw new Error("Add a reason before marking rewards as Pay Fail.");
+  const {error}=await client.from("submission_rewards").update({payment_status:dbRewardStatus(status),paid_at:status==="Fully Paid"?now:null,failure_reason:status==="Pay Fail"?failureReason.trim():null,updated_at:now}).in("id",ids);
+  if(error)throw error;
+  return rewards.filter(reward=>ids.includes(reward.id)).map(reward=>({...reward,status,paidAt:status==="Fully Paid"?now:"",failureReason:status==="Pay Fail"?failureReason.trim():""}));
+}
+
 export async function updateSubmissionRecord(client:SupabaseClient, submission:Submission) {
   const {error}=await client.from("campaign_submissions").update({status:dbSubmissionStatus(submission.status),verified_views:submission.aiViews||submission.views,total_engagement:submission.totalEngagement||null,engagement_rate:submission.engagementRate||null,analytics_status:submission.analyticsStatus||"manual_review",recommendation:submission.recommendation||"Manual review",confidence:submission.confidence||0,qualification_reason:submission.qualificationReason||null,evidence_key:submission.evidenceKey||null,evidence_name:submission.evidenceName||null,updated_at:new Date().toISOString()}).eq("id",submission.id);
   if(error)throw error;

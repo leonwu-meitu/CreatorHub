@@ -1774,3 +1774,40 @@
   .public-language-switcher select { min-width:0; padding-inline:27px; font-size:9.5px; }
   .public-language-switcher { width:128px; min-width:128px; }
 }
+
+/* Team campaign deletion and reward status bulk actions */
+.team-campaign-card footer { grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr) minmax(0,.65fr); }
+.team-campaign-card .campaign-delete-button { min-width:0; padding-inline:10px; border:1px solid #f0c7c2; background:#fff7f5; color:#a94339; box-shadow:none; }
+.team-campaign-card .campaign-delete-button:hover { border-color:#df8d83; background:#ffebe7; }
+.campaign-delete-dialog { width:min(560px,calc(100vw - 28px)); }
+.campaign-delete-warning { display:flex; align-items:flex-start; gap:12px; padding:15px; border:1px solid #f2c2bb; border-radius:12px; background:#fff3f0; color:#6e2923; }
+.campaign-delete-warning > span { flex:0 0 30px; height:30px; display:grid; place-items:center; border-radius:9px; background:#e76557; color:#fff; font-weight:900; }
+.campaign-delete-warning b,.campaign-delete-warning p { display:block; }
+.campaign-delete-warning p { margin:5px 0 0; color:#89514b; font-size:9px; line-height:1.55; }
+
+.reward-bulk-editor { display:flex; align-items:end; gap:12px; margin-bottom:14px; padding:14px; }
+.reward-bulk-editor > div { min-width:170px; margin-right:auto; }
+.reward-bulk-editor > div b,.reward-bulk-editor > div small { display:block; }
+.reward-bulk-editor > div b { font-size:11px; }
+.reward-bulk-editor > div small { margin-top:3px; color:var(--muted); font-size:8px; }
+.reward-bulk-editor > label { min-width:190px; margin:0; color:var(--muted); font-size:8px; font-weight:800; }
+.reward-bulk-editor > label select,.reward-bulk-editor > label input { min-height:38px; margin-top:6px; background:#fff; }
+.reward-bulk-editor .reward-bulk-select-all { min-width:auto; min-height:38px; display:flex; align-items:center; gap:8px; padding:0 12px; border:1px solid var(--line); border-radius:9px; background:#fff; color:var(--ink); }
+.reward-bulk-editor .reward-bulk-select-all input,.reward-payment-table .reward-select-column input { width:16px; height:16px; min-height:0; margin:0; accent-color:#f11d48; }
+.reward-bulk-editor .reward-bulk-reason { min-width:250px; }
+.reward-bulk-editor > button { min-height:38px; white-space:nowrap; }
+.reward-payment-table .reward-select-column { width:44px; min-width:44px; text-align:center; }
+.reward-payment-table tr.reward-row-selected td { background:#fff4f6; }
+
+@media (max-width:900px) {
+  .reward-bulk-editor { align-items:stretch; flex-wrap:wrap; }
+  .reward-bulk-editor > div { flex:1 1 220px; order:-1; }
+  .reward-bulk-editor > label { flex:1 1 180px; }
+  .reward-bulk-editor .reward-bulk-reason { flex-basis:100%; }
+}
+
+@media (max-width:620px) {
+  .team-campaign-card footer { grid-template-columns:1fr; }
+  .reward-bulk-editor { display:grid; grid-template-columns:1fr; align-items:stretch; }
+  .reward-bulk-editor > div,.reward-bulk-editor > label { min-width:0; }
+}
