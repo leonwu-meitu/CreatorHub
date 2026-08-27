@@ -61,6 +61,21 @@ test("resumes a Creator's own pending application instead of reporting a false d
   assert.match(errors, /Your Creator Pool application has already been accepted/);
 });
 
+test("emails a declined Creator at the application email with the Team reason", async () => {
+  const [app, edgeFunction] = await Promise.all([
+    readFile(new URL("../app/CreatorPoolApp.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../supabase/functions/application-decision-email/index.ts", import.meta.url), "utf8"),
+  ]);
+  assert.match(app, /decline_reason:status==="Declined"\?reason:null/);
+  assert.match(app, /functions\.invoke\("application-decision-email",\{body:\{applicationId:row\.id\}\}\)/);
+  assert.match(edgeFunction, /callerProfile\?\.role !== "marketing_admin"/);
+  assert.match(edgeFunction, /applicationData\.email \|\| creatorProfile\?\.email/);
+  assert.match(edgeFunction, /String\(application\.decline_reason \|\| ""\)/);
+  assert.match(edgeFunction, /Update on Your Meitu CreatorHub Application/);
+  assert.match(edgeFunction, /Reason for declining:/);
+  assert.match(edgeFunction, /decision_email_status: application\.status/);
+});
+
 test("ships the Creator Pool Hub product instead of the starter", async () => {
   const [page, app, layout, css, enhancements, publicCss, dashboardTheme, language, hosting, supabaseRecords, productionMigration, uniqueCreatorEmailMigration, campaignLimitMigration, userFacingErrors, deleteCreatorFunction] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
