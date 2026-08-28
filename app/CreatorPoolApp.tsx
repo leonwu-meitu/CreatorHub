@@ -901,7 +901,7 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
   const rewards=[["T1","10K Views","VIP 1 Bulan"],["T2","100K Views","Rp 500.000"],["T3","250K Views","Rp 1.250.000"],["T4","500K Views","Rp 2.500.000"],["T5","1M Views","Rp 5.000.000"]];
   const heroApps=[
     {name:"Meitu",src:"/canva/meitu-app.png",tone:"meitu",copy:"Create standout photo edits with iconic AI tools.",download:"https://meitu-global.go.link?adj_t=23dkh346"},
-    {name:"BeautyCam",src:"/canva/beautycam-app.png",tone:"beautycam",copy:"Turn every portrait into polished, creator-ready content.",download:"https://beautycam-global.go.link/H4L9X"},
+    {name:"BeautyCam",src:"/canva/beautycam-app.png",tone:"beautycam",copy:"Make every portrait more aesthetic and ready to share.",download:"https://beautycam-global.go.link/H4L9X"},
     {name:"Wink",src:"/canva/wink-app.png",tone:"wink",copy:"Bring short-form video stories to life with smarter editing.",download:"https://wink-global.go.link/9VzRE"},
   ];
   const aboutHighlights=[

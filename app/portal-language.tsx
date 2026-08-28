@@ -713,7 +713,7 @@ const copyPairs: ReadonlyArray<readonly [english: string, indonesian: string]> =
   ["Opportunity to Become a Meitu KOL", "Kesempatan Menjadi KOL Meitu"],
   ["Consistent performance unlocks campaign priority and exclusive collaborations.", "Performa konsisten membuka prioritas kampanye dan kolaborasi eksklusif."],
   ["Create standout photo edits with iconic AI tools.", "Buat editan foto menonjol dengan alat AI unggulan."],
-  ["Turn every portrait into polished, creator-ready content.", "Ubah setiap potret menjadi konten yang rapi dan siap dibagikan kreator."],
+  ["Make every portrait more aesthetic and ready to share.", "Buat setiap potret jadi lebih estetik dan siap dibagikan."],
   ["Bring short-form video stories to life with smarter editing.", "Hidupkan cerita video pendek dengan penyuntingan yang lebih cerdas."],
 
   ["Creator registration", "Pendaftaran kreator"],

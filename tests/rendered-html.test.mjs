@@ -387,6 +387,8 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.match(publicCss, /\.cta-ripple-elements/);
   assert.match(publicCss, /Neon app-color atmosphere for the Creator Pool welcome hero/);
   assert.match(publicCss, /rgba\(255,125,230,\.2\)/);
+  assert.match(app, /Make every portrait more aesthetic and ready to share\./);
+  assert.match(language, /Buat setiap potret jadi lebih estetik dan siap dibagikan\./);
   assert.match(publicCss, /Keep the desktop journey copy aligned between its number and icon/);
   assert.match(language, /Alur Kolaborasi Kampanye/);
   assert.match(app, /function InteractiveApplicationModal/);
