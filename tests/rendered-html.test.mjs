@@ -84,8 +84,14 @@ test("supports Team bulk reward status updates and secure campaign deletion", as
     readFile(new URL("../supabase/functions/delete-campaign/index.ts", import.meta.url), "utf8"),
   ]);
   const campaignsSection = app.slice(app.indexOf("function Tasks"), app.indexOf("function Submissions"));
+  const campaignEditor = app.slice(app.indexOf("function TaskModal"), app.indexOf("function CampaignDeleteModal"));
   const rewardsSection = app.slice(app.indexOf("function Rewards"), app.indexOf("function PaymentForms"));
   assert.match(campaignsSection, /campaign-delete-button/);
+  assert.match(campaignEditor, /Reference link <small className="form-help inline">Optional<\/small>/);
+  assert.match(campaignEditor, /How to access feature \/ tutorial link <small className="form-help inline">Optional<\/small>/);
+  assert.doesNotMatch(campaignEditor, /name="referenceLink" type="url" required/);
+  assert.doesNotMatch(campaignEditor, /name="tutorialLink" type="url" required/);
+  assert.match(await readFile(new URL("../app/portal-language.tsx", import.meta.url), "utf8"), /\["Optional", "Opsional"\]/);
   assert.match(campaignsSection, /onDelete\(task\)/);
   assert.match(app, /function CampaignDeleteModal/);
   assert.match(app, /confirmation!=="DELETE"/);

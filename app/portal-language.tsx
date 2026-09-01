@@ -592,6 +592,7 @@ const copyPairs: ReadonlyArray<readonly [english: string, indonesian: string]> =
   ["Describe the creative objective and the result creators should show…", "Jelaskan tujuan kreatif dan hasil yang perlu ditampilkan kreator…"],
   ["Reference link", "Tautan referensi"],
   ["How to access feature / tutorial link", "Tautan cara mengakses fitur / tutorial"],
+  ["Optional", "Opsional"],
   ["Which KOL niches fit this brief?", "Brief ini cocok untuk niche KOL apa?"],
   ["Choose as many as needed", "Pilih sebanyak yang dibutuhkan"],
   ["Clear all", "Hapus semua"],
