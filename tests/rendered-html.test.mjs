@@ -204,6 +204,13 @@ test("ships the Creator Pool Hub product instead of the starter", async () => {
   assert.doesNotMatch(applicationsSection, /<th>Status<\/th>/);
   assert.match(applicationsSection, /data-label="Target Apps"/);
   assert.match(applicationsSection, /data-label="Requested Apps"/);
+  assert.match(applicationsSection, /reviewedAt/);
+  assert.match(applicationsSection, /reviewedByName/);
+  assert.match(applicationsSection, /Submitted date/);
+  assert.match(applicationsSection, /Approved date/);
+  assert.match(applicationsSection, /Declined date/);
+  assert.match(applicationsSection, /Person in charge/);
+  assert.match(supabaseRecords, /reviewed_at,reviewed_by/);
   assert.doesNotMatch(app, /status:"AI screening"/);
   assert.match(enhancements, /\.application-manual-intro/);
   assert.match(enhancements, /\.manual-application-table\s*\{[^}]*min-width:\s*0/);

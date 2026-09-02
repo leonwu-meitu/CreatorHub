@@ -382,6 +382,30 @@
   justify-items: center;
   text-align: center;
 }
+.app-shell .application-decision-meta {
+  display: grid;
+  gap: 7px;
+  min-width: 132px;
+}
+.app-shell .application-decision-meta > small {
+  display: grid;
+  gap: 2px;
+  color: #77716e;
+  line-height: 1.2;
+}
+.app-shell .application-decision-meta > small + small {
+  border-top: 1px solid #e8e0da;
+  padding-top: 7px;
+}
+.app-shell .application-decision-meta span {
+  font-size: 9px;
+  font-weight: 750;
+}
+.app-shell .application-decision-meta b {
+  color: #181519;
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
 
 /* Product gradients identify the app on both Team and Creator submission lists. */
 .app-shell .manual-submission-card .product,
