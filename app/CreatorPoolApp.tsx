@@ -491,7 +491,6 @@ function Creators({applications,submissions,profiles,focusedCreatorId,onFocusHan
   const [selectedNiches,setSelectedNiches]=useState<string[]>([]);
   const [followers,setFollowers]=useState("All");
   const [province,setProvince]=useState("All");
-  const [city,setCity]=useState("All");
   const [creatorPage,setCreatorPage]=useState(1);
   const [pageSize,setPageSize]=useState(10);
   const [selectedCreatorId,setSelectedCreatorId]=useState("");
@@ -503,8 +502,7 @@ function Creators({applications,submissions,profiles,focusedCreatorId,onFocusHan
   const niches=[...new Set(rows.flatMap(row=>categoryList(row.creator.category)))];
   const tiers=[...new Set(rows.map(row=>row.tier))];
   const provinces=[...new Set(rows.map(row=>row.creator.province).filter(Boolean) as string[])].sort();
-  const cities=[...new Set(rows.filter(row=>province==="All"||row.creator.province===province).map(row=>row.creator.city).filter(Boolean))].sort();
-  const visible=rows.filter(row=>{const rowNiches=categoryList(row.creator.category);return ((row.creator.name+" "+row.creator.handle).toLowerCase().includes(query.toLowerCase()))&&(app==="All"||row.apps.includes(app))&&(socialPlatform==="All"||row.platforms.includes(socialPlatform))&&(!selectedNiches.length||selectedNiches.some(item=>rowNiches.includes(item)))&&(followers==="All"||row.tier===followers)&&(province==="All"||row.creator.province===province)&&(city==="All"||row.creator.city===city)});
+  const visible=rows.filter(row=>{const rowNiches=categoryList(row.creator.category);return ((row.creator.name+" "+row.creator.handle).toLowerCase().includes(query.toLowerCase()))&&(app==="All"||row.apps.includes(app))&&(socialPlatform==="All"||row.platforms.includes(socialPlatform))&&(!selectedNiches.length||selectedNiches.some(item=>rowNiches.includes(item)))&&(followers==="All"||row.tier===followers)&&(province==="All"||row.creator.province===province)});
   const toggleNiche=(item:string)=>setSelectedNiches(current=>current.includes(item)?current.filter(value=>value!==item):[...current,item]);
   const pageCount=Math.max(1,Math.ceil(visible.length/pageSize));
   const safePage=Math.min(creatorPage,pageCount);
@@ -517,7 +515,7 @@ function Creators({applications,submissions,profiles,focusedCreatorId,onFocusHan
   const paginationItems:(number|"ellipsis")[]=pageCount<=7?Array.from({length:pageCount},(_,index)=>index+1):safePage<=4?[1,2,3,4,5,"ellipsis",pageCount]:safePage>=pageCount-3?[1,"ellipsis",pageCount-4,pageCount-3,pageCount-2,pageCount-1,pageCount]:[1,"ellipsis",safePage-1,safePage,safePage+1,"ellipsis",pageCount];
   const exportCreators=()=>{const escape=(value:unknown)=>`"${String(value??"").replaceAll('"','""')}"`;const csv=[["Creator","Handle","Email","WhatsApp","City","Province","Apps","Niches","Campaigns completed"],...visible.map(({creator,apps,tasks,whatsapp})=>[creator.name,creator.handle,creator.email,whatsapp,creator.city,creator.province,apps.join(" · "),categoryList(creator.category).join(" · "),tasks])].map(row=>row.map(escape).join(",")).join("\n");const link=document.createElement("a");const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));link.href=url;link.download="creator-pool-creators.csv";document.body.append(link);link.click();link.remove();window.setTimeout(()=>URL.revokeObjectURL(url),0)};
   return <>
-    <PageHead title="Creators" copy="Search and curate accepted creators by platform, niche, followers, and city."><button type="button" className="secondary" onClick={exportCreators}>Export list</button></PageHead>
+    <PageHead title="Creators" copy="Search and curate accepted creators by platform, niche, followers, and app."><button type="button" className="secondary" onClick={exportCreators}>Export list</button></PageHead>
     <section className="creator-directory-summary"><div><span>CREATOR DIRECTORY</span><h2>{visible.length} creators in this view</h2><p>Filter the pool, review contact details, and control how many creators appear on each page.</p></div></section>
     <section className="creator-niche-filter panel">
       <header><span>Filter by niche</span><small>Select one or more. Creators matching any selected niche will appear.</small></header>
@@ -530,7 +528,7 @@ function Creators({applications,submissions,profiles,focusedCreatorId,onFocusHan
       <label><span>Search creators</span><input value={query} onChange={event=>setQuery(event.target.value)} placeholder="Name or username…"/></label>
       <label><span>Social platform</span><select value={socialPlatform} onChange={event=>setSocialPlatform(event.target.value)}><option>All</option>{["Instagram","TikTok","Threads"].map(item=><option key={item}>{item}</option>)}</select></label>
       <label><span>Followers</span><select value={followers} onChange={event=>setFollowers(event.target.value)}><option>All</option>{tiers.map(item=><option key={item}>{item}</option>)}</select></label>
-      <label><span>City</span><select value={city} onChange={event=>setCity(event.target.value)}><option>All</option>{cities.map(item=><option key={item}>{item}</option>)}</select></label>
+      <label><span>Apps</span><select value={app} onChange={event=>setApp(event.target.value)}><option>All</option>{["Meitu","BeautyCam","Wink"].map(item=><option key={item}>{item}</option>)}</select></label>
     </section>
     <section className="panel table-panel creator-directory-table">
       <div className="panel-head"><div><h2>{visible.length} creators</h2><p>{visible.length?"Showing "+(firstIndex+1)+"–"+Math.min(firstIndex+pageRows.length,visible.length)+" of "+visible.length:"No creators match these filters"}</p></div></div>
