@@ -178,7 +178,7 @@
 .task-calendar-list > button span small { margin-top: 4px; color: var(--muted); font-size: 8px; }
 .task-calendar-list > button em { font-size: 18px; font-style: normal; }
 .task-preview-body { display: grid; gap: 16px; padding: 18px; }
-.task-preview-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.task-preview-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
 .task-preview-stats article { min-height: 78px; display: grid; align-content: center; gap: 7px; padding: 11px; border: 1px solid var(--line); border-radius: 10px; background: #faf9fc; }
 .task-preview-stats small { color: var(--muted); font-size: 8px; }
 .task-preview-stats strong { font-size: 18px; }

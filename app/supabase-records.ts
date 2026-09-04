@@ -43,10 +43,13 @@ export function avatarPublicUrl(client:SupabaseClient|null, key?:string) {
 }
 
 export async function loadPortalRecords(client:SupabaseClient, account:PortalAccount) {
+  const joinQuery=account.role === "creator"
+    ? client.from("creator_campaign_joins").select("campaign_id,creator_id").eq("creator_id",account.id)
+    : client.from("creator_campaign_joins").select("campaign_id,creator_id");
   const [applicationResult,campaignResult,joinResult,submissionResult,rewardResult,settingsResult,profileResult,expansionResult,paymentResult] = await Promise.all([
     client.from("creator_applications").select("id,creator_id,status,decline_reason,submitted_at,reviewed_at,reviewed_by,application_data").order("submitted_at",{ascending:false}),
     client.from("campaigns").select("id,title,product,reference_link,tutorial_link,deadline,status,task_data").order("created_at",{ascending:false}),
-    account.role === "creator" ? client.from("creator_campaign_joins").select("campaign_id").eq("creator_id",account.id) : Promise.resolve({data:[],error:null}),
+    joinQuery,
     client.from("campaign_submissions").select("*").order("created_at",{ascending:false}),
     client.from("submission_rewards").select("*").order("created_at",{ascending:false}),
     client.from("creator_profile_settings").select("creator_id,display_name,contact_email,niches,tiktok_url,instagram_url,threads_url,whatsapp,avatar_key,avatar_name,updated_at"),
@@ -54,7 +57,7 @@ export async function loadPortalRecords(client:SupabaseClient, account:PortalAcc
     client.from("app_expansion_requests").select("*").order("submitted_at",{ascending:false}),
     client.from("payment_forms").select("*").order("month",{ascending:false}),
   ]);
-  const firstError=[applicationResult,campaignResult,submissionResult,rewardResult,settingsResult,profileResult,expansionResult,paymentResult].find(result=>result.error)?.error;
+  const firstError=[applicationResult,campaignResult,joinResult,submissionResult,rewardResult,settingsResult,profileResult,expansionResult,paymentResult].find(result=>result.error)?.error;
   if(firstError)throw firstError;
 
   const campaigns=(campaignResult.data||[]).map(row=>campaignFromRow(row as CampaignRow));
@@ -76,7 +79,9 @@ export async function loadPortalRecords(client:SupabaseClient, account:PortalAcc
   const appExpansionRequests:AppExpansionRequest[]=(expansionResult.data||[]).map((row:any)=>({id:row.id,creatorId:row.creator_id,creator:nameFor(row.creator_id),currentApps:(row.current_apps||[]).join(","),requestedApps:(row.requested_apps||[]).join(","),reason:row.reason,status:statusLabel(row.status),submitted:row.submitted_at,declineReason:row.decline_reason||""}));
   const paymentForms:PaymentForm[]=(paymentResult.data||[]).map((row:any)=>({id:row.id,product:row.product,month:String(row.month).slice(0,7),url:row.url,updatedAt:row.updated_at}));
 
-  return {applications,campaigns,submissions,rewards,creatorProfiles,appExpansionRequests,paymentForms,joinedCampaignIds:(joinResult.data||[]).map((row:any)=>row.campaign_id)};
+  const joinedCampaignIds=(joinResult.data||[]).map((row:any)=>row.campaign_id);
+  const joinedCampaignCounts=(joinResult.data||[]).reduce((counts:Record<string,number>,row:any)=>{counts[row.campaign_id]=(counts[row.campaign_id]||0)+1;return counts},{});
+  return {applications,campaigns,submissions,rewards,creatorProfiles,appExpansionRequests,paymentForms,joinedCampaignIds,joinedCampaignCounts};
 }
 
 export async function saveSubmissionRecord(client:SupabaseClient, accountId:string, task:Task, submission:Submission) {
