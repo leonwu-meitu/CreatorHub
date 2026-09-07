@@ -1095,6 +1095,7 @@
 .manual-submission-campaign > b,.manual-submission-post > b { overflow: hidden; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }.manual-submission-campaign .product { width: fit-content; }
 .manual-submission-post a { color: #bd1437; font-size: 8px; font-weight: 850; }.manual-submission-post span { color: var(--muted); font-size: 7px; }
 .manual-submission-views strong { font-size: 17px; letter-spacing: -.04em; }.manual-submission-status > span { width: fit-content; }
+.manual-submission-views .creator-submitted-viewers { color: #8b4d5c; font-size: 8px; }
 .manual-review-drawer .review-summary { grid-template-columns: repeat(4,max-content); }
 .manual-post-review { display: flex; align-items: flex-start; gap: 13px; padding: 15px; border: 1px solid rgba(241,29,72,.22); border-radius: 13px; background: linear-gradient(135deg,#fff,#fff3f5); }
 .manual-post-review h3 { margin: 0 0 4px; }.manual-post-review p { margin: 0 0 11px; color: var(--muted); font-size: 8px; line-height: 1.5; }.manual-post-review a { display: inline-flex; padding: 9px 12px; border-radius: 9px; background: linear-gradient(120deg,#080808,#f11d48); color: #fff; font-size: 8px; font-weight: 850; text-decoration: none; }
