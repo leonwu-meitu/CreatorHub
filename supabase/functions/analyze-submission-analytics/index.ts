@@ -124,12 +124,13 @@ const normalizedPlatform = (value: unknown) => String(value || "").trim().toLowe
 const extractionPrompt = (platform: string) => `
 You verify social-media analytics screenshots for CreatorHub. The creator says this post is on ${platform}.
 
-Read only numbers visibly present in the screenshot. Never infer, estimate, or invent missing metrics.
-- views: the post/video views displayed in the screenshot, not followers, reach, or profile views.
-- displayed_total_engagement: use a clearly labelled total interactions/engagement number when one is shown; otherwise return 0.
-- TikTok components: likes + comments + shares + saves/favorites.
-- Instagram components: likes + comments + shares + saves. Include reposts only when visibly shown as a separate post metric.
-- Threads components: likes + replies (comments) + reposts + quotes/shares. If Insights shows Total interactions, place it in displayed_total_engagement.
+Read only numbers visibly present in the screenshot. Never infer, estimate, or invent missing metrics. Match each number to its visible TITLE/LABEL, not its position or icon alone.
+- views: the number titled Video views, Views, or the post play/view count. Never use followers, reach, profile views, total play time, average watch time, or watched-full-video percentage.
+- displayed_total_engagement: use a number explicitly titled Total engagement, Total interactions, or equivalent only when that title is visible; otherwise return 0 and calculate from the titled components below.
+- TikTok titles: Likes, Comments, Shares, and Saves/Favorites. Sum only those titled counts. The number titled Video views is never engagement.
+- Instagram titles: Likes, Comments, Shares, and Saves. Sum only those titled counts. Include Reposts only when a separate Reposts title is visibly shown.
+- Threads titles: Likes, Replies, Reposts, and Quotes. Map Replies to comments and Quotes to shares. Sum only those titled counts.
+- If a title is not visible or its number is unreadable, return 0 for that field; do not substitute a nearby number.
 - A compact number such as 11.9K means 11900 and 2.8M means 2800000.
 - When the same views metric appears as both an exact number and a rounded compact number, return the exact number.
 - Set valid_analytics_screenshot=false when the image is not post analytics, the views are unreadable, or it clearly belongs to a different platform.
@@ -141,12 +142,14 @@ Return only one valid JSON object, with no Markdown and no additional commentary
 Use 0 for a metric that is not visibly shown. Keep explanation under 300 characters. A human Team member will make the final reward decision.`;
 
 const engagementExtractionPrompt = (platform: string) => `
-Read only the visible post-interaction counts in this ${platform} analytics screenshot. Focus on the interaction icon row near the post preview; ignore watch time, followers, and audience metrics.
+Read only the visible post-interaction counts in this ${platform} analytics screenshot. Match each number to its visible TITLE/LABEL first; use an icon only as a secondary clue. Ignore watch time, followers, reach, and audience metrics.
 
-Icon mapping:
-- TikTok: heart = likes, speech bubble = comments, curved share arrow = shares, bookmark = saves/favorites. The play-triangle count is views and must not be counted as engagement.
-- Instagram: heart = likes, speech bubble = comments, paper-plane or share arrow = shares, bookmark = saves.
-- Threads: heart = likes, speech bubble = replies/comments, repost arrows = reposts, paper-plane/share = quotes or shares.
+Required title mapping:
+- TikTok: titles Likes + Comments + Shares + Saves/Favorites. The title Video views is views and must not be counted.
+- The play-triangle count is views and must not be counted as engagement.
+- Instagram: titles Likes + Comments + Shares + Saves. Add Reposts only when that title is visibly shown.
+- Threads: titles Likes + Replies + Reposts + Quotes. Map Replies to comments and Quotes to shares.
+- A metric with no readable title is 0. Never count the same number twice.
 
 Return only one valid JSON object with numeric values and no Markdown:
 {"displayed_total_engagement":integer,"likes":integer,"comments":integer,"shares":integer,"saves":integer,"reposts":integer,"quotes":integer,"confidence":integer}
