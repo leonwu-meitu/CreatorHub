@@ -281,9 +281,10 @@ Deno.serve(async (request) => {
       }
     }
     const screenshotIsValid = booleanValue(extracted.valid_analytics_screenshot);
-    const valid = screenshotIsValid && platformMatches && views > 0 && totalEngagement > 0;
-    const analyticsStatus = valid ? "ai_verified" : "ai_needs_review";
-    const recommendation = analyticsStatus === "ai_verified" ? "Ready for Team review" : "Manual review required";
+    // Keep AI output as a draft until a Team member verifies the visible metrics.
+    // This prevents OCR/icon mistakes from automatically affecting qualification or rewards.
+    const analyticsStatus = "ai_needs_review";
+    const recommendation = "Manual review required";
     const reviewReason = !screenshotIsValid
       ? String(extracted.explanation || "The screenshot could not be verified as post analytics.").slice(0, 500)
       : !platformMatches
@@ -292,7 +293,7 @@ Deno.serve(async (request) => {
           ? "The screenshot did not contain a readable views total."
           : totalEngagement <= 0
             ? "The screenshot did not contain readable engagement metrics."
-            : null;
+            : "AI extracted draft metrics; Team verification is required before approval.";
     const processedAt = new Date().toISOString();
 
     const { data: updated, error: updateError } = await admin.from("campaign_submissions").update({
