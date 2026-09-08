@@ -127,8 +127,8 @@ You verify social-media analytics screenshots for CreatorHub. The creator says t
 Read only numbers visibly present in the screenshot. Never infer, estimate, or invent missing metrics. Match each number to its visible TITLE/LABEL or its adjacent standard platform icon; some Instagram screens show icons without text labels.
 - views: the number titled Video views, Views, or the post play/view count. Never use followers, reach, profile views, total play time, average watch time, or watched-full-video percentage.
 - displayed_total_engagement: use a number explicitly titled Total engagement, Total interactions, or equivalent only when that title is visible; otherwise return 0 and calculate from the titled components below.
-- TikTok titles: Likes, Comments, Shares, and Saves/Favorites. For TikTok, the required formula is exactly `(Likes + Comments + Shares + Favorites/Saves) / Views * 100`. Sum only those four titled counts. Ignore every other metric, including Video views, play time, watch time, followers, and displayed totals.
-- Instagram titles/icons: Likes = heart icon, Comments = speech-bubble icon, Shares = paper-plane icon, and Saves/Favorites = bookmark icon. If labels are absent, read the number directly paired with each of those icons. The circular two-arrow Repost icon is excluded. For Instagram, the required formula is exactly `(Likes + Comments + Shares + Saves/Favorites) / Views * 100`. Ignore Profile activity, watch time, and any displayed interaction total.
+- TikTok titles: Likes, Comments, Shares, and Saves/Favorites. For TikTok, the required formula is exactly (Likes + Comments + Shares + Favorites/Saves) / Views * 100. Sum only those four titled counts. Ignore every other metric, including Video views, play time, watch time, followers, and displayed totals.
+- Instagram titles/icons: Likes = heart icon, Comments = speech-bubble icon, Shares = paper-plane icon, and Saves/Favorites = bookmark icon. If labels are absent, read the number directly paired with each of those icons. The circular two-arrow Repost icon is excluded. For Instagram, the required formula is exactly (Likes + Comments + Shares + Saves/Favorites) / Views * 100. Ignore Profile activity, watch time, and any displayed interaction total.
 - Threads titles: Likes, Replies, Reposts, and Quotes. Map Replies to comments and Quotes to shares. Sum only those titled counts.
 - If a title is not visible or its number is unreadable, return 0 for that field; do not substitute a nearby number.
 - A compact number such as 11.9K means 11900 and 2.8M means 2800000.
@@ -145,9 +145,9 @@ const engagementExtractionPrompt = (platform: string) => `
 Read only the visible post-interaction counts in this ${platform} analytics screenshot. Match each number to its visible TITLE/LABEL when present; when the platform uses icon-only controls, identify the standard icon and the number directly paired with it. Never rely on screen position alone. Ignore watch time, followers, reach, and audience metrics.
 
 Required title mapping:
-- TikTok: use exactly Likes + Comments + Shares + Favorites/Saves. The title Video views is the denominator only and must not be counted as engagement. The final rate is `(Likes + Comments + Shares + Favorites/Saves) / Views * 100`.
+- TikTok: use exactly Likes + Comments + Shares + Favorites/Saves. The title Video views is the denominator only and must not be counted as engagement. The final rate is (Likes + Comments + Shares + Favorites/Saves) / Views * 100.
 - The play-triangle count is views and must not be counted as engagement.
-- Instagram: heart icon = Likes, speech-bubble icon = Comments, paper-plane icon = Shares, and bookmark icon = Saves/Favorites. Use exactly those four icon/count pairs even when no labels are printed. Exclude the circular two-arrow Repost icon, Profile activity, watch time, and displayed interaction totals. The final rate is `(Likes + Comments + Shares + Saves/Favorites) / Views * 100`.
+- Instagram: heart icon = Likes, speech-bubble icon = Comments, paper-plane icon = Shares, and bookmark icon = Saves/Favorites. Use exactly those four icon/count pairs even when no labels are printed. Exclude the circular two-arrow Repost icon, Profile activity, watch time, and displayed interaction totals. The final rate is (Likes + Comments + Shares + Saves/Favorites) / Views * 100.
 - Threads: titles Likes + Replies + Reposts + Quotes. Map Replies to comments and Quotes to shares.
 - A metric with no readable title is 0. Never count the same number twice.
 
