@@ -1094,7 +1094,7 @@
 .manual-submission-campaign,.manual-submission-post,.manual-submission-views,.manual-submission-status { min-width: 0; display: grid; gap: 5px; }
 .manual-submission-campaign > b,.manual-submission-post > b { overflow: hidden; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }.manual-submission-campaign .product { width: fit-content; }
 .manual-submission-post a { color: #bd1437; font-size: 8px; font-weight: 850; }.manual-submission-post span { color: var(--muted); font-size: 7px; }
-.manual-submission-views strong { font-size: 17px; letter-spacing: -.04em; }.manual-submission-status > span { width: fit-content; margin-left: 10px; }
+.manual-submission-views strong { font-size: 17px; letter-spacing: -.04em; }.manual-submission-status { padding-left: 28px; }.manual-submission-status > span { width: fit-content; margin-left: 0; position: relative; z-index: 2; }
 .manual-submission-views .creator-submitted-viewers { color: #8b4d5c; font-size: 8px; }
 .viewer-comparison { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
 .viewer-comparison > div { display: grid; gap: 4px; min-width: 0; }
