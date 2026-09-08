@@ -1836,6 +1836,10 @@
 @media (min-width: 621px) and (max-width: 1100px) {
   .manual-submission-card .decision-buttons { grid-column: 1 / -1; justify-self: start; padding-top: 0; }
 }
+@media (min-width: 981px) {
+  .manual-submission-card { position: relative; padding-right: 220px; min-height: 190px; }
+  .manual-submission-card > .decision-buttons { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); width: 190px; display: flex; justify-content: flex-end; padding-top: 0; }
+}
 .submission-analytics-values span:nth-child(3) small,.submission-analytics-values span:nth-child(5) small,.submission-analytics-values span:nth-child(6) small { font-size: 0; }
 .submission-analytics-values span:nth-child(3) small::after { content: "Comments"; font-size: 8px; }
 .submission-analytics-values span:nth-child(5) small::after { content: "Shares"; font-size: 8px; }
