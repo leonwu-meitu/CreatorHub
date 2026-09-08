@@ -1820,6 +1820,9 @@
 .submission-analytics-values small { color: var(--muted); font-size: 8px; }
 .submission-analytics-values b { font-size: 11px; }
 .submission-analytics-values { cursor: pointer; }
+.manual-submission-views .manual-ai-button,.manual-submission-views .manual-engagement-button { grid-row: 4; width: max-content; }
+.manual-submission-views .manual-ai-button { grid-column: 1; }
+.manual-submission-views .manual-engagement-button { grid-column: 2; }
 .submission-analytics-values span:nth-child(3) small,.submission-analytics-values span:nth-child(5) small,.submission-analytics-values span:nth-child(6) small { font-size: 0; }
 .submission-analytics-values span:nth-child(3) small::after { content: "Comments"; font-size: 8px; }
 .submission-analytics-values span:nth-child(5) small::after { content: "Shares"; font-size: 8px; }
