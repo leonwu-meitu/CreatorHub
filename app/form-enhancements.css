@@ -576,7 +576,7 @@
 
 /* Swipeable next-step card deck */
 .creator-home-focus { grid-template-columns: minmax(0,1.35fr) minmax(300px,.65fr); align-items: stretch; }
-.suggestion-deck { min-height: 402px; padding: 18px; overflow: hidden; }
+.suggestion-deck { min-height: 420px; padding: 18px; overflow: hidden; }
 .suggestion-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; }
 .suggestion-heading h2 { margin: 4px 0 3px; font-size: 17px; letter-spacing: -.03em; }
 .suggestion-heading p { margin: 0; color: var(--muted); font-size: 8px; }
@@ -609,7 +609,7 @@
 .suggestion-dots { display: flex; justify-content: center; gap: 5px; margin-top: 9px; }
 .suggestion-dots button { width: 6px; height: 6px; padding: 0; border: 0; border-radius: 50%; background: #d5cec6; transition: width .2s ease,background .2s ease; }
 .suggestion-dots button.active { width: 18px; border-radius: 999px; background: #f11d48; }
-.suggestion-gesture { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 8px 0 0; color: var(--muted); font-size: 7px; }
+.suggestion-gesture { position: relative; z-index: 4; display: flex; align-items: center; justify-content: center; gap: 6px; margin: 24px 0 0; color: var(--muted); font-size: 7px; }
 .suggestion-gesture span { width: 18px; height: 18px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: #fff; color: #f11d48; font-weight: 900; }
 
 /* Campaign streak with a visible finish goal */
