@@ -299,6 +299,11 @@ Deno.serve(async (request) => {
     const { data: updated, error: updateError } = await admin.from("campaign_submissions").update({
       verified_views: views || null,
       total_engagement: totalEngagement,
+      analytics_likes: nonNegativeInteger(extracted.likes),
+      analytics_comments: nonNegativeInteger(extracted.comments),
+      analytics_reposts: nonNegativeInteger(extracted.reposts),
+      analytics_shares: nonNegativeInteger(extracted.shares),
+      analytics_favorites: nonNegativeInteger(extracted.saves),
       analytics_status: analyticsStatus,
       analytics_error: reviewReason,
       analytics_model: model,
@@ -306,7 +311,7 @@ Deno.serve(async (request) => {
       recommendation,
       confidence,
       updated_at: processedAt,
-    }).eq("id", submissionId).select("verified_views,total_engagement,engagement_rate,analytics_status,recommendation,confidence,analytics_error,analytics_model,analytics_processed_at,analytics_attempt_count").single();
+    }).eq("id", submissionId).select("verified_views,total_engagement,engagement_rate,analytics_likes,analytics_comments,analytics_reposts,analytics_shares,analytics_favorites,analytics_status,recommendation,confidence,analytics_error,analytics_model,analytics_processed_at,analytics_attempt_count").single();
     if (updateError) throw updateError;
 
     return json({ analyzed: true, duplicate: false, submission: updated });
