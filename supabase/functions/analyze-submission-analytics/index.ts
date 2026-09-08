@@ -122,7 +122,7 @@ const booleanValue = (value: unknown) => value === true || (typeof value === "st
 const normalizedPlatform = (value: unknown) => String(value || "").trim().toLowerCase().replace(/[^a-z]/g, "");
 
 const extractionPrompt = (platform: string) => `
-You verify social-media analytics screenshots for CreatorHub. The creator says this post is on ${platform}.
+You verify social-media analytics screenshots for CreatorHub. The submitted platform is ${platform}, but treat that only as a hint. Determine the actual platform from the visible app branding, layout, labels, and standard interaction icons; do not force the submitted platform when the screenshot clearly shows another platform.
 
 Read only numbers visibly present in the screenshot. Never infer, estimate, or invent missing metrics. Match each number to its visible TITLE/LABEL or its adjacent standard platform icon; some Instagram screens show icons without text labels.
 - views: the number titled Video views, Views, or the post play/view count. Never use followers, reach, profile views, total play time, average watch time, or watched-full-video percentage.
@@ -142,7 +142,7 @@ Return only one valid JSON object, with no Markdown and no additional commentary
 Use 0 for a metric that is not visibly shown. Keep explanation under 300 characters. A human Team member will make the final reward decision.`;
 
 const engagementExtractionPrompt = (platform: string) => `
-Read only the visible post-interaction counts in this ${platform} analytics screenshot. Match each number to its visible TITLE/LABEL when present; when the platform uses icon-only controls, identify the standard icon and the number directly paired with it. Never rely on screen position alone. Ignore watch time, followers, reach, and audience metrics.
+Read only the visible post-interaction counts in this analytics screenshot. The submitted platform is ${platform}, but identify whether the screenshot is actually Instagram or TikTok from its branding, layout, labels, and standard interaction icons. Match each number to its visible TITLE/LABEL when present; when the platform uses icon-only controls, identify the standard icon and the number directly paired with it. Never rely on screen position alone. Ignore watch time, followers, reach, and audience metrics.
 
 Required title mapping:
 - TikTok: use exactly Likes + Comments + Shares + Favorites/Saves. The title Video views is the denominator only and must not be counted as engagement. The final rate is (Likes + Comments + Shares + Favorites/Saves) / Views * 100.
@@ -255,19 +255,22 @@ Deno.serve(async (request) => {
     const extracted = await runCloudflare(extractionPrompt(submission.platform), 700);
     const views = nonNegativeInteger(extracted.views);
     const displayedTotal = nonNegativeInteger(extracted.displayed_total_engagement);
-    const isTikTok = normalizedPlatform(submission.platform) === "tiktok";
-    const isInstagram = normalizedPlatform(submission.platform) === "instagram";
+    const detectedPlatform = String(extracted.detected_platform || "Unknown");
+    const normalizedSubmittedPlatform = normalizedPlatform(submission.platform);
+    const normalizedDetectedPlatform = normalizedPlatform(detectedPlatform);
+    const isTikTok = normalizedDetectedPlatform === "tiktok" || (normalizedDetectedPlatform === "unknown" && normalizedSubmittedPlatform === "tiktok");
+    const isInstagram = normalizedDetectedPlatform === "instagram" || (normalizedDetectedPlatform === "unknown" && normalizedSubmittedPlatform === "instagram");
     const fixedFormulaPlatform = isTikTok || isInstagram;
     const engagementKeys = fixedFormulaPlatform ? ["likes", "comments", "shares", "saves"] : ["likes", "comments", "shares", "saves", "reposts", "quotes"];
     const componentTotal = engagementKeys
       .reduce((sum, key) => sum + nonNegativeInteger(extracted[key]), 0);
     let totalEngagement = fixedFormulaPlatform ? componentTotal : displayedTotal > 0 ? displayedTotal : componentTotal;
-    const detectedPlatform = String(extracted.detected_platform || "Unknown");
-    const platformMatches = normalizedPlatform(detectedPlatform) === normalizedPlatform(submission.platform);
+    const recognizedCrossPlatform = ["instagram", "tiktok"].includes(normalizedDetectedPlatform) && ["instagram", "tiktok"].includes(normalizedSubmittedPlatform);
+    const platformMatches = normalizedDetectedPlatform === normalizedSubmittedPlatform || recognizedCrossPlatform;
     let confidence = Math.min(100, nonNegativeInteger(extracted.confidence));
     if (totalEngagement <= 0) {
       try {
-        const focused = await runCloudflare(engagementExtractionPrompt(submission.platform), 300);
+        const focused = await runCloudflare(engagementExtractionPrompt(normalizedDetectedPlatform === "unknown" ? submission.platform : detectedPlatform), 300);
         const focusedDisplayedTotal = nonNegativeInteger(focused.displayed_total_engagement);
         const focusedComponentTotal = engagementKeys
           .reduce((sum, key) => sum + nonNegativeInteger(focused[key]), 0);
