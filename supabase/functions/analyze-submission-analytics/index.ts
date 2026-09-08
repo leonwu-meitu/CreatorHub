@@ -127,7 +127,7 @@ You verify social-media analytics screenshots for CreatorHub. The creator says t
 Read only numbers visibly present in the screenshot. Never infer, estimate, or invent missing metrics. Match each number to its visible TITLE/LABEL, not its position or icon alone.
 - views: the number titled Video views, Views, or the post play/view count. Never use followers, reach, profile views, total play time, average watch time, or watched-full-video percentage.
 - displayed_total_engagement: use a number explicitly titled Total engagement, Total interactions, or equivalent only when that title is visible; otherwise return 0 and calculate from the titled components below.
-- TikTok titles: Likes, Comments, Shares, and Saves/Favorites. Sum only those titled counts. The number titled Video views is never engagement.
+- TikTok titles: Likes, Comments, Shares, and Saves/Favorites. For TikTok, the required formula is exactly `(Likes + Comments + Shares + Favorites/Saves) / Views * 100`. Sum only those four titled counts. Ignore every other metric, including Video views, play time, watch time, followers, and displayed totals.
 - Instagram titles: Likes, Comments, Shares, and Saves. Sum only those titled counts. Include Reposts only when a separate Reposts title is visibly shown.
 - Threads titles: Likes, Replies, Reposts, and Quotes. Map Replies to comments and Quotes to shares. Sum only those titled counts.
 - If a title is not visible or its number is unreadable, return 0 for that field; do not substitute a nearby number.
@@ -145,7 +145,7 @@ const engagementExtractionPrompt = (platform: string) => `
 Read only the visible post-interaction counts in this ${platform} analytics screenshot. Match each number to its visible TITLE/LABEL first; use an icon only as a secondary clue. Ignore watch time, followers, reach, and audience metrics.
 
 Required title mapping:
-- TikTok: titles Likes + Comments + Shares + Saves/Favorites. The title Video views is views and must not be counted.
+- TikTok: use exactly Likes + Comments + Shares + Favorites/Saves. The title Video views is the denominator only and must not be counted as engagement. The final rate is `(Likes + Comments + Shares + Favorites/Saves) / Views * 100`.
 - The play-triangle count is views and must not be counted as engagement.
 - Instagram: titles Likes + Comments + Shares + Saves. Add Reposts only when that title is visibly shown.
 - Threads: titles Likes + Replies + Reposts + Quotes. Map Replies to comments and Quotes to shares.
@@ -255,9 +255,11 @@ Deno.serve(async (request) => {
     const extracted = await runCloudflare(extractionPrompt(submission.platform), 700);
     const views = nonNegativeInteger(extracted.views);
     const displayedTotal = nonNegativeInteger(extracted.displayed_total_engagement);
-    const componentTotal = ["likes", "comments", "shares", "saves", "reposts", "quotes"]
+    const isTikTok = normalizedPlatform(submission.platform) === "tiktok";
+    const engagementKeys = isTikTok ? ["likes", "comments", "shares", "saves"] : ["likes", "comments", "shares", "saves", "reposts", "quotes"];
+    const componentTotal = engagementKeys
       .reduce((sum, key) => sum + nonNegativeInteger(extracted[key]), 0);
-    let totalEngagement = displayedTotal > 0 ? displayedTotal : componentTotal;
+    let totalEngagement = isTikTok ? componentTotal : displayedTotal > 0 ? displayedTotal : componentTotal;
     const detectedPlatform = String(extracted.detected_platform || "Unknown");
     const platformMatches = normalizedPlatform(detectedPlatform) === normalizedPlatform(submission.platform);
     let confidence = Math.min(100, nonNegativeInteger(extracted.confidence));
@@ -265,9 +267,9 @@ Deno.serve(async (request) => {
       try {
         const focused = await runCloudflare(engagementExtractionPrompt(submission.platform), 300);
         const focusedDisplayedTotal = nonNegativeInteger(focused.displayed_total_engagement);
-        const focusedComponentTotal = ["likes", "comments", "shares", "saves", "reposts", "quotes"]
+        const focusedComponentTotal = engagementKeys
           .reduce((sum, key) => sum + nonNegativeInteger(focused[key]), 0);
-        totalEngagement = focusedDisplayedTotal > 0 ? focusedDisplayedTotal : focusedComponentTotal;
+        totalEngagement = isTikTok ? focusedComponentTotal : focusedDisplayedTotal > 0 ? focusedDisplayedTotal : focusedComponentTotal;
         confidence = Math.max(confidence, Math.min(100, nonNegativeInteger(focused.confidence)));
       } catch {
         // Preserve the successful first-pass result and send it to manual review.
