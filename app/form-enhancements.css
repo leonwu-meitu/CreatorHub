@@ -1823,6 +1823,16 @@
 .manual-submission-views .manual-ai-button,.manual-submission-views .manual-engagement-button { grid-row: 4; width: max-content; }
 .manual-submission-views .manual-ai-button { grid-column: 1; }
 .manual-submission-views .manual-engagement-button { grid-column: 2; }
+.manual-submission-card { align-items: start; min-height: 0; }
+.manual-submission-status { display: none; }
+.manual-submission-creator,.manual-submission-campaign,.manual-submission-post,.manual-submission-views { align-self: start; }
+.manual-submission-card > .decision-buttons { align-self: start; justify-content: flex-end; padding-top: 30px; }
+.manual-submission-views { gap: 8px; }
+.manual-submission-views .viewer-comparison { margin-bottom: 2px; }
+.manual-submission-views .submission-analytics-values { grid-template-columns: repeat(3,minmax(76px,1fr)); }
+@media (min-width: 1101px) {
+  .manual-submission-card { grid-template-columns: minmax(180px,1.1fr) minmax(130px,.8fr) minmax(160px,1fr) minmax(360px,2.2fr) minmax(170px,1fr); }
+}
 .submission-analytics-values span:nth-child(3) small,.submission-analytics-values span:nth-child(5) small,.submission-analytics-values span:nth-child(6) small { font-size: 0; }
 .submission-analytics-values span:nth-child(3) small::after { content: "Comments"; font-size: 8px; }
 .submission-analytics-values span:nth-child(5) small::after { content: "Shares"; font-size: 8px; }
