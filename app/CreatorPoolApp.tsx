@@ -81,7 +81,7 @@ const campaignDeadlineTime=(task:Task)=>new Date(`${task.deadline}T23:59:59+07:0
 const isCampaignOpen=(task:Task)=>task.status==="Active"&&Number.isFinite(campaignDeadlineTime(task))&&campaignDeadlineTime(task)>=Date.now();
 const taskStatusFor=(task:Task):"Ongoing"|"Expired"=>isCampaignOpen(task)?"Ongoing":"Expired";
 const followerCount=(application:Application)=>{const value=application.followers.trim().toUpperCase().replaceAll(",","");const parsed=Number.parseFloat(value);if(Number.isNaN(parsed))return 0;return value.endsWith("M")?parsed*1000000:value.endsWith("K")?parsed*1000:parsed};
-const engagementTotalFor=(submission:Submission)=>submission.totalEngagement||Math.round(submission.aiViews*(submission.engagementRate||0)/100);
+const engagementTotalFor=(submission:Submission)=>{const raw=[submission.analyticsLikes,submission.analyticsComments,submission.analyticsReposts,submission.analyticsShares,submission.analyticsFavorites].map(value=>Number(value||0));const hasRaw=raw.some(value=>value>0);return hasRaw?raw.reduce((sum,value)=>sum+value,0):submission.totalEngagement||Math.round(submission.aiViews*(submission.engagementRate||0)/100)};
 const engagementRateFor=(submission:Submission)=>submission.analyticsStatus==="Manual override"?(submission.engagementRate||0):submission.aiViews>0?(engagementTotalFor(submission)/submission.aiViews)*100:(submission.engagementRate||0);
 const whatsappCountryCodes=countryCallingCodes;
 const normalizeWhatsApp=(countryCode:string,localNumber:string)=>countryCode.replace(/\D/g,"")+localNumber.replace(/\D/g,"").replace(/^0+/,"");
