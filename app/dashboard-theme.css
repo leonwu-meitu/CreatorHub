@@ -1352,3 +1352,10 @@
   color: #20252b;
   background: rgba(255,255,255,.72);
 }
+
+/* Explicitly pin form controls to the portal typeface. This wins over
+   component-level font shorthands and browser-native control defaults. */
+.app-shell :is(input, textarea, select, button, [contenteditable="true"]),
+.public-site :is(input, textarea, select, button, [contenteditable="true"]) {
+  font-family: var(--font-jakarta-sans), Arial, sans-serif;
+}

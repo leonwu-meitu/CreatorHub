@@ -7,6 +7,13 @@
 @media(max-width:480px){.metrics{grid-template-columns:1fr}.top-actions .primary{font-size:0;padding:9px}.top-actions .primary:after{content:"＋";font-size:15px}.how>div{grid-template-columns:1fr}.how article{border-right:0}.public-hero h1{font-size:42px}.float-card.reward{left:-5px}.float-card.task{right:-3px}.search{width:55vw}.review-drawer footer{display:grid;grid-template-columns:1fr 1fr}.checklist,.analytics{grid-template-columns:1fr}.analytics div{border-right:0;border-bottom:1px solid var(--line)}}
 /* Google OAuth sign-in */
 .google-auth-dialog .form-body{display:grid;gap:16px}
+
+/* Keep every editable surface on the same type system as the site. Explicitly
+   setting the family avoids browser control defaults (especially on Safari)
+   from falling back to Arial while typing or opening a select. */
+:where(button,input,textarea,select,[contenteditable="true"]) {
+  font-family: var(--font-jakarta-sans), Arial, sans-serif;
+}
 .google-identity-button{width:100%;min-height:44px;display:grid;place-items:center;position:relative}
 .google-identity-button>div{margin-inline:auto}
 .google-identity-button.is-loading{pointer-events:none;opacity:.7}
