@@ -2553,6 +2553,15 @@
   .canva-public .canva-benefits { scroll-margin-top: 108px; padding-top: 88px; }
 }
 
+/* Restore the clean, normal separator after About Meitu. The benefits
+   surface keeps its own soft background, without carrying the previous
+   section's dark red wash into it. */
+.canva-public .canva-benefits {
+  background:
+    radial-gradient(circle at 7% 10%,rgba(241,29,72,.08),transparent 20%),
+    linear-gradient(180deg,#fff,#fff8fa);
+}
+
 /* Give Campaign Progress app badges the same dimensional brand treatment as
    the portal's larger stat and campaign surfaces. */
 .app-shell .campaign-progress-list > article .product {
