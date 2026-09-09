@@ -41,8 +41,8 @@ const googleNoncePair=async()=>{
   return {raw,hashed};
 };
 
-const teamNav = [["Overview","⌂"],["Applications","◎"],["Creators","♙"],["Campaigns","□"],["Submissions","↗"],["Rewards","◇"],["Payment Forms","$"]];
-const creatorNav = [["Home","⌂"],["Campaigns","□"],["Submissions","↗"],["Rewards","◇"],["Leaderboard","♜"],["Profile","○"]];
+const teamNav = ["Overview","Applications","Creators","Campaigns","Submissions","Rewards","Payment Forms"];
+const creatorNav = ["Home","Campaigns","Submissions","Rewards","Leaderboard","Profile"];
 const productClass = (p:string) => `product product-${p.toLowerCase()}`;
 const badgeClass = (s:string) => `badge badge-${s.toLowerCase().replaceAll(" ","-").replaceAll("/","")}`;
 const applicationStatus = (status:string) => status==="Accepted"||status==="Declined"?status:"In review";
@@ -277,11 +277,11 @@ function CreatorPoolWorkspace(){
       <button className="brand" onClick={()=>navigate(space==="team"?"Overview":"Home")} aria-label="CreatorHub home"><img className="brand-logo" src="/canva/meitu-app.png" alt="Meitu"/><span className="brand-title">CreatorHub</span></button>
       <div className={`space-switch ${account?.role==="team"?"space-switch-dual":"space-switch-creator-only"}`}>{account?.role==="team"&&<button className={space==="team"?"active":""} onClick={()=>switchSpace("team")}>Team</button>}<button className={space==="creator"?"active":""} onClick={()=>switchSpace("creator")}>Creator</button></div>
       <p className="nav-label">{space==="team"?"Workspace":"Ruang kreator"}</p>
-      <nav>{nav.map(([label,icon])=><button key={label} className={page===label?"active":""} onClick={()=>navigate(label)}><span>{icon}</span>{label}{label==="Applications"&&apps.filter(item=>applicationStatus(item.status)==="In review").length>0&&<em>{apps.filter(item=>applicationStatus(item.status)==="In review").length}</em>}{label==="Submissions"&&subs.filter(item=>normalizeSubmissionStatus(item.status)==="In review").length>0&&<em>{subs.filter(item=>normalizeSubmissionStatus(item.status)==="In review").length}</em>}</button>)}</nav>
+      <nav>{nav.map(label=><button key={label} className={page===label?"active":""} onClick={()=>navigate(label)}>{label}{label==="Applications"&&apps.filter(item=>applicationStatus(item.status)==="In review").length>0&&<em>{apps.filter(item=>applicationStatus(item.status)==="In review").length}</em>}{label==="Submissions"&&subs.filter(item=>normalizeSubmissionStatus(item.status)==="In review").length>0&&<em>{subs.filter(item=>normalizeSubmissionStatus(item.status)==="In review").length}</em>}</button>)}</nav>
       <div className="sidebar-bottom">
-        {space==="creator"&&<button onClick={()=>setModal("new-apps")}><span>＋</span>Apply New Apps</button>}
-        <button onClick={()=>switchSpace("public")}><span>↗</span>Public site</button>
-        {space==="team"&&<button onClick={()=>notify("Team settings tetap menggunakan konfigurasi workspace saat ini.")}><span>⚙</span>Settings</button>}
+        {space==="creator"&&<button onClick={()=>setModal("new-apps")}>Apply New Apps</button>}
+        <button onClick={()=>switchSpace("public")}>Public site</button>
+        {space==="team"&&<button onClick={()=>notify("Team settings tetap menggunakan konfigurasi workspace saat ini.")}>Settings</button>}
         <div className="user-chip"><div><b>{space==="team"?(account?.fullName||account?.email||"Team member"):currentCreator}</b><small>{space==="team"?"Admin · Indonesia":"Creator account"}</small></div></div>
       </div>
     </aside>

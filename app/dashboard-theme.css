@@ -1359,3 +1359,74 @@
 .public-site :is(input, textarea, select, button, [contenteditable="true"]) {
   font-family: var(--font-jakarta-sans), Arial, sans-serif;
 }
+
+/* Portal motion system: make navigation, cards, and touch interactions feel
+   responsive without making the interface busy. */
+@media (prefers-reduced-motion: no-preference) {
+  .app-shell .workspace > * {
+    animation: portal-section-enter .42s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .app-shell .workspace > *:nth-child(2) { animation-delay: .035s; }
+  .app-shell .workspace > *:nth-child(3) { animation-delay: .07s; }
+  .app-shell .workspace > *:nth-child(4) { animation-delay: .105s; }
+  .app-shell .workspace > *:nth-child(5) { animation-delay: .14s; }
+
+  .app-shell .overview-tab-card,
+  .app-shell .creator-campaign-card,
+  .app-shell .creator-submission-card,
+  .app-shell .creator-home-stats > button,
+  .app-shell .suggestion-card,
+  .app-shell .social-brand-card,
+  .app-shell .task-card,
+  .app-shell .metric-card,
+  .app-shell .application-metric,
+  .app-shell .reward-history-card-expanded,
+  .app-shell .place {
+    transition: transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s ease,
+      border-color .2s ease, background-color .2s ease;
+  }
+  .app-shell .overview-tab-card:hover,
+  .app-shell .creator-campaign-card:hover,
+  .app-shell .creator-submission-card:hover,
+  .app-shell .creator-home-stats > button:hover,
+  .app-shell .suggestion-card:hover,
+  .app-shell .social-brand-card:hover,
+  .app-shell .task-card:hover,
+  .app-shell .metric-card:hover,
+  .app-shell .application-metric:hover,
+  .app-shell .reward-history-card-expanded:hover,
+  .app-shell .place:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(34,43,51,.11);
+  }
+  .app-shell .overview-tab-card:active,
+  .app-shell .creator-campaign-card button:active,
+  .app-shell .creator-submission-card button:active,
+  .app-shell .creator-home-stats > button:active,
+  .app-shell .suggestion-card button:active,
+  .app-shell .task-card button:active,
+  .app-shell .panel-head button:active,
+  .app-shell .primary:active,
+  .app-shell .secondary:active,
+  .app-shell .danger:active {
+    transform: translateY(1px) scale(.98);
+  }
+  .app-shell .sidebar nav button,
+  .app-shell .sidebar-bottom > button,
+  .app-shell .space-switch button,
+  .app-shell .top-actions button {
+    transition: transform .16s ease, background-color .18s ease,
+      box-shadow .18s ease, color .18s ease;
+  }
+  .app-shell .sidebar nav button:active,
+  .app-shell .sidebar-bottom > button:active,
+  .app-shell .space-switch button:active,
+  .app-shell .top-actions button:active {
+    transform: scale(.96);
+  }
+}
+
+@keyframes portal-section-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
