@@ -2497,6 +2497,42 @@
   backdrop-filter: blur(14px);
 }
 
+/* Public section bridges: each surface begins with a soft wash of the
+   previous section's color so scrolling feels continuous rather than cut. */
+.canva-public .canva-about {
+  background:
+    linear-gradient(180deg, #fff 0, rgba(255,255,255,0) 150px),
+    radial-gradient(circle at 78% 22%,rgba(241,29,72,.42),transparent 30%),
+    radial-gradient(circle at 18% 82%,rgba(241,29,72,.18),transparent 34%),
+    linear-gradient(135deg,#030303 0%,#16070a 55%,#4b0a18 100%);
+}
+.canva-public .canva-benefits {
+  background:
+    linear-gradient(180deg, #4b0a18 0, rgba(255,255,255,0) 130px),
+    radial-gradient(circle at 7% 10%,rgba(241,29,72,.08),transparent 20%),
+    linear-gradient(180deg,#fff,#fff8fa);
+}
+.canva-public .canva-how {
+  background-color: #fff;
+  background-image:
+    linear-gradient(180deg, #fff8fa 0, rgba(255,255,255,0) 110px),
+    linear-gradient(rgba(28,20,23,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(28,20,23,.045) 1px,transparent 1px);
+}
+.canva-public .canva-rewards {
+  background:
+    linear-gradient(180deg, #fff 0, rgba(255,255,255,0) 140px),
+    radial-gradient(circle at 86% 17%,rgba(255,125,230,.34),transparent 23%),
+    radial-gradient(circle at 9% 83%,rgba(162,78,255,.27),transparent 26%),
+    linear-gradient(132deg,#F11D48 0%,#e20e42 54%,#b71166 100%);
+}
+.canva-public .canva-final-cta {
+  background: linear-gradient(180deg, #b71166 0, rgba(255,255,255,0) 140px), #fff;
+}
+.canva-public .canva-footer {
+  background: linear-gradient(180deg, #fff 0, rgba(5,5,5,0) 95px), #050505;
+}
+
 /* Social media cards: calm glass by default, with brand glow reserved for
    the exact icon the pointer is interacting with. */
 .app-shell .creator-social-cta {
