@@ -1130,3 +1130,73 @@
     grid-template-columns:repeat(3,minmax(0,1fr));
   }
 }
+
+/* Keep all analytics actions together in one compact row. */
+@media (min-width:1101px) {
+  .app-shell .manual-submission-views {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    column-gap:8px;
+    row-gap:6px;
+  }
+  .app-shell .manual-submission-views > .viewer-comparison,
+  .app-shell .manual-submission-views > .submission-analytics-values,
+  .app-shell .manual-submission-views > .submission-engagement-plain {
+    grid-column:1 / -1;
+  }
+  .app-shell .manual-submission-views > .manual-ai-button {
+    grid-column:1;
+    grid-row:4;
+    align-self:center;
+  }
+  .app-shell .manual-submission-views > .manual-engagement-button {
+    grid-column:2;
+    grid-row:4;
+    align-self:center;
+  }
+  .app-shell .manual-submission-views > .analytics-screenshot-link,
+  .app-shell .manual-submission-views > .analytics-screenshot-missing {
+    grid-column:3;
+    grid-row:4;
+    align-self:center;
+    justify-self:stretch;
+  }
+  .app-shell .manual-submission-views > .analytics-screenshot-link {
+    display:inline-flex;
+    min-height:31px;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    padding:6px 8px;
+    border:1px solid #d7cec6;
+    border-radius:8px;
+    background:#fff;
+    color:#171315;
+    font-size:8px;
+    font-weight:800;
+    line-height:1.1;
+    text-decoration:none;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .app-shell .manual-submission-views > .analytics-screenshot-link:hover {
+    border-color:#f11d48;
+    color:#c30f34;
+  }
+  .app-shell .manual-submission-views > .analytics-screenshot-missing {
+    min-height:31px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:6px 8px;
+    border:1px dashed #d7cec6;
+    border-radius:8px;
+    color:#9b96a1;
+    font-size:8px;
+    line-height:1.1;
+    white-space:nowrap;
+  }
+  .app-shell .manual-submission-views > .analytics-review-message {
+    grid-column:1 / -1;
+    grid-row:5;
+  }
+}
