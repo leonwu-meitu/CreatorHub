@@ -1840,8 +1840,8 @@
   .manual-submission-card .decision-buttons { grid-column: 1 / -1; justify-self: start; padding-top: 0; }
 }
 @media (min-width: 981px) {
-  .manual-submission-card { position: relative; padding-right: 300px; min-height: 190px; }
-  .manual-submission-card > .decision-buttons { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); width: 250px; display: flex; justify-content: flex-end; padding-top: 0; }
+  .manual-submission-card { position: relative; padding-right: 380px; min-height: 190px; }
+  .manual-submission-card > .decision-buttons { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); width: 220px; display: flex; justify-content: flex-end; padding-top: 0; }
 }
 @media (min-width: 981px) and (max-width: 1100px) {
   .manual-submission-card { grid-template-columns: minmax(180px,1fr) minmax(140px,.8fr) minmax(170px,1fr) minmax(430px,2.5fr); }
