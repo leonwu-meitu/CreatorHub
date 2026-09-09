@@ -2253,3 +2253,37 @@
   .canva-public .canva-nav .canva-login { min-height: 38px; }
   .canva-public .canva-nav .canva-button { min-height: 38px; }
 }
+
+/* Rewards notice: keep the explanation as a deliberate horizontal callout
+   beside the filters instead of a tiny, stacked lavender card. */
+@media (min-width: 1101px) {
+  .app-shell-team .reward-filter-bar .reward-filter-note {
+    min-width: 0;
+    min-height: 48px;
+    align-self: end;
+    justify-content: flex-start;
+    padding: 0 18px;
+    border-color: rgba(241,29,72,.18);
+    border-radius: 12px;
+    background: linear-gradient(110deg, rgba(255,255,255,.84), rgba(255,241,245,.7));
+    color: #5f5559;
+    box-shadow: 0 7px 18px rgba(70,35,43,.06), inset 0 1px rgba(255,255,255,.86);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (min-width: 801px) and (max-width: 1100px) {
+  .app-shell-team .reward-filter-bar .reward-filter-note {
+    min-height: 46px;
+    justify-content: flex-start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
