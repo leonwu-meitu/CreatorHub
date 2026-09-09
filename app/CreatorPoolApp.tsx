@@ -904,6 +904,44 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
   const {language}=usePortalLanguage();
   const t=(english:string,indonesian:string)=>language==="en"?english:indonesian;
   const hasCreatorAccess=Boolean(account&&(account.role==="team"||account.canAccessCreator||account.applicationStatus==="accepted"));
+  const [rewardViews,setRewardViews]=useState(0);
+  const aboutParticleFieldRef=useRef<HTMLDivElement|null>(null);
+  const aboutParticles=useMemo(()=>Array.from({length:120},(_,index)=>({
+    id:index,
+    left:(index*47+13)%100,
+    top:(index*71+7)%100,
+    size:1+((index*13)%4),
+    opacity:.18+((index*17)%7)/10,
+    delay:`-${(index%16)*.45}s`,
+  })),[]);
+  const moveAboutParticles=(event:React.PointerEvent<HTMLElement>)=>{
+    const field=aboutParticleFieldRef.current;
+    if(!field)return;
+    const bounds=event.currentTarget.getBoundingClientRect();
+    const pointerX=event.clientX-bounds.left;
+    const pointerY=event.clientY-bounds.top;
+    field.querySelectorAll<HTMLElement>(".about-particle").forEach(particle=>{
+      const x=(Number(particle.dataset.x)||0)*bounds.width/100;
+      const y=(Number(particle.dataset.y)||0)*bounds.height/100;
+      const dx=x-pointerX;
+      const dy=y-pointerY;
+      const distance=Math.hypot(dx,dy);
+      const influence=Math.max(0,1-distance/180);
+      const direction=distance||1;
+      particle.style.setProperty("--particle-shift-x",`${(dx/direction)*influence*34}px`);
+      particle.style.setProperty("--particle-shift-y",`${(dy/direction)*influence*34}px`);
+      particle.style.setProperty("--particle-focus",`${influence}`);
+    });
+  };
+  const resetAboutParticles=()=>{
+    aboutParticleFieldRef.current?.querySelectorAll<HTMLElement>(".about-particle").forEach(particle=>{
+      particle.style.setProperty("--particle-shift-x","0px");
+      particle.style.setProperty("--particle-shift-y","0px");
+      particle.style.setProperty("--particle-focus","0");
+    });
+  };
+  const selectedRewardTier=rewardTierForViews(rewardViews)||rewardTiers[0];
+  const rewardValueLabel=rewardViews>=1000000?"1M":rewardViews>=1000?`${(rewardViews/1000).toLocaleString("en-US",{maximumFractionDigits:0})}K`:String(rewardViews);
   const steps=[
     ["1","Daftarkan Dirimu","Isi form pendaftaran dan lengkapi data dirimu. Tim Meitu akan seleksi berdasarkan kecocokan.","✎"],
     ["2","Join Grup Eksklusif","Kreator terpilih akan diundang ke grup khusus untuk mendapatkan info campaign dan brief terbaru.","♟"],
@@ -936,7 +974,8 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
         <div className="hero-app-rotator" aria-label="Creator apps">{heroApps.map(app=><article className={`hero-app-slide slide-${app.tone}`} key={app.name}><a className="download-app-logo" href={app.download} target="_blank" rel="noreferrer" aria-label={`Download ${app.name}`}><img src={app.src} alt={app.name}/></a><span>CREATOR APP</span><h2>{app.name}</h2><p>{app.copy}</p></article>)}</div>
       </section>
 
-      <section className="canva-about" id="about">
+      <section className="canva-about" id="about" onPointerMove={moveAboutParticles} onPointerLeave={resetAboutParticles}>
+        <div className="about-particle-field" ref={aboutParticleFieldRef} aria-hidden="true">{aboutParticles.map(particle=><i className="about-particle" data-x={particle.left} data-y={particle.top} key={particle.id} style={{left:`${particle.left}%`,top:`${particle.top}%`,width:`${particle.size}px`,height:`${particle.size}px`,opacity:particle.opacity,animationDelay:particle.delay}}/> )}</div>
         <div><h2>{t("About","Tentang")}<br/><img className="about-meitu-wordmark" src="/canva/meitu-wordmark.png" alt="Meitu"/></h2>{language==="en"?<><p>At <b>Meitu</b>, we believe technology can help everyone express and present the best version of themselves through photos, videos, and every shared moment.</p><p>Since 2008, Meitu has continued to innovate and transform how people capture, enhance, and share stories through innovative photo and video editing technology.</p><p>With more than <b>250 million users worldwide</b>, Meitu combines AI innovation with a practical and easy experience.</p></>:<><p>Di <b>Meitu</b>, kami percaya bahwa teknologi dapat membantu setiap orang mengekspresikan dan menghadirkan versi terbaik dari diri mereka melalui foto, video, dan setiap momen yang dibagikan.</p><p>Sejak tahun 2008, Meitu terus berinovasi untuk mengubah cara pengguna mengabadikan, menyempurnakan, dan membagikan cerita melalui teknologi pengeditan foto dan video inovatif.</p><p>Dengan lebih dari 250 juta pengguna di seluruh dunia, Meitu memadukan inovasi AI dengan pengalaman yang praktis dan mudah.</p></>}</div>
         <div className="about-image-stage"><img src="/canva/meitu-campus.png" alt="Kantor pusat Meitu"/></div>
         <div className="about-highlight-marquee" aria-label="Meitu global highlights"><div className="about-highlight-track">{[0,1].map(copy=><div className="about-highlight-set" aria-hidden={copy===1} key={copy}>{aboutHighlights.map(([icon,label])=><span key={label}><i aria-hidden="true">{icon}</i><b>{label}</b></span>)}</div>)}</div></div>
@@ -953,14 +992,14 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
       </section>
 
       <section className="canva-how" id="works">
-        <div className="how-heading"><span className="section-kicker">PROSES BERGABUNG</span><h2>Gimana Cara <strong>Jadi Creator?</strong></h2><p>Yuk, bergabung jadi bagian dari <b>Meitu Creator Pool</b> dan wujudkan kreativitasmu jadi peluang nyata!</p></div>
+        <div className="how-heading"><span className="section-kicker">PROSES BERGABUNG</span><h2>Gimana Cara <strong>Jadi Creator?</strong></h2><p>Yuk, bergabung jadi bagian dari <b>Meitu Creator Pool</b> dan wujudkan kreativitasmu jadi peluang nyata!</p><span className="journey-slider-hint">← Geser untuk melihat 5 langkah →</span></div>
         <div className="journey-grid">{steps.map(([number,title,copy,icon])=><article key={number}><span className="journey-number">{number}</span><b className="journey-icon">{icon}</b><h3>{title}</h3><p>{copy}</p></article>)}</div>
         <div className="journey-message"><span>◖</span><p>Kreativitasmu bisa <b>menginspirasi jutaan orang</b> dan buka banyak peluang bersama <b>Meitu!</b></p></div>
       </section>
 
       <section className="canva-rewards" id="rewards">
         <div className="reward-decor" aria-hidden="true"><i/><i/><i/><i/><span>✦</span><span>✦</span><span>◇</span></div>
-        <div className="reward-content"><span className="section-kicker">CREATOR REWARD TIER</span><h2>Creator Reward Tier</h2><p>Semakin tinggi views, semakin besar reward-nya!</p><div className="reward-table"><div className="reward-table-head"><b>Tier</b><b>Views</b><b>Reward</b></div>{rewards.map(([tier,views,reward])=><article key={tier}><b>{tier}</b><span>{views}</span><strong>{reward}</strong></article>)}</div><div className="reward-message">💡 Semangat berkarya, raih reward, dan wujudkan potensimu bersama Meitu!</div></div>
+        <div className="reward-content"><span className="section-kicker">CREATOR REWARD TIER</span><h2>Creator Reward Tier</h2><p>Semakin tinggi views, semakin besar reward-nya!</p><div className="reward-calculator"><div className="reward-calculator-heading"><div><b>Atur views kontenmu</b><span>Geser dari 0 sampai 1M views untuk melihat tier dan estimasi reward.</span></div><strong>{rewardValueLabel} views</strong></div><input className="reward-view-slider" type="range" min="0" max="1000000" step="1000" value={rewardViews} onChange={event=>setRewardViews(Number(event.target.value))} list="reward-view-tiers" aria-label="Atur jumlah views konten" style={{"--reward-progress":`${Math.round(rewardViews/1000000*100)}%`} as React.CSSProperties}/><datalist id="reward-view-tiers">{rewardTiers.map(tier=><option key={tier.views} value={tier.views} label={tier.label}/>)}</datalist><div className="reward-slider-ticks" aria-hidden="true">{rewardTiers.map(tier=><span key={tier.views}>{tier.views===0?"0":tier.views>=1000000?"1M":`${tier.views/1000}K`}</span>)}</div><div className="reward-calculator-result"><span>{selectedRewardTier.label}</span><b>{selectedRewardTier.amount>0?fmtIdr(selectedRewardTier.amount):selectedRewardTier.reward}</b><small>Estimasi berdasarkan tier views</small></div></div><div className="reward-table"><div className="reward-table-head"><b>Tier</b><b>Views</b><b>Reward</b></div>{rewards.map(([tier,views,reward])=><article key={tier}><b>{tier}</b><span>{views}</span><strong>{reward}</strong></article>)}</div><div className="reward-message">💡 Semangat berkarya, raih reward, dan wujudkan potensimu bersama Meitu!</div></div>
       </section>
 
       <section className="canva-final-cta" onPointerMove={event=>{const bounds=event.currentTarget.getBoundingClientRect();event.currentTarget.style.setProperty("--ripple-x",`${event.clientX-bounds.left}px`);event.currentTarget.style.setProperty("--ripple-y",`${event.clientY-bounds.top}px`)}}>
