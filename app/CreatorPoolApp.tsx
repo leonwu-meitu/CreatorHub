@@ -69,6 +69,18 @@ const rewardTiers=[
   {views:1000000,label:"1 Juta Views",reward:"Rp5.000.000",amount:5000000},
 ];
 const rewardTierForViews=(views:number)=>[...rewardTiers].reverse().find(tier=>views>=tier.views);
+const publicRewardTierCopy:Record<number,{labelEn:string;labelId:string;rewardEn:string;rewardId:string}>={
+  0:{labelEn:"Under 10,000 views",labelId:"Di bawah 10.000 tayangan",rewardEn:"No reward",rewardId:"Tanpa hadiah"},
+  10000:{labelEn:"10,000 views",labelId:"10.000 tayangan",rewardEn:"1-month VIP",rewardId:"VIP 1 bulan"},
+  100000:{labelEn:"100,000 views",labelId:"100.000 tayangan",rewardEn:"Rp500,000",rewardId:"Rp500.000"},
+  250000:{labelEn:"250,000 views",labelId:"250.000 tayangan",rewardEn:"Rp1,250,000",rewardId:"Rp1.250.000"},
+  500000:{labelEn:"500,000 views",labelId:"500.000 tayangan",rewardEn:"Rp2,500,000",rewardId:"Rp2.500.000"},
+  1000000:{labelEn:"1,000,000 views",labelId:"1.000.000 tayangan",rewardEn:"Rp5,000,000",rewardId:"Rp5.000.000"},
+};
+const publicRewardCopyFor=(views:number,language:"en"|"id")=>{
+  const copy=publicRewardTierCopy[views]||publicRewardTierCopy[0];
+  return {label:language==="en"?copy.labelEn:copy.labelId,reward:language==="en"?copy.rewardEn:copy.rewardId};
+};
 const normalizeSubmissionStatus=(status:string)=>status==="Draft"?"Draft":status==="Qualified"||status==="Approved"?"Qualified":status==="Not Qualified"||status==="Revision requested"?"Not Qualified":"In review";
 const MAX_POSTS_PER_CAMPAIGN=3;
 const countsTowardCampaignLimit=(submission:Submission)=>normalizeSubmissionStatus(submission.status)!=="Draft";
@@ -942,6 +954,7 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
   };
   const selectedRewardTier=rewardTierForViews(rewardViews)||rewardTiers[0];
   const rewardValueLabel=rewardViews>=1000000?"1M":rewardViews>=1000?`${(rewardViews/1000).toLocaleString("en-US",{maximumFractionDigits:0})}K`:String(rewardViews);
+  const selectedPublicReward=publicRewardCopyFor(selectedRewardTier.views,language);
   const steps=[
     ["1","Daftarkan Dirimu","Isi form pendaftaran dan lengkapi data dirimu. Tim Meitu akan seleksi berdasarkan kecocokan.","✎"],
     ["2","Join Grup Eksklusif","Kreator terpilih akan diundang ke grup khusus untuk mendapatkan info campaign dan brief terbaru.","♟"],
@@ -949,7 +962,6 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
     ["4","Submit Link & Dapatkan Reward","Kirim link konten yang sudah tayang untuk proses review dan reward.","▶"],
     ["5","Kesempatan Jadi KOL Meitu","Performa konsisten membuka prioritas campaign dan kolaborasi eksklusif.","★"],
   ];
-  const rewards=[["T1","10K Views","VIP 1 Bulan"],["T2","100K Views","Rp 500.000"],["T3","250K Views","Rp 1.250.000"],["T4","500K Views","Rp 2.500.000"],["T5","1M Views","Rp 5.000.000"]];
   const heroApps=[
     {name:"Meitu",src:"/canva/meitu-app.png",tone:"meitu",copy:"Create standout photo edits with iconic AI tools.",download:"https://meitu-global.go.link?adj_t=23dkh346"},
     {name:"BeautyCam",src:"/canva/beautycam-app.png",tone:"beautycam",copy:"Make every portrait more aesthetic and ready to share.",download:"https://beautycam-global.go.link/H4L9X"},
@@ -999,7 +1011,7 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
 
       <section className="canva-rewards" id="rewards">
         <div className="reward-decor" aria-hidden="true"><i/><i/><i/><i/><span>✦</span><span>✦</span><span>◇</span></div>
-        <div className="reward-content"><span className="section-kicker">CREATOR REWARD TIER</span><h2>Creator Reward Tier</h2><p>Semakin tinggi views, semakin besar reward-nya!</p><div className="reward-calculator"><div className="reward-calculator-heading"><div><b>Atur views kontenmu</b><span>Geser dari 0 sampai 1M views untuk melihat tier dan estimasi reward.</span></div><strong>{rewardValueLabel} views</strong></div><input className="reward-view-slider" type="range" min="0" max="1000000" step="1000" value={rewardViews} onChange={event=>setRewardViews(Number(event.target.value))} list="reward-view-tiers" aria-label="Atur jumlah views konten" style={{"--reward-progress":`${Math.round(rewardViews/1000000*100)}%`} as React.CSSProperties}/><datalist id="reward-view-tiers">{rewardTiers.map(tier=><option key={tier.views} value={tier.views} label={tier.label}/>)}</datalist><div className="reward-slider-ticks" aria-hidden="true">{rewardTiers.map(tier=><span key={tier.views}>{tier.views===0?"0":tier.views>=1000000?"1M":`${tier.views/1000}K`}</span>)}</div><div className="reward-calculator-result"><span>{selectedRewardTier.label}</span><b>{selectedRewardTier.amount>0?fmtIdr(selectedRewardTier.amount):selectedRewardTier.reward}</b><small>Estimasi berdasarkan tier views</small></div></div><div className="reward-table"><div className="reward-table-head"><b>Tier</b><b>Views</b><b>Reward</b></div>{rewards.map(([tier,views,reward])=><article key={tier}><b>{tier}</b><span>{views}</span><strong>{reward}</strong></article>)}</div><div className="reward-message">💡 Semangat berkarya, raih reward, dan wujudkan potensimu bersama Meitu!</div></div>
+        <div className="reward-content"><span className="section-kicker">{t("CREATOR REWARD TIER","TINGKAT HADIAH KREATOR")}</span><h2>{t("Creator Reward Tier","Tingkat Hadiah Kreator")}</h2><p>{t("The higher the views, the bigger the reward!","Semakin tinggi tayangan, semakin besar hadiahnya!")}</p><div className="reward-calculator"><div className="reward-calculator-heading"><div><b>{t("Set your content views","Atur jumlah tayangan kontenmu")}</b><span>{t("Drag from 0 to 1M views to see the reward tier and estimated payout.","Geser dari 0 sampai 1 juta tayangan untuk melihat tingkat hadiah dan estimasi reward.")}</span></div><strong>{rewardValueLabel} {t("views","tayangan")}</strong></div><input className="reward-view-slider" type="range" min="0" max="1000000" step="1000" value={rewardViews} onChange={event=>setRewardViews(Number(event.target.value))} list="reward-view-tiers" aria-label={t("Set your content views","Atur jumlah tayangan kontenmu")} style={{"--reward-progress":`${Math.round(rewardViews/1000000*100)}%`} as React.CSSProperties}/><datalist id="reward-view-tiers">{rewardTiers.map(tier=><option key={tier.views} value={tier.views} label={publicRewardCopyFor(tier.views,language).label}/>)}</datalist><div className="reward-slider-ticks" aria-hidden="true">{rewardTiers.map(tier=><span key={tier.views}>{tier.views===0?"0":tier.views>=1000000?"1M":`${tier.views/1000}K`}</span>)}</div><div className="reward-calculator-result"><span>{selectedPublicReward.label}</span><b>{selectedPublicReward.reward}</b><small>{t("Estimated from the selected view tier","Estimasi berdasarkan tingkat tayangan yang dipilih")}</small></div></div><div className="reward-message">{t("Keep creating, earn rewards, and realize your potential with Meitu!","Terus berkarya, raih hadiah, dan wujudkan potensimu bersama Meitu!")}</div></div>
       </section>
 
       <section className="canva-final-cta" onPointerMove={event=>{const bounds=event.currentTarget.getBoundingClientRect();event.currentTarget.style.setProperty("--ripple-x",`${event.clientX-bounds.left}px`);event.currentTarget.style.setProperty("--ripple-y",`${event.clientY-bounds.top}px`)}}>
