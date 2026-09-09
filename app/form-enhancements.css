@@ -1929,3 +1929,53 @@
     padding: 5px 6px;
   }
 }
+
+/* Use a relaxed three-column desktop card: identity details stay across the
+   top, analytics gets the main two-column area, and decisions stay separate. */
+@media (min-width: 801px) {
+  .manual-submission-card {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 14px;
+    padding: 16px 18px;
+  }
+  .manual-submission-views {
+    grid-column: 1 / span 2;
+    min-width: 0;
+  }
+  .manual-submission-card > .decision-buttons {
+    position: static;
+    grid-column: 3;
+    align-self: center;
+    width: 100%;
+    min-width: 0;
+    display: grid;
+    gap: 8px;
+    justify-content: stretch;
+    padding-top: 0;
+  }
+  .manual-submission-card > .decision-buttons button {
+    width: 100%;
+    min-width: 0;
+  }
+  .manual-submission-views .manual-ai-button,
+  .manual-submission-views .manual-engagement-button {
+    grid-row: auto;
+    grid-column: auto;
+    margin-top: 0;
+  }
+  .manual-submission-views .submission-analytics-values {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 801px) and (max-width: 1135px) {
+  .manual-submission-views,
+  .manual-submission-card > .decision-buttons {
+    grid-column: 1 / -1;
+  }
+  .manual-submission-card > .decision-buttons {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
