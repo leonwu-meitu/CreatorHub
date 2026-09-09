@@ -2533,6 +2533,20 @@
   background: linear-gradient(180deg, #fff 0, rgba(5,5,5,0) 95px), #050505;
 }
 
+/* Keep depth on the journey cards only. The section, track, and callout stay
+   visually flat so there is no heavy shadow band beneath the card row. */
+.canva-public .canva-how,
+.canva-public .canva-how .how-heading,
+.canva-public .canva-how .journey-grid,
+.canva-public .canva-how .journey-message {
+  box-shadow: none;
+  filter: none;
+}
+.canva-public .canva-how .journey-grid article,
+.canva-public .canva-how .journey-grid article:nth-child(even) {
+  box-shadow: 0 11px 22px rgba(45,31,35,.1), 0 2px 5px rgba(45,31,35,.05), inset 0 1px rgba(255,255,255,.8);
+}
+
 /* Social media cards: calm glass by default, with brand glow reserved for
    the exact icon the pointer is interacting with. */
 .app-shell .creator-social-cta {
