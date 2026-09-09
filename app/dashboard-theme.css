@@ -1200,3 +1200,43 @@
     grid-row:5;
   }
 }
+
+/* Keep the action row compact and left-aligned instead of distributing three
+   controls across the full analytics width. */
+@media (min-width:1101px) {
+  .app-shell .manual-submission-views {
+    grid-template-columns:max-content max-content max-content;
+    justify-content:start;
+  }
+  .app-shell .manual-submission-views > .viewer-comparison,
+  .app-shell .manual-submission-views > .submission-analytics-values,
+  .app-shell .manual-submission-views > .submission-engagement-plain,
+  .app-shell .manual-submission-views > .analytics-review-message {
+    grid-column:1 / -1;
+  }
+  .app-shell .manual-submission-views > .analytics-screenshot-link,
+  .app-shell .manual-submission-views > .analytics-screenshot-missing {
+    justify-self:start;
+  }
+}
+
+/* One typeface across the card, with a predictable label/value/action scale. */
+.app-shell .manual-submission-card,
+.app-shell .manual-submission-card :where(button,a,small,span,b,strong) {
+  font-family:var(--font-jakarta-sans),Arial,sans-serif;
+}
+.app-shell .manual-submission-card small { font-size:10px; line-height:1.3; }
+.app-shell .manual-submission-creator b,
+.app-shell .manual-submission-campaign > b,
+.app-shell .manual-submission-post > b { font-size:12px; line-height:1.3; }
+.app-shell .manual-submission-post a { font-size:11px; }
+.app-shell .manual-submission-post span { font-size:10px; }
+.app-shell .manual-submission-views .viewer-comparison strong { font-size:22px; line-height:1.05; }
+.app-shell .manual-submission-views .submission-analytics-values small { font-size:9px; }
+.app-shell .manual-submission-views .submission-analytics-values b { font-size:12px; }
+.app-shell .manual-submission-views .submission-engagement-plain { font-size:11px; line-height:1.3; }
+.app-shell .manual-submission-views .manual-ai-button,
+.app-shell .manual-submission-views .manual-engagement-button,
+.app-shell .manual-submission-views .analytics-screenshot-link,
+.app-shell .manual-submission-views .analytics-screenshot-missing { font-size:10px; }
+.chart-bar-tooltip { font-family:var(--font-jakarta-sans),Arial,sans-serif; }
