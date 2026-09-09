@@ -2436,6 +2436,67 @@
   box-shadow: 0 12px 24px rgba(241,29,72,.28), inset 0 1px rgba(255,255,255,.34);
 }
 
+/* Let the journey rail reveal its continuation without hard-clipping a card. */
+.canva-public .journey-grid {
+  padding-inline: 0;
+  mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+}
+
+/* Campaign previews and campaign cards use the same translucent, layered
+   treatment as the public site instead of opaque utility panels. */
+.app-shell .creator-campaign-card {
+  border-color: rgba(255,255,255,.76);
+  background: linear-gradient(145deg, rgba(255,255,255,.78), rgba(255,249,244,.56) 55%, rgba(255,241,246,.54));
+  box-shadow: 0 18px 42px rgba(48,35,28,.08), inset 0 1px rgba(255,255,255,.92);
+  backdrop-filter: blur(16px) saturate(125%);
+}
+.app-shell .creator-campaign-card:hover {
+  border-color: rgba(241,29,72,.28);
+  box-shadow: 0 24px 48px rgba(48,35,28,.12), inset 0 1px rgba(255,255,255,.96);
+  transform: translateY(-3px);
+}
+.app-shell .task-preview-dialog {
+  overflow: hidden;
+  border-color: rgba(255,255,255,.74);
+  background: rgba(255,250,245,.76);
+  box-shadow: 0 30px 100px rgba(30,14,20,.3), inset 0 1px rgba(255,255,255,.88);
+  backdrop-filter: blur(22px) saturate(130%);
+}
+.app-shell .task-preview-dialog > header {
+  color: var(--ink);
+  background: linear-gradient(135deg, rgba(255,255,255,.74), rgba(255,235,241,.68));
+  border-color: rgba(255,255,255,.72);
+}
+.app-shell .task-preview-dialog > header p { color: #756d70; }
+.app-shell .task-preview-dialog > header .close { background: rgba(255,255,255,.62); color: #5d4b50; }
+.app-shell .task-preview-body { background: transparent; }
+.app-shell .task-preview-stats article,
+.app-shell .task-preview-body dl,
+.app-shell .task-preview-body dl div {
+  border-color: rgba(219,205,198,.78);
+  background: rgba(255,255,255,.5);
+}
+.app-shell .task-preview-stats article { box-shadow: inset 0 1px rgba(255,255,255,.84); }
+.app-shell .task-preview-body dl { box-shadow: inset 0 1px rgba(255,255,255,.8); }
+.app-shell .task-preview-links a {
+  border: 1px solid rgba(241,29,72,.2);
+  background: rgba(255,255,255,.62);
+  color: #c71338;
+  box-shadow: 0 8px 18px rgba(89,27,43,.08), inset 0 1px rgba(255,255,255,.85);
+  backdrop-filter: blur(10px);
+}
+.app-shell .task-preview-links a:hover {
+  background: rgba(255,241,245,.86);
+  box-shadow: 0 12px 24px rgba(89,27,43,.12), inset 0 1px rgba(255,255,255,.9);
+  transform: translateY(-1px);
+}
+.app-shell .task-preview-dialog > footer {
+  background: rgba(255,255,255,.56);
+  border-color: rgba(219,205,198,.7);
+  backdrop-filter: blur(14px);
+}
+
 /* Social media cards: calm glass by default, with brand glow reserved for
    the exact icon the pointer is interacting with. */
 .app-shell .creator-social-cta {
