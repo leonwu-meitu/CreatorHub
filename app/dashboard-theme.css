@@ -2089,3 +2089,60 @@
     line-height: 1.45;
   }
 }
+
+/* Account header: a light glass rail keeps the top of both portals quiet,
+   while the account control gets a small Meitu-red status cue. */
+.app-shell .topbar {
+  background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,253,248,.58));
+  border-bottom-color: rgba(186,174,166,.52);
+  box-shadow: 0 8px 28px rgba(46,32,25,.055), inset 0 1px rgba(255,255,255,.78);
+  backdrop-filter: blur(22px) saturate(1.18);
+}
+.app-shell .team-profile-control { margin-left: auto; }
+.app-shell .profile-text-trigger {
+  min-width: 102px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px;
+  border: 1px solid rgba(193,180,171,.7);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255,255,255,.82), rgba(255,247,244,.58));
+  color: #221c1d;
+  box-shadow: 0 8px 20px rgba(45,29,24,.08), inset 0 1px rgba(255,255,255,.86);
+  backdrop-filter: blur(18px) saturate(1.2);
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease;
+}
+.app-shell .profile-text-trigger::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #f11d48;
+  box-shadow: 0 0 0 3px rgba(241,29,72,.12);
+}
+.app-shell .profile-text-trigger:hover,
+.app-shell .profile-text-trigger[aria-expanded="true"] {
+  border-color: rgba(241,29,72,.58);
+  background: linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,233,239,.78));
+  color: #ad0d2f;
+  box-shadow: 0 11px 24px rgba(196,15,54,.14), inset 0 1px rgba(255,255,255,.9);
+  transform: translateY(-1px);
+}
+.app-shell .team-profile-dropdown {
+  border-color: rgba(255,255,255,.78);
+  background: rgba(255,253,248,.84);
+  box-shadow: 0 25px 60px rgba(37,23,20,.2), inset 0 1px rgba(255,255,255,.68);
+  backdrop-filter: blur(24px) saturate(1.15);
+}
+.app-shell .team-profile-dropdown > button:hover {
+  background: rgba(255,232,238,.72);
+}
+
+@media (max-width: 800px) {
+  .app-shell .topbar { min-height: 62px; padding-inline: 12px; }
+  .app-shell .profile-text-trigger { min-width: 92px; height: 40px; padding-inline: 14px; }
+}
