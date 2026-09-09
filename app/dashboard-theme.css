@@ -1545,3 +1545,273 @@
   border-top-color: rgba(206,191,183,.66);
   backdrop-filter: blur(14px);
 }
+
+/* Creator action card: the primary "Create a post" action uses the same
+   calm glass surface and Meitu-red emphasis as the refreshed campaign UI. */
+.app-shell-creator .create-post-action {
+  border-color: rgba(241,29,72,.56);
+  background: linear-gradient(135deg, rgba(38,31,34,.96), rgba(82,22,39,.94) 46%, #f11d48);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(196,15,54,.2), inset 0 1px rgba(255,255,255,.24);
+  backdrop-filter: blur(12px) saturate(1.2);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+.app-shell-creator .create-post-action:hover {
+  filter: saturate(1.08) brightness(1.04);
+  box-shadow: 0 14px 28px rgba(196,15,54,.28), inset 0 1px rgba(255,255,255,.3);
+  transform: translateY(-2px);
+}
+.app-shell-creator .campaign-collaboration-flow article:nth-child(2) {
+  border-color: rgba(241,29,72,.42);
+  background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(255,232,238,.74));
+  box-shadow: 0 12px 28px rgba(196,15,54,.12), inset 0 1px rgba(255,255,255,.72);
+}
+
+/* Team portal mobile layout. Keep every workflow section inside the viewport,
+   stack dense desktop grids, and give touch targets a comfortable minimum. */
+@media (max-width: 800px) {
+  .app-shell-team .workspace {
+    padding: 22px 14px 48px;
+  }
+  .app-shell-team .page-head {
+    align-items: stretch;
+    gap: 11px;
+    margin-bottom: 18px;
+  }
+  .app-shell-team .page-head h1 {
+    font-size: 26px;
+    line-height: 1.12;
+    letter-spacing: -.7px;
+  }
+  .app-shell-team .page-head p {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .app-shell-team .page-head > button,
+  .app-shell-team .head-actions > button {
+    width: 100%;
+    justify-content: center;
+    min-height: 42px;
+  }
+  .app-shell-team .segmented {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .app-shell-team .segmented::-webkit-scrollbar { display: none; }
+  .app-shell-team .segmented button {
+    flex: 1 0 auto;
+    min-height: 40px;
+    white-space: nowrap;
+  }
+  .app-shell-team .task-search-bar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+    padding: 10px;
+  }
+  .app-shell-team .task-search-bar label,
+  .app-shell-team .task-search-bar input,
+  .app-shell-team .task-search-bar > button {
+    width: 100%;
+    min-width: 0;
+  }
+  .app-shell-team .task-search-bar > button { min-height: 40px; }
+  .app-shell-team .task-filter-groups {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+  .app-shell-team .task-filter-groups > div,
+  .app-shell-team .task-product-filters,
+  .app-shell-team .task-status-filters {
+    width: 100%;
+    max-width: none;
+  }
+  .app-shell-team .task-product-filters,
+  .app-shell-team .task-status-filters {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .app-shell-team .task-product-filters::-webkit-scrollbar,
+  .app-shell-team .task-status-filters::-webkit-scrollbar { display: none; }
+  .app-shell-team .creator-campaign-cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .app-shell-team .team-campaign-card {
+    gap: 13px;
+    padding: 17px;
+  }
+  .app-shell-team .team-campaign-card .creator-campaign-title h2 {
+    font-size: 18px;
+    line-height: 1.22;
+  }
+  .app-shell-team .team-campaign-card footer {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .app-shell-team .team-campaign-card footer button {
+    width: 100%;
+    min-height: 40px;
+  }
+
+  .app-shell-team .submission-status-tabs,
+  .app-shell-team .submission-filter-bar,
+  .app-shell-team .reward-filter-bar,
+  .app-shell-team .creator-filter-bar,
+  .app-shell-team .report-filter-bar {
+    width: 100%;
+    max-width: none;
+  }
+  .app-shell-team .submission-status-tabs { margin-bottom: 12px; }
+  .app-shell-team .submission-filter-bar,
+  .app-shell-team .reward-filter-bar,
+  .app-shell-team .creator-filter-bar,
+  .app-shell-team .report-filter-bar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px;
+  }
+  .app-shell-team .submission-filter-bar select,
+  .app-shell-team .reward-filter-bar select,
+  .app-shell-team .creator-filter-bar :is(input,select),
+  .app-shell-team .report-filter-bar select { min-height: 42px; }
+  .app-shell-team .submission-metrics,
+  .app-shell-team .manual-submission-metrics,
+  .app-shell-team .reward-summary,
+  .app-shell-team .creator-directory-summary,
+  .app-shell-team .report-grid {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+  .app-shell-team .submission-metrics article,
+  .app-shell-team .reward-summary article { padding: 16px; }
+
+  .app-shell-team .manual-submission-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .app-shell-team .manual-submission-card,
+  .app-shell-team .manual-submission-card:has(.vip-code-actions) {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-flow: row;
+    gap: 14px;
+    min-width: 0;
+    padding: 16px;
+    overflow: hidden;
+  }
+  .app-shell-team .manual-submission-card > * {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    min-width: 0;
+    width: 100%;
+  }
+  .app-shell-team .manual-submission-creator,
+  .app-shell-team .manual-submission-campaign,
+  .app-shell-team .manual-submission-post { align-self: start; }
+  .app-shell-team .manual-submission-creator > span,
+  .app-shell-team .manual-submission-post,
+  .app-shell-team .manual-submission-campaign { min-width: 0; }
+  .app-shell-team .manual-submission-creator .submission-creator-social {
+    width: 100%;
+    min-width: 0;
+  }
+  .app-shell-team .manual-submission-views {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    min-width: 0;
+    width: 100%;
+  }
+  .app-shell-team .manual-submission-views > .viewer-comparison {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 8px;
+    width: 100%;
+  }
+  .app-shell-team .manual-submission-views > .viewer-comparison > div {
+    min-width: 0;
+    padding: 11px;
+    border: 1px solid rgba(206,191,183,.58);
+    border-radius: 10px;
+    background: rgba(255,255,255,.52);
+  }
+  .app-shell-team .manual-submission-views .submission-analytics-values {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 8px;
+    width: 100%;
+  }
+  .app-shell-team .manual-submission-views .submission-analytics-values > span {
+    min-width: 0;
+    padding: 10px;
+    border-radius: 9px;
+    overflow-wrap: anywhere;
+  }
+  .app-shell-team .manual-submission-views > .manual-ai-button,
+  .app-shell-team .manual-submission-views > .manual-engagement-button,
+  .app-shell-team .manual-submission-views > .analytics-screenshot-link,
+  .app-shell-team .manual-submission-views > .analytics-screenshot-missing {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    width: 100%;
+    min-height: 40px;
+    justify-content: center;
+    text-align: center;
+  }
+  .app-shell-team .manual-submission-card > .decision-buttons {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    justify-content: stretch;
+  }
+  .app-shell-team .manual-submission-card > .decision-buttons button {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+  }
+
+  .app-shell-team .application-list article,
+  .app-shell-team .app-expansion-review > article,
+  .app-shell-team .streak-review-list > article {
+    grid-template-columns: 1fr;
+    gap: 11px;
+    align-items: stretch;
+    padding: 15px;
+  }
+  .app-shell-team .application-list article > *,
+  .app-shell-team .app-expansion-review > article > *,
+  .app-shell-team .streak-review-list > article > * {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+  .app-shell-team .row-actions,
+  .app-shell-team .application-list .row-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .app-shell-team .row-actions button { min-height: 40px; }
+  .app-shell-team .creator-directory-summary { padding: 16px; }
+  .app-shell-team .creator-directory-summary dl { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  .app-shell-team .creator-directory-summary dl div { min-width: 0; }
+  .app-shell-team .table-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .app-shell-team .reward-bulk-editor { grid-template-columns: 1fr; gap: 11px; padding: 14px; }
+  .app-shell-team .reward-bulk-editor > * { width: 100%; min-width: 0; }
+  .app-shell-team .payment-history-head { align-items: stretch; gap: 10px; }
+  .app-shell-team .payment-history-head > label { width: 100%; min-width: 0; }
+}
+
+@media (max-width: 520px) {
+  .app-shell-team .workspace { padding-inline: 11px; }
+  .app-shell-team .page-head h1 { font-size: 23px; }
+  .app-shell-team .manual-submission-views > .viewer-comparison,
+  .app-shell-team .manual-submission-views .submission-analytics-values { grid-template-columns: 1fr 1fr; }
+  .app-shell-team .manual-submission-card > .decision-buttons { grid-template-columns: 1fr; }
+  .app-shell-team .creator-directory-summary dl { grid-template-columns: 1fr; }
+  .app-shell-team .row-actions,
+  .app-shell-team .application-list .row-actions { grid-template-columns: 1fr; }
+}
