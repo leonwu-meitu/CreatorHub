@@ -1029,3 +1029,59 @@
   .manual-submission-card .vip-code-actions label input { grid-row:2; }
   .manual-submission-card .vip-code-actions label button { grid-row:3; }
 }
+
+/* Desktop submissions read top-to-bottom in two columns instead of stretching
+   five or six narrow sections across one row. */
+@media (min-width:801px) {
+  .app-shell .manual-submission-card,
+  .app-shell .manual-submission-card:has(.vip-code-actions) {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    align-items:start;
+    column-gap:28px;
+    row-gap:16px;
+    padding:18px 22px;
+  }
+  .app-shell .manual-submission-card > .manual-submission-creator {
+    grid-column:1;
+    grid-row:1;
+  }
+  .app-shell .manual-submission-card > .manual-submission-campaign {
+    grid-column:2;
+    grid-row:1;
+  }
+  .app-shell .manual-submission-card > .manual-submission-post {
+    grid-column:1;
+    grid-row:2;
+  }
+  .app-shell .manual-submission-card > .manual-submission-views {
+    grid-column:2;
+    grid-row:2 / span 2;
+    width:100%;
+    min-width:0;
+  }
+  .app-shell .manual-submission-card > .decision-buttons {
+    position:static;
+    grid-column:1;
+    grid-row:3;
+    align-self:end;
+    width:100%;
+    min-width:0;
+    display:flex;
+    justify-content:flex-start;
+    gap:8px;
+    padding-top:0;
+  }
+  .app-shell .manual-submission-card > .decision-buttons button {
+    flex:1 1 0;
+    min-width:0;
+  }
+  .app-shell .manual-submission-views .manual-ai-button,
+  .app-shell .manual-submission-views .manual-engagement-button {
+    grid-row:auto;
+    grid-column:auto;
+    margin-top:0;
+  }
+  .app-shell .manual-submission-views .submission-analytics-values {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
