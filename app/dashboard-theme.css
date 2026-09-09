@@ -1442,7 +1442,7 @@
 /* Keep the journey connector visible between the cards while letting each
    milestone remain the foreground glass node. */
 .app-shell .campaign-collaboration-flow > div::before {
-  z-index: 2;
+  z-index: 1;
   height: 4px;
   border: 1px solid rgba(255,255,255,.64);
   background: linear-gradient(90deg,rgba(241,29,72,.72),rgba(236,85,181,.62),rgba(118,88,245,.62),rgba(38,164,191,.62),rgba(43,155,110,.72));
@@ -1457,7 +1457,7 @@
   backdrop-filter: blur(14px) saturate(120%);
 }
 .app-shell .campaign-collaboration-flow article > i {
-  z-index: 3;
+  z-index: 2;
   border-color: rgba(255,255,255,.88);
   box-shadow: 0 7px 18px rgba(241,29,72,.22), 0 0 0 1px rgba(255,255,255,.42);
 }
@@ -1485,4 +1485,63 @@
     border-radius: 999px;
     background: linear-gradient(180deg,rgba(241,29,72,.72),rgba(236,85,181,.62),rgba(118,88,245,.62),rgba(38,164,191,.62),rgba(43,155,110,.72));
   }
+}
+
+/* Glass treatment for the Creator access modal, matching the portal surfaces
+   while keeping Meitu red as the selection and action cue. */
+.app-shell .apply-apps-dialog {
+  border-color: rgba(255,255,255,.78);
+  background: rgba(255,253,248,.82);
+  box-shadow: 0 30px 90px rgba(22,14,14,.26), 0 0 0 1px rgba(255,255,255,.3) inset;
+  backdrop-filter: blur(22px) saturate(1.18);
+}
+.app-shell .apply-apps-dialog > header {
+  color: #171415;
+  background: linear-gradient(135deg,rgba(255,255,255,.74),rgba(255,235,241,.7));
+  border-bottom-color: rgba(206,191,183,.66);
+}
+.app-shell .apply-apps-dialog > header p { color: #756c68; }
+.app-shell .apply-apps-dialog > header .close {
+  background: rgba(255,255,255,.66);
+  color: #171415;
+  border: 1px solid rgba(206,191,183,.56);
+  box-shadow: 0 5px 14px rgba(56,32,30,.08);
+}
+.app-shell .apply-apps-dialog .form-body { background: rgba(255,253,248,.32); }
+.app-shell .apply-apps-dialog .current-apps,
+.app-shell .apply-apps-dialog .apply-app-options > button {
+  border-color: rgba(206,191,183,.74);
+  background: rgba(255,255,255,.54);
+  box-shadow: 0 8px 20px rgba(56,32,30,.055), 0 0 0 1px rgba(255,255,255,.34) inset;
+  backdrop-filter: blur(12px) saturate(1.08);
+}
+.app-shell .apply-apps-dialog .current-apps > small { color: #756c68; }
+.app-shell .apply-apps-dialog .apply-app-options > button {
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.app-shell .apply-apps-dialog .apply-app-options > button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: rgba(241,29,72,.44);
+  box-shadow: 0 12px 24px rgba(78,28,38,.1), 0 0 0 1px rgba(255,255,255,.46) inset;
+}
+.app-shell .apply-apps-dialog .apply-app-options > button.selected {
+  border-color: rgba(241,29,72,.72);
+  background: linear-gradient(135deg,rgba(255,255,255,.7),rgba(255,228,235,.86));
+  box-shadow: 0 9px 22px rgba(241,29,72,.12), inset 0 0 0 1px rgba(241,29,72,.14);
+}
+.app-shell .apply-apps-dialog .apply-app-options > button.pending {
+  background: rgba(242,237,232,.54);
+  box-shadow: none;
+}
+.app-shell .apply-apps-dialog .all-apps-active,
+.app-shell .apply-apps-dialog .application-pending-note {
+  border-color: rgba(206,191,183,.66);
+  background: rgba(255,255,255,.48);
+  box-shadow: 0 8px 20px rgba(56,32,30,.045);
+  backdrop-filter: blur(12px);
+}
+.app-shell .apply-apps-dialog > footer {
+  background: rgba(255,255,255,.56);
+  border-top-color: rgba(206,191,183,.66);
+  backdrop-filter: blur(14px);
 }
