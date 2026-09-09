@@ -1979,3 +1979,58 @@
     justify-content: flex-end;
   }
 }
+
+/* The desktop review card uses two balanced columns so its content fills the
+   available panel width without squeezing the analytics labels. */
+@media (min-width: 801px) {
+  .manual-submission-card {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 14px 18px;
+    padding: 16px 18px;
+  }
+  .manual-submission-card > .manual-submission-creator {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .manual-submission-card > .manual-submission-campaign {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .manual-submission-card > .manual-submission-post {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .manual-submission-card > .manual-submission-views {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    min-width: 0;
+    width: 100%;
+  }
+  .manual-submission-card > .decision-buttons {
+    position: static;
+    grid-column: 2;
+    grid-row: 4;
+    align-self: start;
+    width: 100%;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    justify-content: stretch;
+    padding-top: 0;
+  }
+  .manual-submission-card > .decision-buttons button {
+    width: 100%;
+    min-width: 0;
+  }
+  .manual-submission-views .manual-ai-button,
+  .manual-submission-views .manual-engagement-button {
+    grid-row: auto;
+    grid-column: auto;
+    margin-top: 0;
+  }
+  .manual-submission-views .submission-analytics-values {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
