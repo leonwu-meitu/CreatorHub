@@ -906,12 +906,12 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
   const hasCreatorAccess=Boolean(account&&(account.role==="team"||account.canAccessCreator||account.applicationStatus==="accepted"));
   const [rewardViews,setRewardViews]=useState(0);
   const aboutParticleFieldRef=useRef<HTMLDivElement|null>(null);
-  const aboutParticles=useMemo(()=>Array.from({length:120},(_,index)=>({
+  const aboutParticles=useMemo(()=>Array.from({length:240},(_,index)=>({
     id:index,
     left:(index*47+13)%100,
     top:(index*71+7)%100,
-    size:1+((index*13)%4),
-    opacity:.18+((index*17)%7)/10,
+    size:1+((index*13)%3),
+    opacity:.34+((index*17)%7)/10,
     delay:`-${(index%16)*.45}s`,
   })),[]);
   const moveAboutParticles=(event:React.PointerEvent<HTMLElement>)=>{
@@ -965,7 +965,7 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
     <header className="canva-nav">
       <a className="canva-brand" href="#top" aria-label="Meitu Creator Pool"><img src="/canva/meitu-wordmark.png" alt="Meitu"/><span>Creator Pool</span></a>
       <nav><a href="#about">{t("About Meitu","Tentang Meitu")}</a><a href="#benefits">Creator Pool</a><a href="#works">{t("How To Register","Cara Daftar")}</a><a href="#rewards">Reward</a></nav>
-      <div><PortalLanguageSwitcher className="public-language-switcher"/>{account?<><button className="canva-login" onClick={onOpenPortal}>{account.role==="team"?"Team Portal":account.applicationStatus==="accepted"?"Creator Portal":t("Application in review","Pendaftaran ditinjau")}</button><button className="canva-login" onClick={onSignOut}>{t("Sign Out","Keluar")}</button></>:<button className="canva-login" onClick={onSignIn}>{t("Sign In","Masuk")}</button>}{!hasCreatorAccess&&<button className="canva-button" onClick={onApply}>{t("Register Now","Daftar Sekarang")}</button>}</div>
+      <div><PortalLanguageSwitcher className="public-language-switcher"/>{account?<><button className="canva-login canva-portal-login" onClick={onOpenPortal}>{account.role==="team"?"Team Portal":account.applicationStatus==="accepted"?"Creator Portal":t("Application in review","Pendaftaran ditinjau")}</button><button className="canva-login" onClick={onSignOut}>{t("Sign Out","Keluar")}</button></>:<button className="canva-login" onClick={onSignIn}>{t("Sign In","Masuk")}</button>}{!hasCreatorAccess&&<button className="canva-button" onClick={onApply}>{t("Register Now","Daftar Sekarang")}</button>}</div>
     </header>
     <main>
       <section className="canva-hero" id="top">
@@ -992,7 +992,7 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
       </section>
 
       <section className="canva-how" id="works">
-        <div className="how-heading"><span className="section-kicker">PROSES BERGABUNG</span><h2>Gimana Cara <strong>Jadi Creator?</strong></h2><p>Yuk, bergabung jadi bagian dari <b>Meitu Creator Pool</b> dan wujudkan kreativitasmu jadi peluang nyata!</p><span className="journey-slider-hint">← Geser untuk melihat 5 langkah →</span></div>
+        <div className="how-heading"><span className="section-kicker">PROSES BERGABUNG</span><h2>Gimana Cara <strong>Jadi Creator?</strong></h2><p>Yuk, bergabung jadi bagian dari <b>Meitu Creator Pool</b> dan wujudkan kreativitasmu jadi peluang nyata!</p></div>
         <div className="journey-grid">{steps.map(([number,title,copy,icon])=><article key={number}><span className="journey-number">{number}</span><b className="journey-icon">{icon}</b><h3>{title}</h3><p>{copy}</p></article>)}</div>
         <div className="journey-message"><span>◖</span><p>Kreativitasmu bisa <b>menginspirasi jutaan orang</b> dan buka banyak peluang bersama <b>Meitu!</b></p></div>
       </section>
