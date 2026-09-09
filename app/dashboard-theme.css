@@ -2541,6 +2541,18 @@
     linear-gradient(135deg,#030303 0%,#16070a 55%,#4b0a18 100%);
 }
 
+/* Keep the Creator Pool introduction comfortably below the sticky public
+   header when reached from the navigation, so its heading is not tucked
+   against the previous section or hidden under the nav. */
+.canva-public .canva-benefits {
+  scroll-margin-top: 92px;
+  padding-top: clamp(116px, 9vw, 136px);
+}
+
+@media (max-width: 620px) {
+  .canva-public .canva-benefits { scroll-margin-top: 108px; padding-top: 88px; }
+}
+
 /* Give Campaign Progress app badges the same dimensional brand treatment as
    the portal's larger stat and campaign surfaces. */
 .app-shell .campaign-progress-list > article .product {
