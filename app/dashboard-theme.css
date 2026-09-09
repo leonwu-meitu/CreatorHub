@@ -1085,3 +1085,48 @@
     grid-template-columns:repeat(3,minmax(0,1fr));
   }
 }
+
+/* Desktop list view: two complete submission cards per row.  Each card keeps
+   its details vertical so the pair remains readable instead of becoming one
+   long horizontal strip. */
+@media (min-width:1101px) {
+  .app-shell .manual-submission-list {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    align-items:stretch;
+    gap:14px;
+  }
+  .app-shell .manual-submission-card,
+  .app-shell .manual-submission-card:has(.vip-code-actions) {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    align-items:start;
+    column-gap:16px;
+    row-gap:12px;
+    padding:16px;
+  }
+  .app-shell .manual-submission-card > .manual-submission-creator { grid-area:1 / 1; }
+  .app-shell .manual-submission-card > .manual-submission-campaign { grid-area:1 / 2; }
+  .app-shell .manual-submission-card > .manual-submission-post { grid-area:2 / 1 / 3 / 3; }
+  .app-shell .manual-submission-card > .manual-submission-views {
+    grid-area:3 / 1 / 4 / 3;
+    width:100%;
+    min-width:0;
+  }
+  .app-shell .manual-submission-card > .decision-buttons {
+    position:static;
+    grid-area:4 / 1 / 5 / 3;
+    align-self:end;
+    width:100%;
+    min-width:0;
+    display:flex;
+    justify-content:stretch;
+    gap:8px;
+    padding-top:0;
+  }
+  .app-shell .manual-submission-card > .decision-buttons button {
+    flex:1 1 0;
+    min-width:0;
+  }
+  .app-shell .manual-submission-views .submission-analytics-values {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
