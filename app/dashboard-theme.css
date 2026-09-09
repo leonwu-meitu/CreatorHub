@@ -1240,3 +1240,60 @@
 .app-shell .manual-submission-views .analytics-screenshot-link,
 .app-shell .manual-submission-views .analytics-screenshot-missing { font-size:10px; }
 .chart-bar-tooltip { font-family:var(--font-jakarta-sans),Arial,sans-serif; }
+
+/* Keep both portal workspaces calm and legible: a neutral working surface
+   with restrained contrast lets the content and brand accents do the work. */
+.app-shell {
+  background: #f3f5f7;
+  color: #20252b;
+}
+.app-shell > main {
+  background: #f3f5f7;
+}
+.app-shell .topbar {
+  background: rgba(255,255,255,.96);
+  border-bottom-color: #e3e7eb;
+  box-shadow: 0 1px 0 rgba(20,28,36,.04);
+  backdrop-filter: blur(14px);
+}
+.app-shell .workspace {
+  background: transparent;
+}
+.app-shell .panel,
+.app-shell .metric-card,
+.app-shell .application-metric,
+.app-shell .submission-metrics article,
+.app-shell .reward-summary article,
+.app-shell .creator-stats article,
+.app-shell .place,
+.app-shell .task-card {
+  background: #fff;
+  border-color: #e0e5e9;
+  box-shadow: 0 6px 18px rgba(34,43,51,.045);
+}
+.app-shell .segmented,
+.app-shell .submission-filter-bar,
+.app-shell .reward-filter-bar {
+  background: #e9edf0;
+  border-color: #dde3e7;
+}
+.app-shell .th,
+.app-shell th {
+  background: #f1f4f6;
+  border-color: #e1e6ea;
+}
+.app-shell .reward-creator-link {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #c91136;
+  font: inherit;
+  font-weight: 750;
+  text-align: left;
+}
+.app-shell .reward-creator-link:hover {
+  color: #9f0d2d;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
