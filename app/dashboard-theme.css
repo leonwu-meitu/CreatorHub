@@ -2533,6 +2533,14 @@
   background: linear-gradient(180deg, #fff 0, rgba(5,5,5,0) 95px), #050505;
 }
 
+/* The hero-to-About boundary intentionally returns to the original hard cut. */
+.canva-public .canva-about {
+  background:
+    radial-gradient(circle at 78% 22%,rgba(241,29,72,.42),transparent 30%),
+    radial-gradient(circle at 18% 82%,rgba(241,29,72,.18),transparent 34%),
+    linear-gradient(135deg,#030303 0%,#16070a 55%,#4b0a18 100%);
+}
+
 /* Keep depth on the journey cards only. The section, track, and callout stay
    visually flat so there is no heavy shadow band beneath the card row. */
 .canva-public .canva-how,
