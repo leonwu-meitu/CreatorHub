@@ -1886,9 +1886,9 @@
 
 @media (min-width: 1136px) {
   .manual-submission-card {
-    grid-template-columns: minmax(140px, 1.05fr) minmax(110px, .75fr) minmax(130px, .9fr) minmax(300px, 2fr) minmax(160px, .9fr);
+    grid-template-columns: minmax(130px, 1.05fr) minmax(100px, .75fr) minmax(120px, .9fr) minmax(270px, 2fr) minmax(145px, .9fr);
     align-items: start;
-    gap: 10px;
+    gap: 8px;
     padding: 13px 15px;
   }
   .manual-submission-views {
