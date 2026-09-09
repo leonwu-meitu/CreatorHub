@@ -1816,6 +1816,59 @@
   .app-shell-team .application-list .row-actions { grid-template-columns: 1fr; }
 }
 
+/* Collaboration flow connector: use a gentle S-curve on desktop and keep
+   it in its own lower stacking layer so the milestone icons stay pristine. */
+.app-shell .campaign-collaboration-flow > div {
+  isolation: isolate;
+}
+.app-shell .campaign-collaboration-flow > div::before {
+  display: none;
+}
+.app-shell .campaign-collaboration-flow > div .campaign-flow-connector {
+  position: absolute;
+  z-index: 0;
+  left: 4%;
+  right: 4%;
+  top: 0;
+  width: 92%;
+  height: 72px;
+  overflow: visible;
+  pointer-events: none;
+  opacity: .78;
+  filter: drop-shadow(0 5px 10px rgba(241,29,72,.14));
+}
+.app-shell .campaign-collaboration-flow > div .campaign-flow-connector path {
+  vector-effect: non-scaling-stroke;
+}
+.app-shell .campaign-collaboration-flow article {
+  z-index: 1;
+}
+.app-shell .campaign-collaboration-flow article > i {
+  z-index: 3;
+}
+
+@media (max-width: 760px) {
+  .app-shell .campaign-collaboration-flow > div .campaign-flow-connector {
+    display: none;
+  }
+  .app-shell .campaign-collaboration-flow > div::before {
+    display: block;
+    z-index: 0;
+    left: 27px;
+    right: auto;
+    top: 20px;
+    bottom: 20px;
+    width: 4px;
+    height: auto;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(180deg,rgba(241,29,72,.72),rgba(236,85,181,.62),rgba(118,88,245,.62),rgba(38,164,191,.62),rgba(43,155,110,.72));
+    box-shadow: 0 0 0 1px rgba(255,255,255,.26), 0 5px 18px rgba(241,29,72,.12);
+  }
+  .app-shell .campaign-collaboration-flow article { z-index: 1; }
+  .app-shell .campaign-collaboration-flow article > i { z-index: 3; }
+}
+
 /* Glass modal surfaces for the two high-frequency authoring flows. The
    structure stays familiar, while the layered translucency and Meitu-red
    accents make the whole form feel like part of the current portal UI. */
