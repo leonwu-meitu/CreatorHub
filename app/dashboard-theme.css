@@ -2649,3 +2649,14 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 12%, transparent), 0 8px 18px color-mix(in srgb, currentColor 24%, transparent);
   transform: translateY(-2px) scale(1.04);
 }
+
+/* Submission editors stay attached to the viewport. Locking the modal layer
+   prevents a lower submission row from opening an editor that requires
+   scrolling the list or the overlay before its controls are reachable. */
+.app-shell .modal-layer:has(> .decision-edit-dialog),
+.app-shell .modal-layer:has(> .engagement-rate-dialog) {
+  position: fixed !important;
+  inset: 0 !important;
+  overflow: hidden !important;
+  overscroll-behavior: contain;
+}

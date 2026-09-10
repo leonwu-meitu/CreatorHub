@@ -1129,6 +1129,23 @@ function ManualSubmissions({creator,rows,tasks,rewards,paymentForms,profiles,app
   const [analyzingIds,setAnalyzingIds]=useState<string[]>([]);
   const [vipDrafts,setVipDrafts]=useState<Record<string,string>>({});
   const [openSubmissionIds,setOpenSubmissionIds]=useState<Record<number,string>>({});
+  useEffect(()=>{
+    if(!editingDecision&&!editingEngagement)return;
+    const body=document.body;
+    const html=document.documentElement;
+    const scrollY=window.scrollY;
+    const previous={bodyOverflow:body.style.overflow,htmlOverflow:html.style.overflow,bodyPaddingRight:body.style.paddingRight};
+    const scrollbarWidth=window.innerWidth-html.clientWidth;
+    body.style.overflow="hidden";
+    html.style.overflow="hidden";
+    if(scrollbarWidth>0)body.style.paddingRight=`${scrollbarWidth}px`;
+    return()=>{
+      body.style.overflow=previous.bodyOverflow;
+      html.style.overflow=previous.htmlOverflow;
+      body.style.paddingRight=previous.bodyPaddingRight;
+      window.scrollTo(0,scrollY);
+    };
+  },[editingDecision,editingEngagement]);
   const base=creator?rows.filter(item=>item.creatorId===currentCreatorId||item.creator===currentCreator):rows.filter(item=>normalizeSubmissionStatus(item.status)!=="Draft");
   const filtered=base.filter(item=>(status==="All"||normalizeSubmissionStatus(item.status)===status)&&(app==="All"||item.product===app)&&(task==="All"||item.task===task)&&(platform==="All"||item.platform===platform)).sort((a,b)=>sort==="Highest viewers"?b.views-a.views:new Date(b.submittedAt||0).getTime()-new Date(a.submittedAt||0).getTime());
   useEffect(()=>{if(creator)return;const handler=(event:MouseEvent)=>{const source=event.target instanceof Element?event.target.closest<HTMLElement>(".submission-analytics-values span"):null;if(!source)return;const target=source.closest<HTMLElement>(".submission-analytics-values");const card=target?.closest<HTMLElement>(".manual-submission-card");const index=card?Array.from(document.querySelectorAll(".manual-submission-card")).indexOf(card):-1;const item=index>=0?filtered[index]:undefined;if(!item||!target)return;const fields=["views","likes","comments","reposts","shares","favorites"] as const;const field=fields[Array.from(target.children).indexOf(source)];if(!field)return;const key=field==="views"?"aiViews":`analytics${field[0].toUpperCase()+field.slice(1)}` as keyof Submission;const current=Number(item[key]||0);const value=window.prompt(`Set ${field}`,String(current));if(value===null)return;const parsed=Number(value);if(!Number.isInteger(parsed)||parsed<0){window.alert("Value must be a whole number of 0 or more.");return}const metrics={views:item.aiViews||item.views,likes:item.analyticsLikes||0,comments:item.analyticsComments||0,reposts:item.analyticsReposts||0,shares:item.analyticsShares||0,favorites:item.analyticsFavorites||0};metrics[field]=parsed;onUpdateMetrics(item,metrics)};document.addEventListener("click",handler);return()=>document.removeEventListener("click",handler)},[creator,filtered,onUpdateMetrics]);
