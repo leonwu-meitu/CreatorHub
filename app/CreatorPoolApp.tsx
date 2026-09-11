@@ -1029,8 +1029,13 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
     setActiveBenefit(current=>current===index?null:index);
   };
   const selectedRewardTier=rewardTierForViews(rewardViews)||rewardTiers[0];
+  const selectedRewardTierIndex=Math.max(0,rewardTiers.findIndex(tier=>tier.views===selectedRewardTier.views));
   const rewardValueLabel=rewardViews>=1000000?"1M":rewardViews>=1000?`${(rewardViews/1000).toLocaleString("en-US",{maximumFractionDigits:0})}K`:String(rewardViews);
   const selectedPublicReward=publicRewardCopyFor(selectedRewardTier.views,language);
+  const snapRewardToTier=()=>{
+    const nearest=rewardTiers.reduce((best,tier)=>Math.abs(tier.views-rewardViews)<Math.abs(best.views-rewardViews)?tier:best,rewardTiers[0]);
+    setRewardViews(nearest.views);
+  };
   const steps=[
     ["1","Daftarkan Dirimu","Isi formulir pendaftaran dan lengkapi data dirimu. Tim Meitu akan menyeleksi berdasarkan kecocokan.","✎"],
     ["2","Bergabung ke Grup Eksklusif","Kreator terpilih akan diundang ke grup khusus untuk mendapatkan informasi kampanye dan brief terbaru.","♟"],
@@ -1090,7 +1095,7 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
         <div className="journey-message"><span>◖</span><p>Kreativitasmu bisa <b>menginspirasi jutaan orang</b> dan buka banyak peluang bersama <b>Meitu!</b></p></div>
       </section>
 
-      <section className="canva-rewards" id="rewards">
+      <section className={`canva-rewards reward-tier-${selectedRewardTierIndex}`} id="rewards">
         <div className="reward-decor" aria-hidden="true"><i/><i/><i/><i/><span>✦</span><span>✦</span><span>◇</span></div>
         <div className="reward-content">
           <span className="section-kicker">{t("CREATOR REWARD TIER","TINGKAT HADIAH KREATOR")}</span>
@@ -1098,13 +1103,14 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
           <p>{t("The higher the views, the bigger the reward!","Semakin tinggi tayangan, semakin besar hadiahnya!")}</p>
           <div className="reward-calculator">
             <div className="reward-calculator-heading"><div><b>{t("Set your content views","Atur jumlah tayangan kontenmu")}</b><span>{t("Drag from 0 to 1M views to see the reward tier and estimated payout.","Geser dari 0 sampai 1 juta tayangan untuk melihat tingkat hadiah dan estimasi reward.")}</span></div><strong>{rewardValueLabel} {t("views","tayangan")}</strong></div>
-            <input className="reward-view-slider" type="range" min="0" max="1000000" step="1000" value={rewardViews} onChange={event=>setRewardViews(Number(event.target.value))} list="reward-view-tiers" aria-label={t("Set your content views","Atur jumlah tayangan kontenmu")} style={{"--reward-progress":`${Math.round(rewardViews/1000000*100)}%`} as React.CSSProperties}/>
+            <div className="reward-slider-wrap" style={{"--reward-progress":`${Math.round(rewardViews/1000000*100)}%`} as React.CSSProperties}><input className="reward-view-slider" type="range" min="0" max="1000000" step="1000" value={rewardViews} onChange={event=>setRewardViews(Number(event.target.value))} onPointerUp={snapRewardToTier} onBlur={snapRewardToTier} list="reward-view-tiers" aria-label={t("Set your content views","Atur jumlah tayangan kontenmu")}/><div className="reward-slider-milestones" aria-hidden="true">{rewardTiers.map(tier=><i key={tier.views} style={{left:`${tier.views/1000000*100}%`}} className={tier.views===selectedRewardTier.views?"is-current":""}/>)}</div><span className="reward-slider-badge">T{selectedRewardTierIndex+1}</span></div>
             <datalist id="reward-view-tiers">{rewardTiers.map(tier=><option key={tier.views} value={tier.views} label={publicRewardCopyFor(tier.views,language).label}/>)}</datalist>
-            <div className="reward-calculator-result"><span>{selectedPublicReward.label}</span><b>{selectedPublicReward.reward}</b><small>{t("Estimated from the selected view tier","Estimasi berdasarkan tingkat tayangan yang dipilih")}</small></div>
+            <div className="reward-slider-meta"><span className="reward-current-tier">{t("Current tier","Tingkat saat ini")}: T{selectedRewardTierIndex+1} · {selectedPublicReward.label}</span><span>{t("Release to snap to a milestone","Lepaskan untuk memilih pencapaian terdekat")}</span></div>
+            <div className="reward-calculator-result"><span>{selectedPublicReward.label}</span><b key={selectedRewardTier.views} className="reward-amount-pop">{selectedPublicReward.reward}</b><small>{t("Estimated from the selected view tier","Estimasi berdasarkan tingkat tayangan yang dipilih")}</small></div>
           </div>
           <div className="reward-table" aria-label={t("Reward tiers","Tingkat hadiah")}>
             <div className="reward-table-head"><b>{t("Tier","Tingkat")}</b><b>{t("Views","Tayangan")}</b><b>{t("Reward","Hadiah")}</b></div>
-            {rewardTiers.map((tier,index)=>{const copy=publicRewardCopyFor(tier.views,language);return <article key={tier.views}><b>T{index+1}</b><span>{copy.label}</span><strong>{copy.reward}</strong></article>})}
+            {rewardTiers.map((tier,index)=>{const copy=publicRewardCopyFor(tier.views,language);const isCurrent=tier.views===selectedRewardTier.views;return <article key={tier.views} className={isCurrent?"is-current":""} aria-current={isCurrent?"true":undefined}><b>T{index+1}</b><span>{copy.label}</span><strong>{copy.reward}</strong></article>})}
           </div>
           <div className="reward-message">{t("Keep creating, earn rewards, and realize your potential with Meitu!","Terus berkarya, raih hadiah, dan wujudkan potensimu bersama Meitu!")}</div>
         </div>

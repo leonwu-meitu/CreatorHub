@@ -3071,3 +3071,136 @@
   }
   .canva-public .about-fact { animation: none; }
 }
+
+/* Reward-tier interaction layer: the thumb can travel freely while release
+   snaps to the nearest milestone. Dots, the current-tier badge, payout pulse,
+   and table highlight keep the whole calculator synchronized. */
+.canva-public .canva-rewards {
+  --reward-tier-glow: rgba(255,125,230,.34);
+  transition: background .55s ease;
+}
+.canva-public .canva-rewards.reward-tier-0 { --reward-tier-glow: rgba(255,255,255,.22); }
+.canva-public .canva-rewards.reward-tier-1 { --reward-tier-glow: rgba(255,211,232,.3); }
+.canva-public .canva-rewards.reward-tier-2 { --reward-tier-glow: rgba(255,154,191,.34); }
+.canva-public .canva-rewards.reward-tier-3 { --reward-tier-glow: rgba(255,125,230,.38); }
+.canva-public .canva-rewards.reward-tier-4 { --reward-tier-glow: rgba(201,116,255,.4); }
+.canva-public .canva-rewards.reward-tier-5 { --reward-tier-glow: rgba(162,78,255,.42); }
+.canva-public .canva-rewards::after {
+  background: radial-gradient(circle at 50% 0%, var(--reward-tier-glow), transparent 62%);
+  opacity: .52;
+  transition: background .55s ease, opacity .55s ease;
+}
+.canva-public .reward-slider-wrap {
+  position: relative;
+  padding-bottom: 22px;
+}
+.canva-public .reward-view-slider {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 0;
+}
+.canva-public .reward-slider-milestones {
+  position: absolute;
+  z-index: 0;
+  right: 12px;
+  bottom: 22px;
+  left: 12px;
+  height: 8px;
+  pointer-events: none;
+}
+.canva-public .reward-slider-milestones i {
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border: 2px solid rgba(241,29,72,.9);
+  border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%,-50%);
+  box-shadow: 0 2px 7px rgba(65,0,22,.25);
+}
+.canva-public .reward-slider-milestones i.is-current {
+  width: 11px;
+  height: 11px;
+  border-color: #fff;
+  background: #f11d48;
+  box-shadow: 0 0 0 4px rgba(241,29,72,.2), 0 3px 10px rgba(65,0,22,.3);
+}
+.canva-public .reward-slider-badge {
+  position: absolute;
+  z-index: 2;
+  top: 24px;
+  left: clamp(18px, var(--reward-progress), calc(100% - 18px));
+  padding: 4px 8px;
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 999px;
+  background: rgba(55,0,20,.28);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  transform: translate(-50%,-100%);
+  box-shadow: 0 7px 16px rgba(65,0,22,.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: none;
+  transition: left .18s ease, background .3s ease;
+}
+.canva-public .reward-slider-wrap:focus-within .reward-slider-badge {
+  background: rgba(241,29,72,.8);
+}
+.canva-public .reward-slider-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 2px;
+  color: rgba(255,255,255,.65);
+  font-size: 10px;
+}
+.canva-public .reward-current-tier {
+  color: rgba(255,255,255,.94);
+  font-weight: 800;
+}
+.canva-public .reward-calculator-result {
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
+}
+.canva-public .reward-calculator-result:focus-within,
+.canva-public .reward-calculator:hover .reward-calculator-result {
+  transform: translateY(-2px);
+  box-shadow: 0 13px 28px rgba(82,0,28,.18);
+}
+.canva-public .reward-amount-pop {
+  animation: reward-amount-pop .42s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes reward-amount-pop {
+  from { opacity: .3; transform: translateY(5px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.canva-public .reward-table article {
+  position: relative;
+  transition: background .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.canva-public .reward-table article.is-current {
+  z-index: 1;
+  background: linear-gradient(90deg,rgba(255,224,233,.95),rgba(255,247,250,.98));
+  box-shadow: inset 5px 0 #f11d48, 0 8px 18px rgba(201,15,54,.1);
+  transform: translateX(4px);
+}
+.canva-public .reward-table article.is-current > b {
+  background: linear-gradient(135deg,#f11d48,#c90f3a);
+  color: #fff;
+  box-shadow: 0 5px 12px rgba(201,15,54,.2);
+}
+@media (max-width: 760px) {
+  .canva-public .reward-slider-meta { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .canva-public .reward-table article.is-current { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .canva-public .canva-rewards,
+  .canva-public .canva-rewards::after,
+  .canva-public .reward-slider-badge,
+  .canva-public .reward-calculator-result,
+  .canva-public .reward-table article { transition: none; }
+  .canva-public .reward-amount-pop { animation: none; }
+}
