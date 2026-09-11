@@ -2840,3 +2840,12 @@
   display: block;
   margin-bottom: 2px;
 }
+
+/* The Team cards use a dense two-column grid; give the rate its own vertical
+   lane before the Edit/VIP decision area starts. */
+.app-shell-team .manual-submission-card > .manual-submission-views {
+  padding-bottom: 34px;
+}
+.app-shell-team .manual-submission-card > .decision-buttons {
+  margin-top: 6px;
+}
