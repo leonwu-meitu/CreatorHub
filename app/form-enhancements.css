@@ -1849,11 +1849,6 @@
   .manual-submission-views .viewer-comparison { grid-template-columns: repeat(2,minmax(135px,1fr)); }
   .manual-submission-views .submission-analytics-values { grid-template-columns: repeat(3,minmax(92px,1fr)); }
 }
-.submission-analytics-values span:nth-child(3) small,.submission-analytics-values span:nth-child(5) small,.submission-analytics-values span:nth-child(6) small { font-size: 0; }
-.submission-analytics-values span:nth-child(3) small::after { content: "Comments"; font-size: 8px; }
-.submission-analytics-values span:nth-child(5) small::after { content: "Shares"; font-size: 8px; }
-.submission-analytics-values span:nth-child(6) small::after { content: "Favorites"; font-size: 8px; }
-
 /* Keep the complete Team submission card inside the desktop viewport.  The
    action controls get their own grid column instead of floating over the
    analytics, while narrower desktop windows move analytics below the summary. */
