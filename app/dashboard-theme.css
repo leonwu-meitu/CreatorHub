@@ -2952,3 +2952,122 @@
     transition: none;
   }
 }
+
+/* About Meitu interaction layer: the copy, image, and highlight rail reveal
+   together as the section enters view, while the image gains a small pointer
+   parallax and floating glass facts add a sense of depth. */
+.canva-public .canva-about.about-reveal-ready .about-copy,
+.canva-public .canva-about.about-reveal-ready .about-image-stage,
+.canva-public .canva-about.about-reveal-ready .about-highlight-marquee {
+  opacity: 0;
+  transition: opacity .65s ease, transform .65s cubic-bezier(.2,.8,.2,1);
+}
+.canva-public .canva-about.about-reveal-ready .about-copy {
+  transform: translateY(28px);
+}
+.canva-public .canva-about.about-reveal-ready .about-image-stage {
+  --about-image-x: 0px;
+  --about-image-y: 0px;
+  transform: translate3d(var(--about-image-x),calc(28px + var(--about-image-y)),0);
+}
+.canva-public .canva-about.about-reveal-ready .about-highlight-marquee {
+  transform: translateY(20px);
+  transition-delay: .12s;
+}
+.canva-public .canva-about.about-reveal-ready .about-copy.is-visible,
+.canva-public .canva-about.about-reveal-ready .about-image-stage.is-visible,
+.canva-public .canva-about.about-reveal-ready .about-highlight-marquee.is-visible {
+  opacity: 1;
+}
+.canva-public .canva-about.about-reveal-ready .about-copy.is-visible,
+.canva-public .canva-about.about-reveal-ready .about-highlight-marquee.is-visible {
+  transform: translateY(0);
+}
+.canva-public .canva-about.about-reveal-ready .about-image-stage.is-visible {
+  transform: translate3d(var(--about-image-x),var(--about-image-y),0);
+}
+.canva-public .canva-about .about-image-stage {
+  transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease;
+}
+.canva-public .canva-about .about-image-stage:hover {
+  box-shadow: 0 40px 88px rgba(102,0,23,.42), 0 0 0 1px rgba(255,124,151,.28);
+}
+.canva-public .canva-about .about-image-stage img {
+  transition: transform .45s cubic-bezier(.2,.8,.2,1), filter .45s ease;
+}
+.canva-public .canva-about .about-image-stage:hover img {
+  transform: scale(1.025);
+  filter: saturate(1.08) contrast(1.03);
+}
+.canva-public .about-floating-facts {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.canva-public .about-fact {
+  position: absolute;
+  display: grid;
+  gap: 2px;
+  min-width: 106px;
+  padding: 10px 13px;
+  border: 1px solid rgba(255,255,255,.34);
+  border-radius: 14px;
+  background: linear-gradient(145deg,rgba(255,255,255,.25),rgba(255,255,255,.09));
+  box-shadow: inset 0 1px rgba(255,255,255,.24), 0 14px 28px rgba(27,0,8,.28);
+  color: #fff;
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  animation: about-fact-float 5s ease-in-out infinite;
+}
+.canva-public .about-fact b { font-size: 16px; line-height: 1.1; letter-spacing: -.02em; }
+.canva-public .about-fact small { color: rgba(255,255,255,.78); font-size: 10px; line-height: 1.2; }
+.canva-public .about-fact-1 { top: 10%; left: 4%; }
+.canva-public .about-fact-2 { top: 46%; right: -4%; animation-delay: -.9s; }
+.canva-public .about-fact-3 { bottom: 8%; left: 13%; animation-delay: -1.7s; }
+@keyframes about-fact-float {
+  0%,100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-6px) rotate(1deg); }
+}
+.canva-public .about-highlight-set > span {
+  padding: 8px 13px 8px 8px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 999px;
+  background: linear-gradient(145deg,rgba(255,255,255,.1),rgba(255,255,255,.035));
+  box-shadow: inset 0 1px rgba(255,255,255,.1), 0 8px 18px rgba(24,0,8,.16);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform .25s ease, border-color .25s ease, background .25s ease;
+}
+.canva-public .about-highlight-set > span:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255,139,164,.46);
+  background: linear-gradient(145deg,rgba(241,29,72,.24),rgba(255,255,255,.06));
+}
+@media (max-width: 680px) {
+  .canva-public .about-fact { min-width: 92px; padding: 8px 10px; }
+  .canva-public .about-fact b { font-size: 14px; }
+  .canva-public .about-fact small { font-size: 9px; }
+  .canva-public .about-fact-1 { top: 7%; left: 3%; }
+  .canva-public .about-fact-2 { top: 43%; right: 3%; }
+  .canva-public .about-fact-3 { bottom: 6%; left: 5%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .canva-public .canva-about.about-reveal-ready .about-copy,
+  .canva-public .canva-about.about-reveal-ready .about-image-stage,
+  .canva-public .canva-about.about-reveal-ready .about-highlight-marquee,
+  .canva-public .canva-about.about-reveal-ready .about-copy.is-visible,
+  .canva-public .canva-about.about-reveal-ready .about-image-stage.is-visible,
+  .canva-public .canva-about.about-reveal-ready .about-highlight-marquee.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .canva-public .canva-about .about-image-stage img,
+  .canva-public .canva-about .about-image-stage:hover img {
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+  .canva-public .about-fact { animation: none; }
+}

@@ -917,7 +917,9 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
   const t=(english:string,indonesian:string)=>language==="en"?english:indonesian;
   const hasCreatorAccess=Boolean(account&&(account.role==="team"||account.canAccessCreator||account.applicationStatus==="accepted"));
   const [rewardViews,setRewardViews]=useState(0);
+  const aboutSectionRef=useRef<HTMLElement|null>(null);
   const aboutParticleFieldRef=useRef<HTMLDivElement|null>(null);
+  const [aboutRevealReady,setAboutRevealReady]=useState(false);
   const benefitsRef=useRef<HTMLElement|null>(null);
   const [benefitRevealReady,setBenefitRevealReady]=useState(false);
   const [activeBenefit,setActiveBenefit]=useState<number|null>(null);
@@ -954,6 +956,39 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
       particle.style.setProperty("--particle-shift-y","0px");
       particle.style.setProperty("--particle-focus","0");
     });
+  };
+  useEffect(()=>{
+    const section=aboutSectionRef.current;
+    if(!section)return;
+    const revealTargets=Array.from(section.querySelectorAll<HTMLElement>(".about-copy,.about-image-stage,.about-highlight-marquee"));
+    setAboutRevealReady(true);
+    if(!( "IntersectionObserver" in window)){
+      revealTargets.forEach(target=>target.classList.add("is-visible"));
+      return;
+    }
+    const observer=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },{threshold:.18});
+    revealTargets.forEach(target=>observer.observe(target));
+    return()=>observer.disconnect();
+  },[]);
+  const moveAboutImage=(event:React.PointerEvent<HTMLDivElement>)=>{
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+    const stage=event.currentTarget;
+    const bounds=stage.getBoundingClientRect();
+    const x=((event.clientX-bounds.left)/bounds.width-.5)*2;
+    const y=((event.clientY-bounds.top)/bounds.height-.5)*2;
+    stage.style.setProperty("--about-image-x",`${x*8}px`);
+    stage.style.setProperty("--about-image-y",`${y*6}px`);
+  };
+  const resetAboutImage=(event:React.PointerEvent<HTMLDivElement>)=>{
+    event.currentTarget.style.setProperty("--about-image-x","0px");
+    event.currentTarget.style.setProperty("--about-image-y","0px");
   };
   useEffect(()=>{
     const section=benefitsRef.current;
@@ -1014,6 +1049,9 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
     ["◇","Global brand ecosystem"],
     ["✦","Continuous creator growth support"],
   ];
+  const aboutFacts=language==="en"?
+    [["250M+","global users"],["Since 2008","creative innovation"],["AI-powered","editing tools"]]:
+    [["250M+","pengguna global"],["Sejak 2008","inovasi kreatif"],["Bertenaga AI","alat pengeditan"]];
   return <div className="public-site canva-public classic-palette">
     <header className="canva-nav">
       <a className="canva-brand" href="#top" aria-label="Meitu Creator Pool"><img src="/canva/meitu-wordmark.png" alt="Meitu"/><span>Creator Pool</span></a>
@@ -1027,10 +1065,10 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
         <div className="hero-app-rotator" aria-label="Creator apps">{heroApps.map(app=><article className={`hero-app-slide slide-${app.tone}`} key={app.name}><a className="download-app-logo" href={app.download} target="_blank" rel="noreferrer" aria-label={`Download ${app.name}`}><img src={app.src} alt={app.name}/></a><span>CREATOR APP</span><h2>{app.name}</h2><p>{app.copy}</p></article>)}</div>
       </section>
 
-      <section className="canva-about" id="about" onPointerMove={moveAboutParticles} onPointerLeave={resetAboutParticles}>
+      <section ref={aboutSectionRef} className={`canva-about${aboutRevealReady?" about-reveal-ready":""}`} id="about" onPointerMove={moveAboutParticles} onPointerLeave={resetAboutParticles}>
         <div className="about-particle-field" ref={aboutParticleFieldRef} aria-hidden="true">{aboutParticles.map(particle=><i className="about-particle" data-x={particle.left} data-y={particle.top} key={particle.id} style={{left:`${particle.left}%`,top:`${particle.top}%`,width:`${particle.size}px`,height:`${particle.size}px`,opacity:particle.opacity,animationDelay:particle.delay}}/> )}</div>
-        <div><h2>{t("About","Tentang")}<br/><img className="about-meitu-wordmark" src="/canva/meitu-wordmark.png" alt="Meitu"/></h2>{language==="en"?<><p>At <b>Meitu</b>, we believe technology can help everyone express and present the best version of themselves through photos, videos, and every shared moment.</p><p>Since 2008, Meitu has continued to innovate and transform how people capture, enhance, and share stories through innovative photo and video editing technology.</p><p>With more than <b>250 million users worldwide</b>, Meitu combines AI innovation with a practical and easy experience.</p></>:<><p>Di <b>Meitu</b>, kami percaya bahwa teknologi dapat membantu setiap orang mengekspresikan dan menghadirkan versi terbaik dari diri mereka melalui foto, video, dan setiap momen yang dibagikan.</p><p>Sejak tahun 2008, Meitu terus berinovasi untuk mengubah cara pengguna mengabadikan, menyempurnakan, dan membagikan cerita melalui teknologi pengeditan foto dan video inovatif.</p><p>Dengan lebih dari 250 juta pengguna di seluruh dunia, Meitu memadukan inovasi AI dengan pengalaman yang praktis dan mudah.</p></>}</div>
-        <div className="about-image-stage"><img src="/canva/meitu-campus.png" alt="Kantor pusat Meitu"/></div>
+        <div className="about-copy"><h2>{t("About","Tentang")}<br/><img className="about-meitu-wordmark" src="/canva/meitu-wordmark.png" alt="Meitu"/></h2>{language==="en"?<><p>At <b>Meitu</b>, we believe technology can help everyone express and present the best version of themselves through photos, videos, and every shared moment.</p><p>Since 2008, Meitu has continued to innovate and transform how people capture, enhance, and share stories through innovative photo and video editing technology.</p><p>With more than <b>250 million users worldwide</b>, Meitu combines AI innovation with a practical and easy experience.</p></>:<><p>Di <b>Meitu</b>, kami percaya bahwa teknologi dapat membantu setiap orang mengekspresikan dan menghadirkan versi terbaik dari diri mereka melalui foto, video, dan setiap momen yang dibagikan.</p><p>Sejak tahun 2008, Meitu terus berinovasi untuk mengubah cara pengguna mengabadikan, menyempurnakan, dan membagikan cerita melalui teknologi pengeditan foto dan video inovatif.</p><p>Dengan lebih dari 250 juta pengguna di seluruh dunia, Meitu memadukan inovasi AI dengan pengalaman yang praktis dan mudah.</p></>}</div>
+        <div className="about-image-stage" onPointerMove={moveAboutImage} onPointerLeave={resetAboutImage}><img src="/canva/meitu-campus.png" alt="Kantor pusat Meitu"/><div className="about-floating-facts" aria-hidden="true">{aboutFacts.map(([value,label],index)=><span className={`about-fact about-fact-${index+1}`} key={value}><b>{value}</b><small>{label}</small></span>)}</div></div>
         <div className="about-highlight-marquee" aria-label="Meitu global highlights"><div className="about-highlight-track">{[0,1].map(copy=><div className="about-highlight-set" aria-hidden={copy===1} key={copy}>{aboutHighlights.map(([icon,label])=><span key={label}><i aria-hidden="true">{icon}</i><b>{label}</b></span>)}</div>)}</div></div>
       </section>
 
