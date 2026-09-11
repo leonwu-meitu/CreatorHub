@@ -2696,9 +2696,9 @@
   overscroll-behavior: contain;
 }
 
-/* Keep the AI review note beside the analytics evidence action. The same
-   compact proof row is used after a submission is qualified, so the context
-   remains visible without adding a second line beneath the controls. */
+/* Keep the AI review note grouped with the analytics evidence action. The same
+   compact proof row is used after a submission is qualified, while the Team
+   decision and VIP-code controls retain their own clear space. */
 .app-shell .manual-submission-views > .analytics-proof-row {
   min-width: 0;
   display: flex;
@@ -2761,5 +2761,13 @@
   .app-shell .manual-submission-views .analytics-proof-row .analytics-review-message {
     flex: 1 1 180px;
     max-width: none;
+  }
+}
+
+/* The proof row is viewport-width constrained by its absolute edges on
+   narrower cards; do not add a second 100% width constraint. */
+@media (max-width:1100px) {
+  .app-shell .manual-submission-views > .analytics-proof-row {
+    width: auto;
   }
 }
