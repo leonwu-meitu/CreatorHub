@@ -918,12 +918,12 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
   const hasCreatorAccess=Boolean(account&&(account.role==="team"||account.canAccessCreator||account.applicationStatus==="accepted"));
   const [rewardViews,setRewardViews]=useState(0);
   const aboutParticleFieldRef=useRef<HTMLDivElement|null>(null);
-  const aboutParticles=useMemo(()=>Array.from({length:240},(_,index)=>({
+  const aboutParticles=useMemo(()=>Array.from({length:640},(_,index)=>({
     id:index,
     left:(index*47+13)%100,
     top:(index*71+7)%100,
-    size:1+((index*13)%3),
-    opacity:.34+((index*17)%7)/10,
+    size:1.4+((index*13)%5)*.55,
+    opacity:.46+((index*17)%6)/10,
     delay:`-${(index%16)*.45}s`,
   })),[]);
   const moveAboutParticles=(event:React.PointerEvent<HTMLElement>)=>{
