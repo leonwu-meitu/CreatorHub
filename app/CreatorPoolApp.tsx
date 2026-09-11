@@ -703,7 +703,7 @@ function CreatorHome({navigate,profile,tasks,submissions,rewards,joinedCampaignI
   const socialBrands=[
     {product:"Meitu" as Product,icon:"/canva/meitu-app.png",copy:"Tips editing, campaign terbaru, dan inspirasi kreator.",links:[["TikTok","https://www.tiktok.com/@meitu.id"],["Instagram","https://www.instagram.com/meitu.indonesia/"],["Threads","https://www.threads.com/@meitu.indonesia"]]},
     {product:"BeautyCam" as Product,icon:"/canva/beautycam-app.png",copy:"Portrait inspiration dan tren beauty yang lagi ramai.",links:[["TikTok","https://www.tiktok.com/@beautycam.id.official"],["Instagram","https://www.instagram.com/beautycam.indonesia/"],["Threads","https://www.threads.com/@beautycam.indonesia"]]},
-    {product:"Wink" as Product,icon:"/canva/wink-app.png",copy:"Tutorial video, transitions, dan creator spotlights.",links:[["TikTok","https://www.tiktok.com/@winkofficial.id"],["Instagram","https://www.instagram.com/winkapp.id/"],["Threads","https://www.threads.com/@winkapp.id"]]},
+    {product:"Wink" as Product,icon:"/canva/wink-app.png",copy:"Tutorial video, transitions, dan creator spotlights.",links:[["TikTok","https://www.tiktok.com/@winkofficial.id"],["Instagram","https://www.instagram.com/winkapp.indonesia/"],["Threads","https://www.threads.com/@winkapp.id"]]},
   ];
   const profileComplete=Boolean(profile.displayName?.trim()&&profile.contactEmail?.trim()&&profile.whatsapp?.trim()&&profile.niches?.trim()&&(profile.tiktokUrl?.trim()||profile.instagramUrl?.trim()||profile.threadsUrl?.trim()));
   const draftSubmission=allCreatorSubmissions.find(item=>normalizeSubmissionStatus(item.status)==="Draft");
