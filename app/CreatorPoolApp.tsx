@@ -956,11 +956,11 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
   const rewardValueLabel=rewardViews>=1000000?"1M":rewardViews>=1000?`${(rewardViews/1000).toLocaleString("en-US",{maximumFractionDigits:0})}K`:String(rewardViews);
   const selectedPublicReward=publicRewardCopyFor(selectedRewardTier.views,language);
   const steps=[
-    ["1","Daftarkan Dirimu","Isi form pendaftaran dan lengkapi data dirimu. Tim Meitu akan seleksi berdasarkan kecocokan.","✎"],
-    ["2","Join Grup Eksklusif","Kreator terpilih akan diundang ke grup khusus untuk mendapatkan info campaign dan brief terbaru.","♟"],
-    ["3","Terima Brief & Mulai Posting","Ikuti brief dari tim Meitu, lalu buat konten dengan gaya kreatifmu sesuai timeline.","✓"],
-    ["4","Submit Link & Dapatkan Reward","Kirim link konten yang sudah tayang untuk proses review dan reward.","▶"],
-    ["5","Kesempatan Jadi KOL Meitu","Performa konsisten membuka prioritas campaign dan kolaborasi eksklusif.","★"],
+    ["1","Daftarkan Dirimu","Isi formulir pendaftaran dan lengkapi data dirimu. Tim Meitu akan menyeleksi berdasarkan kecocokan.","✎"],
+    ["2","Bergabung ke Grup Eksklusif","Kreator terpilih akan diundang ke grup khusus untuk mendapatkan informasi kampanye dan brief terbaru.","♟"],
+    ["3","Terima Brief & Mulai Posting","Ikuti brief dari Tim Meitu, lalu buat konten dengan gaya kreatifmu sesuai jadwal.","✓"],
+    ["4","Kirim Tautan & Dapatkan Hadiah","Kirim tautan konten yang sudah tayang untuk proses tinjauan dan hadiah.","▶"],
+    ["5","Kesempatan Menjadi KOL Meitu","Performa konsisten membuka prioritas kampanye dan kolaborasi eksklusif.","★"],
   ];
   const heroApps=[
     {name:"Meitu",src:"/canva/meitu-app.png",tone:"meitu",copy:"Create standout photo edits with iconic AI tools.",download:"https://meitu-global.go.link?adj_t=23dkh346"},
@@ -994,12 +994,12 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
       </section>
 
       <section className="canva-benefits" id="benefits">
-        <div className="benefits-intro"><div><span className="section-kicker">PROGRAM KREATOR MEITU INDONESIA</span><h2>Apa itu<br/><strong>Creator Pool?</strong></h2><p>Program eksklusif dari Meitu Indonesia sebagai wadah kreator untuk berkreasi mempromosikan fitur dalam aplikasi, dengan sistem reward serta kesempatan kolaborasi dan benefit spesial bagi kreator yang aktif dan loyal.</p></div><img src="/canva/creator-community.png" alt="Komunitas kreator Meitu, BeautyCam, dan Wink"/></div>
+          <div className="benefits-intro"><div><span className="section-kicker">PROGRAM KREATOR MEITU INDONESIA</span><h2>Apa itu<br/><strong>Creator Pool?</strong></h2><p>Program eksklusif dari Meitu Indonesia sebagai wadah kreator untuk berkreasi mempromosikan fitur dalam aplikasi, dengan sistem hadiah serta kesempatan kolaborasi dan manfaat spesial bagi kreator yang aktif dan loyal.</p></div><img src="/canva/creator-community.png" alt="Komunitas kreator Meitu, BeautyCam, dan Wink"/></div>
         <div className="benefit-list">
           <article><span>💸</span><div><h3>Cash Reward</h3><p>Kamu berkesempatan memenangkan hadiah uang tunai.</p></div></article>
-          <article><span>📈</span><div><h3>Boost Your Exposure</h3><p>Dapatkan dukungan ads dan peluang menjadi model resmi di aplikasi Meitu.</p></div></article>
-          <article><span>🤝</span><div><h3>Long Term Collab</h3><p>Performa konsisten membuka peluang rate naik dan project eksklusif.</p></div></article>
-          <article><span>🎬</span><div><h3>Build Your Portfolio</h3><p>Bekerja dengan brand global untuk memperkuat positioning sebagai content creator.</p></div></article>
+          <article><span>📈</span><div><h3>Boost Your Exposure</h3><p>Dapatkan dukungan iklan dan peluang menjadi model resmi di aplikasi Meitu.</p></div></article>
+          <article><span>🤝</span><div><h3>Long Term Collab</h3><p>Performa konsisten membuka peluang tarif yang lebih tinggi dan proyek eksklusif.</p></div></article>
+          <article><span>🎬</span><div><h3>Build Your Portfolio</h3><p>Bekerja dengan merek global untuk memperkuat posisi sebagai kreator konten.</p></div></article>
         </div>
       </section>
 
