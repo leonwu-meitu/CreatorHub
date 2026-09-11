@@ -2823,3 +2823,9 @@
     width: auto;
   }
 }
+
+/* Give the VIP-code label its own breathing room beneath the engagement-rate
+   line so the two pieces of submission metadata never overlap. */
+.app-shell .manual-submission-card .vip-code-actions {
+  padding-top: 20px;
+}
