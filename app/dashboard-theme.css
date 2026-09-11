@@ -2829,3 +2829,14 @@
 .app-shell .manual-submission-card .vip-code-actions {
   padding-top: 20px;
 }
+
+/* Reserve a clear handoff from analytics to the decision controls. This keeps
+   the engagement-rate line from touching Edit or the VIP-code label when the
+   cards are rendered in the two-column Team layout. */
+.app-shell .manual-submission-card > .manual-submission-views {
+  padding-bottom: 18px;
+}
+.app-shell .manual-submission-views .submission-engagement-plain {
+  display: block;
+  margin-bottom: 2px;
+}
