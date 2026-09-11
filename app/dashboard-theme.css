@@ -2849,3 +2849,100 @@
 .app-shell-team .manual-submission-card > .decision-buttons {
   margin-top: 6px;
 }
+
+/* What is Creator Pool? interaction layer: reveal the benefit cards as they
+   enter the viewport, then use a gentle lift/glow and icon motion for hover,
+   keyboard focus, and tap activation. The image follows the pointer just
+   enough to add depth without distracting from the copy. */
+.canva-public .canva-benefits .benefits-intro > img {
+  --benefits-image-x: 0px;
+  --benefits-image-y: 0px;
+  transform: translate3d(var(--benefits-image-x),var(--benefits-image-y),0) scale(1.015);
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), filter .35s ease;
+  will-change: transform;
+}
+.canva-public .canva-benefits .benefits-intro > img:hover {
+  filter: saturate(1.06) brightness(1.02);
+}
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article {
+  opacity: 0;
+  transform: translateY(26px) rotate(-.4deg);
+  transition: opacity .5s ease, transform .5s cubic-bezier(.2,.8,.2,1),
+    box-shadow .25s ease, border-color .25s ease, background .25s ease;
+}
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article:nth-child(even) {
+  transform: translateY(26px) rotate(.4deg);
+}
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article.is-visible {
+  opacity: 1;
+  transform: translateY(0) rotate(-.4deg);
+}
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article:nth-child(2).is-visible,
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article:nth-child(4).is-visible {
+  transform: translateY(0) rotate(.4deg);
+}
+.canva-public .benefit-list article:hover,
+.canva-public .benefit-list article.is-active,
+.canva-public .benefit-list article:focus-visible {
+  border-color: rgba(241,29,72,.32);
+  box-shadow: 0 26px 54px rgba(107,18,47,.16), 0 0 0 5px rgba(241,29,72,.07);
+  outline: none;
+}
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article.is-visible:hover,
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article.is-visible.is-active,
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article.is-visible:focus-visible {
+  transform: translateY(-7px) rotate(-.4deg);
+}
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article:nth-child(2).is-visible:hover,
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article:nth-child(2).is-active,
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article:nth-child(2).is-visible:focus-visible,
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article:nth-child(4).is-visible:hover,
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article:nth-child(4).is-active,
+.canva-public .canva-benefits.benefits-reveal-ready .benefit-list article:nth-child(4).is-visible:focus-visible {
+  transform: translateY(-7px) rotate(.4deg);
+}
+.canva-public .benefit-list article > span {
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
+}
+.canva-public .benefit-list article:hover > span,
+.canva-public .benefit-list article.is-active > span,
+.canva-public .benefit-list article:focus-visible > span {
+  animation: benefit-icon-bob 1.8s ease-in-out infinite;
+  box-shadow: inset -8px -9px 16px rgba(241,29,72,.13),
+    0 16px 32px rgba(82,25,44,.22), 0 0 0 8px rgba(241,29,72,.08);
+}
+.canva-public .benefit-list article:nth-child(even):hover > span,
+.canva-public .benefit-list article:nth-child(even).is-active > span,
+.canva-public .benefit-list article:nth-child(even):focus-visible > span {
+  animation-name: benefit-icon-bob-even;
+}
+@keyframes benefit-icon-bob {
+  0%,100% { transform: rotate(-3deg) translateY(-3px) scale(1.04); }
+  50% { transform: rotate(-1deg) translateY(-7px) scale(1.08); }
+}
+@keyframes benefit-icon-bob-even {
+  0%,100% { transform: rotate(3deg) translateY(-3px) scale(1.04); }
+  50% { transform: rotate(1deg) translateY(-7px) scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .canva-public .canva-benefits .benefits-intro > img {
+    transform: none;
+    transition: none;
+  }
+  .canva-public .canva-benefits.benefits-reveal-ready .benefit-list article,
+  .canva-public .canva-benefits.benefits-reveal-ready .benefit-list article:nth-child(even),
+  .canva-public .canva-benefits.benefits-reveal-ready .benefit-list article.is-visible,
+  .canva-public .canva-benefits.benefits-reveal-ready .benefit-list article:nth-child(2).is-visible,
+  .canva-public .canva-benefits.benefits-reveal-ready .benefit-list article:nth-child(4).is-visible,
+  .canva-public .canva-benefits.benefits-reveal-ready .benefit-list article.is-visible:hover,
+  .canva-public .canva-benefits.benefits-reveal-ready .benefit-list article.is-visible.is-active,
+  .canva-public .canva-benefits.benefits-reveal-ready .benefit-list article.is-visible:focus-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .canva-public .benefit-list article > span {
+    animation: none !important;
+    transition: none;
+  }
+}

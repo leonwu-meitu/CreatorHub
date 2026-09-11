@@ -918,6 +918,9 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
   const hasCreatorAccess=Boolean(account&&(account.role==="team"||account.canAccessCreator||account.applicationStatus==="accepted"));
   const [rewardViews,setRewardViews]=useState(0);
   const aboutParticleFieldRef=useRef<HTMLDivElement|null>(null);
+  const benefitsRef=useRef<HTMLElement|null>(null);
+  const [benefitRevealReady,setBenefitRevealReady]=useState(false);
+  const [activeBenefit,setActiveBenefit]=useState<number|null>(null);
   const aboutParticles=useMemo(()=>Array.from({length:640},(_,index)=>({
     id:index,
     left:(index*47+13)%100,
@@ -951,6 +954,44 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
       particle.style.setProperty("--particle-shift-y","0px");
       particle.style.setProperty("--particle-focus","0");
     });
+  };
+  useEffect(()=>{
+    const section=benefitsRef.current;
+    if(!section)return;
+    const cards=Array.from(section.querySelectorAll<HTMLElement>(".benefit-list article"));
+    setBenefitRevealReady(true);
+    if(!("IntersectionObserver" in window)){
+      cards.forEach(card=>card.classList.add("is-visible"));
+      return;
+    }
+    const observer=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },{threshold:.2});
+    cards.forEach(card=>observer.observe(card));
+    return()=>observer.disconnect();
+  },[]);
+  const moveBenefitsImage=(event:React.PointerEvent<HTMLImageElement>)=>{
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+    const image=event.currentTarget;
+    const bounds=image.getBoundingClientRect();
+    const x=((event.clientX-bounds.left)/bounds.width-.5)*2;
+    const y=((event.clientY-bounds.top)/bounds.height-.5)*2;
+    image.style.setProperty("--benefits-image-x",`${x*10}px`);
+    image.style.setProperty("--benefits-image-y",`${y*8}px`);
+  };
+  const resetBenefitsImage=(event:React.PointerEvent<HTMLImageElement>)=>{
+    event.currentTarget.style.setProperty("--benefits-image-x","0px");
+    event.currentTarget.style.setProperty("--benefits-image-y","0px");
+  };
+  const handleBenefitKey=(index:number,event:React.KeyboardEvent<HTMLElement>)=>{
+    if(event.key!=="Enter"&&event.key!==" ")return;
+    event.preventDefault();
+    setActiveBenefit(current=>current===index?null:index);
   };
   const selectedRewardTier=rewardTierForViews(rewardViews)||rewardTiers[0];
   const rewardValueLabel=rewardViews>=1000000?"1M":rewardViews>=1000?`${(rewardViews/1000).toLocaleString("en-US",{maximumFractionDigits:0})}K`:String(rewardViews);
@@ -993,13 +1034,15 @@ function PublicSite({onSignIn,onApply,onOpenPortal,modal,setModal,notify,persist
         <div className="about-highlight-marquee" aria-label="Meitu global highlights"><div className="about-highlight-track">{[0,1].map(copy=><div className="about-highlight-set" aria-hidden={copy===1} key={copy}>{aboutHighlights.map(([icon,label])=><span key={label}><i aria-hidden="true">{icon}</i><b>{label}</b></span>)}</div>)}</div></div>
       </section>
 
-      <section className="canva-benefits" id="benefits">
-          <div className="benefits-intro"><div><span className="section-kicker">PROGRAM KREATOR MEITU INDONESIA</span><h2>Apa itu<br/><strong>Creator Pool?</strong></h2><p>Program eksklusif dari Meitu Indonesia sebagai wadah kreator untuk berkreasi mempromosikan fitur dalam aplikasi, dengan sistem hadiah serta kesempatan kolaborasi dan manfaat spesial bagi kreator yang aktif dan loyal.</p></div><img src="/canva/creator-community.png" alt="Komunitas kreator Meitu, BeautyCam, dan Wink"/></div>
+      <section ref={benefitsRef} className={`canva-benefits${benefitRevealReady?" benefits-reveal-ready":""}`} id="benefits">
+          <div className="benefits-intro"><div><span className="section-kicker">PROGRAM KREATOR MEITU INDONESIA</span><h2>Apa itu<br/><strong>Creator Pool?</strong></h2><p>Program eksklusif dari Meitu Indonesia sebagai wadah kreator untuk berkreasi mempromosikan fitur dalam aplikasi, dengan sistem hadiah serta kesempatan kolaborasi dan manfaat spesial bagi kreator yang aktif dan loyal.</p></div><img src="/canva/creator-community.png" alt="Komunitas kreator Meitu, BeautyCam, dan Wink" onPointerMove={moveBenefitsImage} onPointerLeave={resetBenefitsImage}/></div>
         <div className="benefit-list">
-          <article><span>💸</span><div><h3>Cash Reward</h3><p>Kamu berkesempatan memenangkan hadiah uang tunai.</p></div></article>
-          <article><span>📈</span><div><h3>Boost Your Exposure</h3><p>Dapatkan dukungan iklan dan peluang menjadi model resmi di aplikasi Meitu.</p></div></article>
-          <article><span>🤝</span><div><h3>Long Term Collab</h3><p>Performa konsisten membuka peluang tarif yang lebih tinggi dan proyek eksklusif.</p></div></article>
-          <article><span>🎬</span><div><h3>Build Your Portfolio</h3><p>Bekerja dengan merek global untuk memperkuat posisi sebagai kreator konten.</p></div></article>
+          {[
+            ["💸","Cash Reward","Kamu berkesempatan memenangkan hadiah uang tunai."],
+            ["📈","Boost Your Exposure","Dapatkan dukungan iklan dan peluang menjadi model resmi di aplikasi Meitu."],
+            ["🤝","Long Term Collab","Performa konsisten membuka peluang tarif yang lebih tinggi dan proyek eksklusif."],
+            ["🎬","Build Your Portfolio","Bekerja dengan merek global untuk memperkuat posisi sebagai kreator konten."],
+          ].map(([icon,title,copy],index)=><article key={title} className={activeBenefit===index?"is-active":""} tabIndex={0} role="button" aria-expanded={activeBenefit===index} onClick={()=>setActiveBenefit(current=>current===index?null:index)} onKeyDown={event=>handleBenefitKey(index,event)}><span>{icon}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}
         </div>
       </section>
 
