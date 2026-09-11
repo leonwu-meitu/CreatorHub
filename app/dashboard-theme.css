@@ -2619,6 +2619,9 @@
 .canva-public .canva-footer {
   background: linear-gradient(180deg, #fff 0, rgba(5,5,5,0) 95px), #050505;
 }
+.canva-public .canva-footer p {
+  color: #fff;
+}
 
 /* The hero-to-About boundary intentionally returns to the original hard cut. */
 .canva-public .canva-about {
