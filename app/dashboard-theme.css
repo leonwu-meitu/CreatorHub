@@ -2660,3 +2660,71 @@
   overflow: hidden !important;
   overscroll-behavior: contain;
 }
+
+/* Keep the AI review note beside the analytics evidence action. The same
+   compact proof row is used after a submission is qualified, so the context
+   remains visible without adding a second line beneath the controls. */
+.app-shell .manual-submission-views > .analytics-proof-row {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-shell .manual-submission-views .analytics-proof-row .analytics-review-message {
+  min-width: 0;
+  max-width: 180px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.app-shell .manual-submission-views .analytics-proof-row .analytics-screenshot-link {
+  flex: 0 0 auto;
+  min-height: 31px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 8px;
+  border: 1px solid #d7cec6;
+  border-radius: 8px;
+  background: #fff;
+  color: #171315;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.app-shell .manual-submission-views .analytics-proof-row .analytics-screenshot-link:hover {
+  border-color: #f11d48;
+  color: #c30f34;
+}
+.app-shell .manual-submission-views .analytics-proof-row .analytics-screenshot-missing {
+  flex: 0 0 auto;
+  min-height: 31px;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 8px;
+  border: 1px dashed #d7cec6;
+  border-radius: 8px;
+  color: #9b96a1;
+  font-size: 10px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+@media (min-width:1101px) {
+  .app-shell .manual-submission-views > .analytics-proof-row {
+    grid-column: 3;
+    grid-row: 4;
+    justify-self: start;
+  }
+}
+@media (max-width:1100px) {
+  .app-shell .manual-submission-views > .analytics-proof-row {
+    grid-column: 1 / -1 !important;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .app-shell .manual-submission-views .analytics-proof-row .analytics-review-message {
+    flex: 1 1 180px;
+    max-width: none;
+  }
+}
