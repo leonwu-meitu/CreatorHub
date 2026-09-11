@@ -2279,38 +2279,90 @@
 }
 
 /* The review note belongs beneath the Team decision controls, including the
-   VIP-code editor. Keep the evidence link and note together while reserving
-   enough card space so neither can be covered by the VIP controls. */
+   VIP-code editor. Keep the evidence link and note together in normal flow so
+   the row cannot collapse or overlap the controls. */
 .app-shell .manual-submission-card {
   position: relative;
-  padding-bottom: 72px;
+  padding-bottom: 16px;
 }
 .app-shell .manual-submission-card:has(.vip-code-actions) {
-  padding-bottom: 112px;
+  padding-bottom: 16px;
 }
-.app-shell .manual-submission-views > .analytics-proof-row {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
-  z-index: 2;
+.app-shell .manual-submission-card > .analytics-proof-row {
+  grid-column: 1 / -1;
+  grid-row: auto;
   min-width: 0;
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.app-shell .manual-submission-views > .analytics-proof-row .analytics-review-message {
+.app-shell .manual-submission-card > .analytics-proof-row .analytics-review-message {
   flex: 1 1 auto;
+  min-width: 0;
   max-width: none;
   margin: 0;
   overflow-wrap: anywhere;
 }
-.app-shell .manual-submission-views > .analytics-proof-row .analytics-screenshot-link,
-.app-shell .manual-submission-views > .analytics-proof-row .analytics-screenshot-missing {
+.app-shell .manual-submission-card > .analytics-proof-row .analytics-screenshot-link,
+.app-shell .manual-submission-card > .analytics-proof-row .analytics-screenshot-missing {
   flex: 0 0 auto;
+}
+@media (min-width: 801px) {
+  .app-shell .manual-submission-card > .analytics-proof-row {
+    grid-row: 4;
+  }
+}
+@media (min-width: 1101px) {
+  .app-shell .manual-submission-card > .analytics-proof-row {
+    grid-row: 5;
+  }
+}
+@media (max-width: 800px) {
+  .app-shell .manual-submission-card > .analytics-proof-row {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+    flex-wrap: wrap;
+  }
+  .app-shell .manual-submission-card > .analytics-proof-row .analytics-review-message {
+    flex: 1 1 180px;
+  }
 }
 .app-shell .brand-title::after {
   display: none;
+}
+
+.app-shell .manual-submission-card > .analytics-proof-row .analytics-screenshot-link {
+  min-height: 31px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 8px;
+  border: 1px solid #d7cec6;
+  border-radius: 8px;
+  background: #fff;
+  color: #171315;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.app-shell .manual-submission-card > .analytics-proof-row .analytics-screenshot-link:hover {
+  border-color: #f11d48;
+  color: #c30f34;
+}
+.app-shell .manual-submission-card > .analytics-proof-row .analytics-screenshot-missing {
+  min-height: 31px;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 8px;
+  border: 1px dashed #d7cec6;
+  border-radius: 8px;
+  color: #9b96a1;
+  font-size: 10px;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
 @media (min-width: 801px) and (max-width: 1100px) {
