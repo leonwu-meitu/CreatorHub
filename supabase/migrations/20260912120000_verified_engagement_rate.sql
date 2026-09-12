@@ -33,6 +33,20 @@ on public.campaign_submissions
 for each row execute function public.calculate_submission_engagement_rate();
 
 -- Repair rows that previously displayed an AI-derived or impossible rate.
+-- The SQL Editor has no auth.uid(), so the normal Creator guard trigger would
+-- reject this maintenance update. Disable only the guard triggers for the
+-- duration of this transaction; they remain enabled for all application users.
+do $$
+begin
+  if exists (select 1 from pg_trigger where tgrelid = 'public.campaign_submissions'::regclass and tgname = 'guard_creator_submission_update') then
+    alter table public.campaign_submissions disable trigger guard_creator_submission_update;
+  end if;
+  if exists (select 1 from pg_trigger where tgrelid = 'public.campaign_submissions'::regclass and tgname = 'guard_creator_raw_analytics_update') then
+    alter table public.campaign_submissions disable trigger guard_creator_raw_analytics_update;
+  end if;
+end;
+$$;
+
 update public.campaign_submissions
 set engagement_rate = null
 where lower(replace(coalesce(analytics_status, ''), ' ', '_')) <> 'manual_override'
@@ -43,3 +57,14 @@ where lower(replace(coalesce(analytics_status, ''), ' ', '_')) <> 'manual_overri
    or total_engagement > verified_views
    or engagement_rate < 0
    or engagement_rate > 100;
+
+do $$
+begin
+  if exists (select 1 from pg_trigger where tgrelid = 'public.campaign_submissions'::regclass and tgname = 'guard_creator_submission_update') then
+    alter table public.campaign_submissions enable trigger guard_creator_submission_update;
+  end if;
+  if exists (select 1 from pg_trigger where tgrelid = 'public.campaign_submissions'::regclass and tgname = 'guard_creator_raw_analytics_update') then
+    alter table public.campaign_submissions enable trigger guard_creator_raw_analytics_update;
+  end if;
+end;
+$$;
