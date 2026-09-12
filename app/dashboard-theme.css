@@ -3429,3 +3429,59 @@
   .app-shell-creator .creator-submission-card,
   .app-shell-creator .reward-history-card-expanded { transition: none; }
 }
+
+/* Light glass sidebar: keep the navigation airy while preserving the Meitu-red
+   active state and clear contrast for portal work. */
+.app-shell .sidebar {
+  background:
+    radial-gradient(circle at 0 0, rgba(241,29,72,.1), transparent 190px),
+    linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,252,249,.8));
+  color: #171416;
+  border-right: 1px solid rgba(109, 86, 76, .14);
+  box-shadow: 18px 0 46px rgba(62, 38, 31, .08);
+  backdrop-filter: blur(24px) saturate(1.1);
+  -webkit-backdrop-filter: blur(24px) saturate(1.1);
+}
+.app-shell .brand-title { color: #171416; }
+.app-shell .nav-label { color: #918681; }
+.app-shell .space-switch {
+  background: rgba(239,232,227,.72);
+  border-color: rgba(111,88,78,.13);
+  box-shadow: inset 0 1px rgba(255,255,255,.9);
+}
+.app-shell .space-switch button { color: #817873; }
+.app-shell .space-switch button.active {
+  background: linear-gradient(135deg, #ff5274, #f11d48);
+  color: #fff;
+  box-shadow: 0 7px 18px rgba(241,29,72,.2);
+}
+.app-shell .sidebar nav button,
+.app-shell .sidebar-bottom > button { color: #6f6662; }
+.app-shell .sidebar nav button:hover,
+.app-shell .sidebar-bottom > button:hover {
+  color: #171416;
+  background: rgba(241,29,72,.07);
+}
+.app-shell .sidebar nav button.active {
+  color: #b90d32;
+  background: linear-gradient(100deg, rgba(255,229,235,.96), rgba(255,243,246,.82));
+  box-shadow: inset 0 0 0 1px rgba(241,29,72,.12), 0 8px 18px rgba(241,29,72,.08);
+}
+.app-shell .sidebar nav button.active::before {
+  background: #f11d48;
+  box-shadow: 0 0 12px rgba(241,29,72,.4);
+}
+.app-shell .sidebar nav em {
+  background: #f11d48;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(241,29,72,.22);
+}
+.app-shell .sidebar-bottom { border-color: rgba(109,86,76,.14); }
+.app-shell .user-chip b { color: #171416; }
+.app-shell .user-chip small { color: #918681; }
+
+@media (max-width: 760px) {
+  .app-shell .sidebar {
+    box-shadow: 20px 0 55px rgba(39,22,24,.18);
+  }
+}
