@@ -3254,3 +3254,178 @@
   .canva-public .canva-hero { padding-top: 78px; }
   .canva-public .reward-calculator { border-radius: 20px; }
 }
+
+/* Portal polish pass: a restrained glass workspace with clearer hierarchy. */
+.app-shell {
+  --portal-glass: rgba(255, 255, 255, .78);
+  --portal-glass-strong: rgba(255, 255, 255, .92);
+  background:
+    radial-gradient(circle at 92% 0, rgba(241,29,72,.12), transparent 30rem),
+    radial-gradient(circle at 10% 92%, rgba(126,84,255,.07), transparent 26rem),
+    linear-gradient(135deg, #f7f2ec 0%, #f1ebe4 58%, #eee7e3 100%);
+}
+.app-shell .brand-title::after { content: none !important; display: none !important; }
+.app-shell > main { background: transparent; }
+.app-shell .sidebar {
+  background:
+    radial-gradient(circle at 0 0, rgba(241,29,72,.18), transparent 210px),
+    linear-gradient(180deg, #121012 0%, #090809 100%);
+  border-right-color: rgba(255,255,255,.08);
+  box-shadow: 20px 0 60px rgba(20, 10, 15, .2);
+}
+.app-shell .topbar {
+  height: 72px;
+  padding-inline: clamp(20px, 3vw, 44px);
+  background: rgba(250,247,242,.72);
+  border-bottom-color: rgba(35, 24, 26, .08);
+  box-shadow: 0 10px 32px rgba(44, 27, 22, .05);
+  backdrop-filter: blur(24px) saturate(1.15);
+}
+.app-shell .workspace {
+  padding-top: 36px;
+  padding-bottom: 76px;
+  max-width: 1560px;
+}
+.app-shell .page-head { margin-bottom: 24px; }
+.app-shell .page-head h1 { font-size: clamp(28px, 2.1vw, 36px); letter-spacing: -.055em; }
+.app-shell .page-head p { max-width: 680px; font-size: 13px; line-height: 1.5; }
+.app-shell .panel,
+.app-shell .metric-card,
+.app-shell .application-metric,
+.app-shell .task-card,
+.app-shell .place,
+.app-shell .creator-stats article,
+.app-shell .reward-summary article {
+  border-color: rgba(101, 79, 67, .16);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,252,248,.74));
+  box-shadow: 0 18px 48px rgba(54, 34, 25, .07), inset 0 1px 0 rgba(255,255,255,.96);
+  backdrop-filter: blur(16px) saturate(1.08);
+}
+.app-shell .panel-head { padding: 22px 24px 16px; }
+.app-shell .panel-head h2 { font-size: 17px; letter-spacing: -.035em; }
+.app-shell .panel-head p { font-size: 11px; line-height: 1.45; }
+.app-shell .metrics { gap: 16px; margin-bottom: 18px; }
+.app-shell .metric-card { min-height: 118px; padding: 20px; }
+.app-shell .metric-card p { font-size: 11px; }
+.app-shell .metric-card strong { font-size: 29px; letter-spacing: -.06em; }
+.app-shell .metric-card small { font-size: 10px; }
+.app-shell .metric-icon { width: 44px; height: 44px; border-radius: 14px; }
+.app-shell .metric-card:hover,
+.app-shell .application-metric:hover,
+.app-shell .creator-stats article:hover {
+  transform: translateY(-4px);
+  border-color: rgba(241,29,72,.3);
+  box-shadow: 0 24px 54px rgba(54, 28, 31, .11), inset 0 1px 0 rgba(255,255,255,.98);
+}
+.app-shell .segmented { border-radius: 13px; padding: 4px; background: rgba(226,218,211,.72); }
+.app-shell .segmented button { min-height: 34px; border-radius: 9px; font-size: 10px; }
+.app-shell table { border-spacing: 0; }
+.app-shell th { padding: 12px 16px; font-size: 9px; letter-spacing: .09em; }
+.app-shell td { padding: 15px 16px; font-size: 11px; }
+.app-shell tbody tr { transition: background .18s ease, transform .18s ease; }
+.app-shell tbody tr:hover { background: rgba(255,241,245,.72); }
+
+/* Team review workspace: keep the decision path visible and calm. */
+.app-shell-team .application-hub-metrics { margin-bottom: 20px; }
+.app-shell-team .application-hub-tabs { margin-bottom: 16px; border-color: rgba(96,76,67,.12); border-radius: 16px; background: rgba(235,226,219,.64); }
+.app-shell-team .application-filter-bar,
+.app-shell-team .report-filter-bar,
+.app-shell-team .creator-filter-bar { border-radius: 18px; padding: 16px; background: rgba(255,255,255,.58); border-color: rgba(101,79,67,.13); box-shadow: inset 0 1px rgba(255,255,255,.85); }
+.app-shell-team .application-table-card { overflow: hidden; }
+.app-shell-team .application-table td { vertical-align: middle; }
+.app-shell-team .application-table .creator-cell b { font-size: 12px; }
+.app-shell-team .application-table .creator-cell small,
+.app-shell-team .application-contact small,
+.app-shell-team .application-platform-cell small { font-size: 9px; }
+.app-shell-team .manual-submission-list { display: grid; gap: 16px; }
+.app-shell-team .manual-submission-card {
+  border-radius: 22px;
+  padding: 22px;
+  border-color: rgba(93,67,72,.15);
+  background: linear-gradient(145deg, rgba(255,255,255,.95), rgba(255,250,247,.84));
+  box-shadow: 0 20px 54px rgba(54, 30, 32, .08), inset 0 1px 0 rgba(255,255,255,.98);
+}
+.app-shell-team .manual-submission-card:hover { border-color: rgba(241,29,72,.28); box-shadow: 0 28px 62px rgba(54,30,32,.12), inset 0 1px 0 rgba(255,255,255,.98); }
+.app-shell-team .manual-submission-card > .manual-submission-creator,
+.app-shell-team .manual-submission-card > .manual-submission-campaign,
+.app-shell-team .manual-submission-card > .manual-submission-post { padding: 4px 0; }
+.app-shell-team .manual-submission-card .manual-submission-creator > span { gap: 4px; }
+.app-shell-team .manual-submission-card .submission-creator-name { font-size: 13px; }
+.app-shell-team .manual-submission-views { padding: 14px !important; border: 1px solid rgba(106,84,78,.12); border-radius: 16px; background: rgba(248,243,239,.64); }
+.app-shell-team .manual-submission-views .viewer-comparison { gap: 12px; }
+.app-shell-team .manual-submission-views .viewer-comparison > div { padding: 12px; border-radius: 12px; background: rgba(255,255,255,.74); }
+.app-shell-team .manual-submission-views .submission-analytics-values > span { padding: 8px; border-radius: 10px; background: rgba(255,255,255,.74); border-color: rgba(101,79,67,.11); }
+.app-shell-team .manual-submission-card > .decision-buttons { align-self: end; }
+.app-shell-team .manual-submission-card > .decision-buttons button { min-height: 42px; border-radius: 12px; font-size: 10px; }
+.app-shell-team .analytics-proof-row { padding-top: 12px; border-top-color: rgba(101,79,67,.12); }
+
+/* Creator workspace: make progress and next actions feel intentional. */
+.app-shell-creator .creator-home-stats { border-radius: 22px; border: 1px solid rgba(101,79,67,.14); box-shadow: 0 20px 52px rgba(54,34,25,.08), inset 0 1px rgba(255,255,255,.96); }
+.app-shell-creator .creator-home-stats > button { min-height: 132px; padding: 22px; background: rgba(255,255,255,.7); }
+.app-shell-creator .creator-home-stats > button:hover { background: linear-gradient(145deg, rgba(255,247,249,.96), rgba(255,255,255,.82)); }
+.app-shell-creator .creator-home-focus { gap: 18px; }
+.app-shell-creator .suggestion-deck,
+.app-shell-creator .campaign-progress-card,
+.app-shell-creator .creator-submission-app-filter { border-radius: 22px; }
+.app-shell-creator .suggestion-heading { padding: 22px 24px 8px; }
+.app-shell-creator .suggestion-heading h2 { font-size: 19px; letter-spacing: -.04em; }
+.app-shell-creator .suggestion-card { border-radius: 18px; box-shadow: 0 20px 40px rgba(47,29,38,.12), inset 0 1px rgba(255,255,255,.35); }
+.app-shell-creator .campaign-progress-list > article,
+.app-shell-creator .creator-campaign-card,
+.app-shell-creator .creator-submission-card,
+.app-shell-creator .reward-history-card-expanded { border-radius: 18px; border-color: rgba(101,79,67,.14); background: rgba(255,255,255,.8); box-shadow: 0 14px 34px rgba(54,34,25,.065), inset 0 1px rgba(255,255,255,.95); }
+.app-shell-creator .campaign-progress-list > article:hover,
+.app-shell-creator .creator-campaign-card:hover,
+.app-shell-creator .creator-submission-card:hover,
+.app-shell-creator .reward-history-card-expanded:hover { transform: translateY(-3px); border-color: rgba(241,29,72,.28); box-shadow: 0 22px 46px rgba(54,30,32,.11), inset 0 1px rgba(255,255,255,.98); }
+.app-shell-creator .creator-payment-summary { border-radius: 22px; box-shadow: 0 20px 52px rgba(54,34,25,.08); }
+.app-shell-creator .creator-payment-summary article { min-height: 154px; }
+.app-shell-creator .creator-profile-editor > section,
+.app-shell-creator .profile-grid > section { border-radius: 20px; }
+
+/* Forms and drawers should feel like one polished surface. */
+.app-shell input,
+.app-shell textarea,
+.app-shell select { min-height: 40px; border-radius: 11px; background: rgba(255,253,249,.92); font-size: 11px; }
+.app-shell .primary,
+.app-shell .secondary,
+.app-shell .danger { min-height: 40px; border-radius: 11px; font-size: 10px; }
+.app-shell .dialog,
+.app-shell .review-drawer,
+.app-shell .creator-record-drawer { border-radius: 24px; overflow: hidden; box-shadow: 0 34px 100px rgba(17, 8, 12, .36); }
+.app-shell .dialog > header,
+.app-shell .review-drawer > header { padding: 22px 24px; }
+.app-shell .dialog > footer,
+.app-shell .review-drawer > footer { padding: 16px 24px; }
+
+@media (max-width: 900px) {
+  .app-shell .workspace { padding-top: 26px; }
+  .app-shell .metrics { gap: 12px; }
+  .app-shell .metric-card { min-height: 104px; padding: 16px; }
+  .app-shell-creator .creator-home-stats > button { min-height: 110px; padding: 17px; }
+}
+@media (max-width: 620px) {
+  .app-shell .topbar { height: 64px; }
+  .app-shell .workspace { padding: 22px 14px 52px; }
+  .app-shell .page-head { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .app-shell .page-head h1 { font-size: 28px; }
+  .app-shell .panel-head { padding: 18px 18px 13px; }
+  .app-shell .panel,
+  .app-shell .metric-card,
+  .app-shell .application-metric,
+  .app-shell .task-card,
+  .app-shell .creator-submission-card { border-radius: 16px; }
+  .app-shell-team .manual-submission-card { padding: 16px; border-radius: 18px; }
+  .app-shell-team .manual-submission-views { padding: 11px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .metric-card,
+  .app-shell .application-metric,
+  .app-shell .creator-stats article,
+  .app-shell tbody tr,
+  .app-shell-team .manual-submission-card,
+  .app-shell-creator .creator-campaign-card,
+  .app-shell-creator .creator-submission-card,
+  .app-shell-creator .reward-history-card-expanded { transition: none; }
+}
