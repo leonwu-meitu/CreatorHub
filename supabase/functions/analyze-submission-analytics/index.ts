@@ -117,6 +117,11 @@ const nonNegativeInteger = (value: unknown) => {
   return Number.isFinite(number) && number >= 0 ? Math.round(number) : 0;
 };
 
+const verifiedRate = (views: number, totalEngagement: number) => {
+  if (!Number.isFinite(views) || views <= 0 || !Number.isFinite(totalEngagement) || totalEngagement < 0 || totalEngagement > views) return null;
+  return (totalEngagement / views) * 100;
+};
+
 const booleanValue = (value: unknown) => value === true || (typeof value === "string" && value.trim().toLowerCase() === "true");
 
 const normalizedPlatform = (value: unknown) => String(value || "").trim().toLowerCase().replace(/[^a-z]/g, "");
@@ -271,6 +276,9 @@ Deno.serve(async (request) => {
     if (totalEngagement <= 0) {
       try {
         const focused = await runCloudflare(engagementExtractionPrompt(normalizedDetectedPlatform === "unknown" ? submission.platform : detectedPlatform), 300);
+        for (const key of ["likes", "comments", "shares", "saves", "reposts", "quotes"]) {
+          if (key in focused) extracted[key] = focused[key];
+        }
         const focusedDisplayedTotal = nonNegativeInteger(focused.displayed_total_engagement);
         const focusedComponentTotal = engagementKeys
           .reduce((sum, key) => sum + nonNegativeInteger(focused[key]), 0);
@@ -281,6 +289,8 @@ Deno.serve(async (request) => {
       }
     }
     const screenshotIsValid = booleanValue(extracted.valid_analytics_screenshot);
+    const calculatedRate = verifiedRate(views, totalEngagement);
+    const metricsNeedReview = views <= 0 || calculatedRate === null;
     // Keep AI output as a draft until a Team member verifies the visible metrics.
     // This prevents OCR/icon mistakes from automatically affecting qualification or rewards.
     const analyticsStatus = "ai_needs_review";
@@ -289,16 +299,19 @@ Deno.serve(async (request) => {
       ? String(extracted.explanation || "The screenshot could not be verified as post analytics.").slice(0, 500)
       : !platformMatches
         ? `The detected platform (${detectedPlatform}) does not match the submitted platform (${submission.platform}).`
-        : views <= 0
+      : views <= 0
           ? "The screenshot did not contain a readable views total."
           : totalEngagement <= 0
             ? "The screenshot did not contain readable engagement metrics."
-            : "AI extracted draft metrics; Team verification is required before approval.";
+            : metricsNeedReview
+              ? "The extracted interactions exceed verified views and need manual verification."
+              : "AI extracted draft metrics; Team verification is required before approval.";
     const processedAt = new Date().toISOString();
 
     const { data: updated, error: updateError } = await admin.from("campaign_submissions").update({
       verified_views: views || null,
       total_engagement: totalEngagement,
+      engagement_rate: null,
       analytics_likes: nonNegativeInteger(extracted.likes),
       analytics_comments: nonNegativeInteger(extracted.comments),
       analytics_reposts: nonNegativeInteger(extracted.reposts),
@@ -313,6 +326,13 @@ Deno.serve(async (request) => {
       updated_at: processedAt,
     }).eq("id", submissionId).select("verified_views,total_engagement,engagement_rate,analytics_likes,analytics_comments,analytics_reposts,analytics_shares,analytics_favorites,analytics_status,recommendation,confidence,analytics_error,analytics_model,analytics_processed_at,analytics_attempt_count").single();
     if (updateError) throw updateError;
+
+    // Keep draft AI output from being presented as a verified percentage even
+    // on databases that still have the earlier calculation trigger installed.
+    const { error: rateCleanupError } = await admin.from("campaign_submissions")
+      .update({ engagement_rate: null })
+      .eq("id", submissionId);
+    if (rateCleanupError) throw rateCleanupError;
 
     return json({ analyzed: true, duplicate: false, submission: updated });
   } catch (error) {
